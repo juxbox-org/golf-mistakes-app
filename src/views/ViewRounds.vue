@@ -1,14 +1,12 @@
 <template lang="pug">
   div
-    v-btn(@click="onClick") Test Cordova
-    div Platform: {{platformId}}
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 
 export default Vue.extend({
-  name: 'Home',
+  name: 'ViewRounds',
 
   data() {
     return {

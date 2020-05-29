@@ -2,6 +2,7 @@ import Vue from 'vue';
 import App from '@/App.vue';
 import router from '@/router';
 import store from '@/store';
+import { sync } from 'vuex-router-sync';
 import vuetify from '@/plugins/vuetify';
 // Use es6 promises; polyfill if necessary
 import 'es6-promise/auto';
@@ -11,6 +12,8 @@ import '@/assets/css/default-styles.styl';
 import '@/plugins/cordova';
 
 Vue.config.productionTip = false;
+
+sync(store, router);
 
 new Vue({
   router,
