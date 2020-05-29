@@ -7,7 +7,7 @@ export interface MistakeDef {
 }
 
 export interface MistakeDefsState {
-  mistakeTypes: Map<number, MistakeDef>;
+  mistakeDefs: Map<number, MistakeDef>;
 }
 
 export interface MistakeRecord {
