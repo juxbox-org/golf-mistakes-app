@@ -10,7 +10,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import EditMistake from '@/components/EditMistake.vue';
+import EditMistake from '@/views/screens/summary/EditMistake.vue';
 
 @Component({
   name: 'Summary',

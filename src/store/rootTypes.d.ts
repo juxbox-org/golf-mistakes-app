@@ -1,16 +1,16 @@
-declare interface View {
+declare interface Screen {
   summary: string;
   track: string;
   review: string;
 }
 
-export interface ViewData {
+export interface ScreenData {
   view: string;
   type: string;
 }
 
 export interface RootState {
   version: number;
-  screen: string;
-  view: View;
+  view: string;
+  screen: Screen;
 }

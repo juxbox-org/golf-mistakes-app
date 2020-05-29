@@ -1,5 +1,5 @@
 const state = {
-  mistakeTypes: new Map(),
+  rounds: new Map(),
 };
 
 export default state;

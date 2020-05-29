@@ -1,8 +1,9 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import hasKey from '@/utils/objects';
-import mistakeTypes from './mistake-types/mistake-types';
-import { RootState, ViewData } from './rootTypes.d';
+import mistakeDefs from './mistake-defs/mistake-defs';
+import rounds from './rounds/rounds';
+import { RootState, ScreenData } from './rootTypes.d';
 
 Vue.use(Vuex);
 
@@ -12,26 +13,27 @@ export const UPDATE_VIEW = 'update_view';
 export default new Vuex.Store({
   state: {
     version: 1.0,
-    screen: '',
-    view: {
+    view: '',
+    screen: {
       summary: '',
       review: '',
       track: '',
     },
   },
   mutations: {
-    [UPDATE_SCREEN](state: RootState, screen: string) {
-      state.screen = screen;
+    [UPDATE_VIEW](state: RootState, view: string) {
+      state.view = view;
     },
-    [UPDATE_VIEW](state: RootState, viewData: ViewData) {
-      if (hasKey(state.view, viewData.type)) {
-        state.view[viewData.type] = viewData.view;
+    [UPDATE_SCREEN](state: RootState, screenData: ScreenData) {
+      if (hasKey(state.screen, screenData.type)) {
+        state.screen[screenData.type] = screenData.view;
       }
     },
   },
   actions: {
   },
   modules: {
-    mistakeTypes,
+    mistakeDefs,
+    rounds,
   },
 });

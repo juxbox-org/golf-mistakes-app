@@ -1,21 +1,21 @@
 /*
  * Declare typescript types for mistake-types Vuex module
  */
-export interface MistakeType {
+export interface MistakeDef {
   title: string;
   desc: string;
 }
 
-export interface MistakeTypesState {
-  mistakeTypes: Map<number, MistakeType>;
+export interface MistakeDefsState {
+  mistakeTypes: Map<number, MistakeDef>;
 }
 
 export interface MistakeRecord {
   id: number;
-  data: MistakeType;
+  data: MistakeDef;
 }
 
 // Action function types
 export interface CreateMistakeAction {
-  (mistakeData: MistakeType): Promise<void>;
+  (mistakeData: MistakeDef): Promise<void>;
 }

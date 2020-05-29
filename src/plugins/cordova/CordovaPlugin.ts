@@ -24,13 +24,16 @@ export default function CordovaPlugin(Vue: typeof _Vue): void {
   document.addEventListener('deviceready', () => {
     Vue.prototype.$cordova = window.cordova;
 
-    if (window.sqlitePlugin) {
+    if (window.cordova.platformId !== 'browser' && window.sqlitePlugin) {
       window.sqlitePlugin.selfTest(() => {
         Vue.prototype.$sqlite = window.sqlitePlugin;
       }, () => {
+        console.error('Current platform doesn\'t support SQLite plugin');
         Vue.prototype.$sqlite = null;
-        console.log('Current platform doesn\'t support SQLite plugin');
       });
+    } else {
+      console.warn('Current platform doesn\'t support SQLite plugin');
+      Vue.prototype.$sqlite = null;
     }
   });
 }
