@@ -290,7 +290,7 @@ export default class CurrentRound extends Vue {
   color: #4CAF50 !important;
   background-color: #4CAF5010;
   caret-color: #4CAF50;
-  border: solid 2px;
+  border: solid #4CAF50 1px;
   border-radius: 2px;
   margin-bottom: 3px;
 }
@@ -299,7 +299,7 @@ export default class CurrentRound extends Vue {
   color: #F44336 !important;
   caret-color: #F44336 !important;
   background-color: #F4433610;
-  border: solid 2px;
+  border: solid #F44336 1px;
   border-radius: 2px;
   margin-bottom: 3px;
 }
