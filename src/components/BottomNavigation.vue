@@ -11,19 +11,13 @@
 <script lang="ts">
 import Vue from 'vue';
 import Compontent from 'vue-class-component';
-import { Mutation } from 'vuex-class';
-import { UPDATE_SCREEN } from '@/store/index';
 
 @Compontent({
   name: 'AppBar',
 })
 export default class BottomNavigation extends Vue {
-  @Mutation(UPDATE_SCREEN) updateScreen!: (screen: string) => void;
-
   navigateTo(to: string): void {
-    this.updateScreen(to);
     this.$router.push(`/${to}`).catch(() => null);
   }
 }
-
 </script>

@@ -1,32 +1,151 @@
 <template lang="pug">
-  v-layout
-    div(v-show="!isEditing")
-      v-fab-transition
-        v-btn(dark absolute bottom right fab v-show="!hidden" @click="isEditing = true")
-          v-icon mdi-plus
-    EditMistake(v-if="isEditing" v-on:done-edit="isEditing = false")
+  v-layout(class="gma-scrolling-layout")
+    div(v-show="!isEditing && !isAdding" class="gma-mistake-list")
+      v-list
+        v-list-group(v-for="category in categoriesForDisplay" :key="category.name"
+            v-model="category.active")
+          template(v-slot:activator)
+            v-list-item-content
+              v-list-item-title {{ category.name }}
+
+          v-list-item(v-for="shot in category.shots" :key="shot.title" @click="editShot(shot.id)")
+            v-list-item-content
+              v-list-item-title {{ shot.title }}
+              v-list-item-subtitle {{ shot.desc }}
+            v-list-item-action
+              v-btn(icon @click="editShot(shot.id)")
+                v-icon(color="grey lighten-1") mdi-pencil-circle
+          v-divider(v-show="category.shots.length")
+          v-list-item
+            v-list-item-title(@click="createShot"
+              class="gma-list-item__link") + create a shot for {{ category.name }}
+        v-list-item(v-show="!categoriesForDisplay.length")
+          v-list-item-title(@click="createShot" class="gma-list-item__link") + create a category
+
+    v-fab-transition
+      v-btn(dark fixed small bottom right fab v-show="!hideFab && !isEditing && !isAdding"
+          @click="createShot")
+        v-icon mdi-plus
+
+    EditShot(v-if="isEditing || isAdding" v-on:done-edit="doneEditing" :shotId="shotToEdit")
 </template>
 
 <script lang="ts">
+/* eslint-disable operator-linebreak */
+import _ from 'lodash';
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import EditMistake from '@/views/screens/summary/EditMistake.vue';
+import EditShot from '@/views/screens/summary/EditShot.vue';
+import { namespace } from 'vuex-class';
+import { MISTAKES, CATEGORIES } from '@/store/mistake-defs/getter-types';
+import { MistakeDef, ShotCategory } from '@/store/mistake-defs/types.d';
+
+const MistakeDefsModule = namespace('mistakeDefs');
+
+Component.registerHooks([
+  'beforeRouteLeave',
+]);
+
+declare interface Categories extends ShotCategory {
+  active: boolean;
+  shots: Array<MistakeDef>;
+}
 
 @Component({
   name: 'Summary',
-  components: { EditMistake },
+  components: { EditShot },
+  beforeRouteLeave(to, from, next) {
+    (this as Summary).refreshCategories();
+    next();
+  },
 })
 export default class Summary extends Vue {
-  hidden = true;
+  @MistakeDefsModule.Getter(MISTAKES)
+  mistakes!: Array<MistakeDef>;
+
+  @MistakeDefsModule.Getter(CATEGORIES)
+  categories!: Array<ShotCategory>;
+
+  hideFab = true;
 
   isEditing = false;
+
+  isAdding = false;
+
+  active = true;
+
+  shotToEdit?: number = null;
+
+  savedCategoryId?: number = null;
+
+  categoriesWithShots: Array<Categories> = [];
+
+  get activeCategoryId() {
+    const index = this.categoriesWithShots.findIndex((category) => category.active);
+
+    return this.categoriesWithShots[index].id;
+  }
+
+  get categoriesForDisplay() {
+    return this.categoriesWithShots;
+  }
+
+  set categoriesForDisplay(categories) {
+    this.categoriesWithShots = categories;
+  }
+
+  editShot(id: number) {
+    this.shotToEdit = id;
+    this.savedCategoryId = this.activeCategoryId;
+    this.isEditing = true;
+  }
+
+  createShot() {
+    this.shotToEdit = null;
+    this.isAdding = true;
+  }
+
+  doneEditing(categoryId?: number) {
+    this.refreshCategories();
+    if (this.isAdding) {
+      if (!_.isNil(categoryId)) {
+        this.openTabForCategory(categoryId);
+      }
+      this.isAdding = false;
+    } else {
+      this.openTabForCategory(this.savedCategoryId);
+      this.isEditing = false;
+    }
+  }
+
+  openTabForCategory(id: number) {
+    const match = this.categoriesWithShots.find((category) => category.id === id);
+
+    match.active = true;
+  }
+
+  refreshCategories() {
+    const update = this.categories.map((category) => {
+      const groupedShots =
+        this.mistakes.filter((mistake) => mistake.categoryId === category.id);
+
+      return { ...category, shots: groupedShots, active: false };
+    });
+
+    this.categoriesForDisplay = update;
+  }
 
   mounted() {
     this.$nextTick(() => {
       // trigger the fab transition animation
-      this.hidden = false;
+      this.hideFab = false;
     });
   }
 }
-
 </script>
+
+<style lang="stylus">
+.panel-content
+  transition: none !important;
+
+</style>

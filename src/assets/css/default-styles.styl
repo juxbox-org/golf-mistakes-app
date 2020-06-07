@@ -1,9 +1,42 @@
-// Override Vuetify fab button bottom offset to account for 
+// Override Vuetify fab button bottom offset to account for
 // bottom navigation bar
-.v-btn--fab.v-size--default.v-btn--absolute.v-btn--bottom {
-  bottom: 72px;  
-}
+.v-btn--fab.v-size--default.v-btn--fixed.v-btn--bottom
+.v-btn--fab.v-size--small.v-btn--fixed.v-btn--bottom
+  bottom: 70px;
 
-.gma-container {
-  padding-bottom: 68px;  
-}
+.gma-container
+  padding-bottom: 68px;
+
+.gma-content
+  transition: none;
+
+.gma-mistake-list
+  width: 100%;
+  padding-top: 0;
+
+// Remove transitions on Vuetify list items,
+// cause they're annoying
+.gma-mistake-list
+  .v-expansion-panel
+  .v-item-group
+  .v-list-group__items
+  .v-list-item--link:before
+  button
+    transition: none !important;
+
+.gma-scrolling-layout
+  margin-bottom: 50px;
+
+.gma-list-item__link
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: blue;
+
+.gma-list-item__empty
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+.gma-btn-secondary--fab
+  right: 72px;

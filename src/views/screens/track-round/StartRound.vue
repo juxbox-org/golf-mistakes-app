@@ -12,26 +12,26 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { Mutation, namespace } from 'vuex-class';
-import { UPDATE_SCREEN } from '@/store/index';
+import { namespace } from 'vuex-class';
+// import { UPDATE_SCREEN } from '@/store/index';
 import Component from 'vue-class-component';
-import { CREATE_ROUND } from '@/store/rounds/action-types';
-import { CreateRoundAction } from '@/store/rounds/types.d';
+import { BEGIN_TRACKING } from '@/store/current-round/mutation-types';
 
-const TRACKING_VIEW = 'tracking';
-const START_ROUND_SCREEN = 'start_round';
+// const TRACKING_VIEW = 'tracking';
+// const START_ROUND_SCREEN = 'start_round';
 const CANCEL_EVENT = 'cancel-start';
-const START_EVENT = 'start-round';
+const START_ROUND_EVENT = 'start-round';
 
-const RoundsModule = namespace('rounds');
+const CurrentRoundModule = namespace('currentRound');
 
 @Component({
   name: 'StartRound',
 })
 export default class StartRound extends Vue {
-  @RoundsModule.Action(CREATE_ROUND) createRound!: CreateRoundAction;
+  @CurrentRoundModule.Mutation(BEGIN_TRACKING)
+  beginTracking!: (arg0: object) => void;
 
-  @Mutation(UPDATE_SCREEN) updateScreen!: (arg0: object) => void;
+  // @Mutation(UPDATE_SCREEN) updateScreen!: (arg0: object) => void;
 
   course = '';
 
@@ -41,11 +41,10 @@ export default class StartRound extends Vue {
 
   onCreate() {
     if (this.course.length) {
-      this.createRound({ course: this.course, date: this.date })
-        .then(() => {
-          this.$emit(START_EVENT);
-          this.updateScreen({ type: TRACKING_VIEW, screen: START_ROUND_SCREEN });
-        });
+      this.beginTracking({ course: this.course, date: this.date });
+      this.$emit(START_ROUND_EVENT);
+      this.$router.push('/track/hole/1');
+      // this.updateScreen({ type: TRACKING_VIEW, view: START_ROUND_SCREEN });
     }
   }
 
@@ -53,12 +52,14 @@ export default class StartRound extends Vue {
     this.$emit(CANCEL_EVENT);
   }
 
+  /*
   destroyed() {
-    this.updateScreen({ type: TRACKING_VIEW, screen: '' });
+    this.updateScreen({ type: TRACKING_VIEW, view: '' });
   }
 
   mounted() {
     this.updateScreen({ type: TRACKING_VIEW, view: START_ROUND_SCREEN });
   }
+   */
 }
 </script>

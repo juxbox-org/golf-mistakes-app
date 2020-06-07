@@ -2,45 +2,60 @@
   v-app-bar(app color="primary" dark)
     v-toolbar-title {{ title }}
     v-spacer
+    SaveRoundButton(v-if="isTrackingStarted")
+    template(v-if="isTrackingStarted" v-slot:extension)
+      HoleNavigationBar
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import SaveRoundButton from '@/components/SaveRoundButton.vue';
+import Component from 'vue-class-component';
 import { mapState } from 'vuex';
 import { Route } from '@/store/route';
+import HoleNavigationBar from '@/components/HoleNavigationBar.vue';
+import SaveRoundButton from '@/components/SaveRoundButton.vue';
 
-export default Vue.extend({
+@Component({
   name: 'AppBar',
-
   components: {
+    HoleNavigationBar,
     SaveRoundButton,
   },
-
   computed: {
     ...mapState('route', {
-      isTracking: (state) => (state as Route).path === '/track',
+      isTrackingNotStarted: (state) => (state as Route).path === '/track',
+      isTrackingStarted: (state) => (state as Route).path.substr(0, 11) === '/track/hole',
       isReviewing: (state) => (state as Route).path === '/review',
       isSummary: (state) => (state as Route).path === '/summary',
     }),
-
-    title(): string {
-      if (this.isTracking) {
-        return 'Current Round';
-      }
-
-      if (this.isReviewing) {
-        return 'Review Rounds';
-      }
-
-      if (this.isSummary) {
-        return 'Mistakes';
-      }
-
-      return '(Unknown)';
-    },
   },
+})
+export default class AppBar extends Vue {
+  isTrackingStarted!: boolean;
 
-});
+  isTrackingNotStarted!: boolean;
 
+  isReviewing!: boolean;
+
+  isSummary!: boolean;
+
+  get title(): string {
+    if (this.isTrackingStarted || this.isTrackingNotStarted) {
+      return 'Current Round';
+    }
+
+    if (this.isReviewing) {
+      return 'Review Rounds';
+    }
+
+    if (this.isSummary) {
+      return 'Shot Types';
+    }
+
+    return '(Unknown)';
+  }
+}
 </script>
+
+<style lang="stylus" scoped>
+</style>

@@ -1,7 +1,7 @@
 <template lang="pug">
   v-app
     AppBar
-    v-content
+    v-content(class="gma-content")
       v-container(class="gma-container" fluid fill-height)
         keep-alive
           router-view

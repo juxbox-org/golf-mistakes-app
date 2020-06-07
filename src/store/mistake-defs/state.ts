@@ -1,5 +1,6 @@
 const state = {
-  mistakeDefs: new Map(),
+  mistakeDefs: new Array(0),
+  shotCategories: new Array(0),
 };
 
 export default state;

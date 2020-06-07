@@ -4,20 +4,16 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import Component from 'vue-class-component';
 
-export default Vue.extend({
+@Component({
   name: 'ViewRounds',
+})
+export default class ViewRounds extends Vue {
+  platformId = '';
 
-  data() {
-    return {
-      platformId: '' as string,
-    };
-  },
-
-  methods: {
-    onClick(): void {
-      this.platformId = this.$cordova.platformId;
-    },
-  },
-});
+  onClick() {
+    this.platformId = this.$cordova.platformId;
+  }
+}
 </script>
