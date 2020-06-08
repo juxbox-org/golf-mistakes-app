@@ -32,4 +32,6 @@ export interface RoundDetails {
   shots: number;
   mistakes: number;
   score: number;
+  holesPlayed: number;
+  putts: number;
 }

@@ -1,3 +1,6 @@
+/* eslint-disable operator-linebreak */
+import { RootState } from '@/store/rootTypes.d';
+import { GetterTree } from 'vuex';
 import { CurrentRoundState, Shot } from './types.d';
 import {
   IN_PROGRESS,
@@ -9,6 +12,18 @@ import {
   COURSE_DETAILS,
   ROUND_DETAILS,
 } from './getter-types';
+import { MistakeDefsState } from '../mistake-defs/types.d';
+
+const PUTT_CATEGORY_ID = 0;
+
+function isPutt(shotId: number, mistakeDefsState: MistakeDefsState): boolean {
+  const shotType = mistakeDefsState.mistakeDefs.find((type) => type.id === shotId);
+
+  const shotCategory =
+    mistakeDefsState.shotCategories.find((category) => category.id === shotType.categoryId);
+
+  return shotCategory.id === PUTT_CATEGORY_ID;
+}
 
 const getters = {
   [IN_PROGRESS](state: CurrentRoundState) {
@@ -53,10 +68,15 @@ const getters = {
       date: state.date,
     };
   },
-  [ROUND_DETAILS](state: CurrentRoundState) {
+  [ROUND_DETAILS](state: CurrentRoundState,
+    currentRoundGetters: GetterTree<CurrentRoundState, RootState>, rootState: RootState) {
+    const mistakeDefsState = rootState.mistakeDefs;
+
     let totalShots = 0;
     let totalMistakes = 0;
     let parForHolesPlayed = 0;
+    let holesPlayed = 0;
+    let totalPutts = 0;
 
     state.holes.forEach((hole) => {
       /*
@@ -65,11 +85,16 @@ const getters = {
        */
       if (hole.shots.length && hole.par) {
         parForHolesPlayed += hole.par;
+        holesPlayed += 1;
       }
 
       hole.shots.forEach((shot) => {
         if (shot.mistake) {
           totalMistakes += 1;
+        }
+
+        if (isPutt(shot.shotId, mistakeDefsState)) {
+          totalPutts += 1;
         }
 
         totalShots += 1;
@@ -80,6 +105,8 @@ const getters = {
       shots: totalShots,
       mistakes: totalMistakes,
       score: parForHolesPlayed ? (totalShots - parForHolesPlayed) : 0,
+      holesPlayed,
+      putts: totalPutts,
     };
   },
 };
