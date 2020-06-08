@@ -18,7 +18,7 @@
               v-icon(color="grey") mdi-delete-circle
       v-divider(v-show="shots.length" class="action--divider")
       v-list-item(id="addItem")
-        v-list-item-title(class="gma-list-item__link" @click="addShot") + add a shot
+        v-list-item-title(class="gma-list-item__link" @click="addShot(true)") + add a shot
       v-fab-transition
         v-btn(class="btn-info--fab" color="secondary"
               active-class="btn-info--active" small fixed fab
@@ -33,9 +33,9 @@
             v-btn(dark small fab v-show="!isAddingShot")
               v-icon(v-if="edit") mdi-close
               v-icon(v-else) mdi-file-edit-outline
-        v-btn(fab small dark @click="addShot")
+        v-btn(fab small dark @click="addShot(false)")
           v-icon mdi-plus
-        v-btn(fab small dark @click="addPar = true")
+        v-btn(fab small color="secondary" @click="addPar = true")
           v-icon mdi-pencil
 
     AddShot(v-show="isAddingShot" v-on:done-add="onShotAdded" :key="isAddingShot")
@@ -81,6 +81,7 @@ const TRACK_HOLE_PATH = '/track/hole';
 
 Component.registerHooks([
   'beforeRouteEnter',
+  'beforeRouteLeave',
 ]);
 
 @Component({
@@ -88,6 +89,11 @@ Component.registerHooks([
 
   components: {
     AddShot,
+  },
+
+  beforeRouteLeave(to, from, next) {
+    (this as CurrentRound).edit = false; // eslint-disable-line no-param-reassign
+    next();
   },
 
   beforeRouteEnter(to, from, next) {
@@ -192,7 +198,11 @@ export default class CurrentRound extends Vue {
     });
   }
 
-  addShot() {
+  addShot(closeFab: boolean) {
+    if (closeFab) {
+      this.edit = false;
+    }
+
     this.startAddingShot();
   }
 
@@ -302,7 +312,7 @@ export default class CurrentRound extends Vue {
 
 .btn-info--active .hole-info-label
   padding-left: 16px;
-  padding-right: 60px;
+  padding-right: 80px;
   max-width: none;
 
 .par-actions
