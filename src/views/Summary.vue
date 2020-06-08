@@ -136,6 +136,8 @@ export default class Summary extends Vue {
   }
 
   mounted() {
+    this.refreshCategories();
+
     this.$nextTick(() => {
       // trigger the fab transition animation
       this.hideFab = false;

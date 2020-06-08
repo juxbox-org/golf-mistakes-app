@@ -15,7 +15,7 @@ import {
 } from './mutation-types';
 import { MistakeDefsState, MistakeDef } from './types.d';
 
-let _id = 0;
+let _id = 1;
 
 const actions = {
   [CREATE_MISTAKE](context: ActionContext<MistakeDefsState, RootState>, mistakeData: MistakeDef) {
