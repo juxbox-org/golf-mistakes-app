@@ -27,9 +27,15 @@
           div(class="hole-info")
             div(class="hole-info__content")
               span(class="hole-info-label") Par: {{ par || '?' }}
-      v-fab-transition
-        v-btn(dark fixed small right bottom fab v-show="!isAddingShot"
-            @click="addShot")
+      v-speed-dial(fixed right bottom v-show="!isAddingShot" v-model="edit")
+        template(v-slot:activator)
+          v-fab-transition
+            v-btn(dark small fab v-show="!isAddingShot")
+              v-icon(v-if="edit") mdi-close
+              v-icon(v-else) mdi-file-edit-outline
+        v-btn(fab small dark @click="addShot")
+          v-icon mdi-plus
+        v-btn(fab small dark @click="addPar = true")
           v-icon mdi-pencil
 
     AddShot(v-show="isAddingShot" v-on:done-add="onShotAdded" :key="isAddingShot")
@@ -150,6 +156,8 @@ export default class CurrentRound extends Vue {
   addPar = false;
 
   holeInfoTimeout?: number = null;
+
+  edit = false;
 
   get selected() {
     return this.mistakesForCurrentHole;
