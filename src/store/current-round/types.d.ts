@@ -22,3 +22,14 @@ export interface Shot {
   shotId: number;
   mistake: boolean;
 }
+
+export interface CourseDetails {
+  course: string;
+  date: string;
+}
+
+export interface RoundDetails {
+  shots: number;
+  mistakes: number;
+  score: number;
+}

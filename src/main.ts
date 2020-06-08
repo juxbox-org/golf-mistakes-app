@@ -10,6 +10,7 @@ import 'es6-promise/auto';
 import '@/assets/css/default-styles.styl';
 // Add cordova plugins wrapper
 import '@/plugins/cordova';
+import '@/plugins/vue-touch-events';
 
 Vue.config.productionTip = false;
 

@@ -1,13 +1,14 @@
 <template lang="pug">
   v-layout(class="gma-scrolling-layout" ref="shotsList")
-    v-list(v-if="!isAddingShot" class="gma-mistake-list")
+    v-list(v-show="!isAddingShot" class="gma-mistake-list")
       v-list-item(v-show="!par")
         v-list-item-title(class="gma-list-item__link" @click.stop="addPar = true") + add par
       v-divider(v-show="!par")
-      v-list-item-group(multiple active-class="shot-mistake--active"
-            v-model="selected")
-        v-list-item(v-for="shot in shots" :key="shot.shotIndex" class="shot-success")
-          v-list-item-content
+      v-list-item-group
+        v-list-item(v-for="shot in shots" :key="shot.shotIndex"
+            v-bind:class="[ shot.mistake ? 'shot-mistake' : 'shot-success' ]"
+            @contextmenu.prevent="onContextMenu")
+          v-list-item-content(v-touch:touchhold="onToggleMistake(shot.shotIndex)")
             v-list-item-title {{ shot.shotType.title }}
             v-list-item-subtitle(class="text--primary") {{ shot.category }}
             v-list-item-subtitle {{ shot.shotType.desc }}
@@ -31,7 +32,7 @@
             @click="addShot")
           v-icon mdi-pencil
 
-    AddShot(v-if="isAddingShot" v-on:done-add="onShotAdded")
+    AddShot(v-show="isAddingShot" v-on:done-add="onShotAdded" :key="isAddingShot")
 
     v-dialog(v-model="addPar" max-width="300")
       v-card(class="pars-card")
@@ -121,7 +122,7 @@ export default class CurrentRound extends Vue {
   addParToHole!: (arg0: number) => void;
 
   @CurrentRoundModule.Mutation(ADD_MISTAKES_TO_HOLE)
-  addMistakesToHole!: (arg0: Array<number>) => void;
+  toggleMistakeForHole!: (arg0: number) => void;
 
   @CurrentRoundModule.Getter(IS_ADDING_MISTAKE)
   isAddingShot!: boolean;
@@ -154,10 +155,6 @@ export default class CurrentRound extends Vue {
     return this.mistakesForCurrentHole;
   }
 
-  set selected(value) {
-    this.addMistakesToHole(value);
-  }
-
   get par() {
     return this.parForCurrentHole;
   }
@@ -179,6 +176,7 @@ export default class CurrentRound extends Vue {
       const shotCategory =
         this.categories.find((category) => category.id === shotType.categoryId);
       return {
+        mistake: shot.mistake,
         shotIndex,
         shotType,
         category: shotCategory.name,
@@ -225,6 +223,26 @@ export default class CurrentRound extends Vue {
       this.holeInfoTimeout = null;
     }, 8000);
   }
+
+  onToggleMistake(shotIndex: number) {
+    return (event: any) => {
+      if (event.cancelable) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+
+      this.toggleMistakeForHole(shotIndex);
+
+      return true;
+    };
+  }
+
+  /* eslint-disable class-methods-use-this */
+  onContextMenu() {
+    // don't show the context menu for long press in browsers
+    return false;
+  }
+  /* eslint-enable class-methods-use-this */
 }
 </script>
 
@@ -286,26 +304,29 @@ export default class CurrentRound extends Vue {
 .pars-card
   padding-bottom: 16px;
 
-.shot-success {
+.shot-success
   color: #4CAF50 !important;
   background-color: #4CAF5010;
   caret-color: #4CAF50;
   border: solid #4CAF50 1px;
   border-radius: 2px;
   margin-bottom: 3px;
-}
 
-.shot-mistake--active {
+.shot-success .v-list-item__title
+  color: #4CAF50 !important;
+
+.shot-mistake
   color: #F44336 !important;
   caret-color: #F44336 !important;
   background-color: #F4433610;
   border: solid #F44336 1px;
   border-radius: 2px;
   margin-bottom: 3px;
-}
 
-.action--divider {
+.shot-mistake .v-list-item__title
+  color: #F44336 !important;
+
+.action--divider
   margin-top: 10px;
-}
 
 </style>

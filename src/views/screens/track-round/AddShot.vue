@@ -1,21 +1,21 @@
 <template lang="pug">
   v-list(two-line class="gma-mistake-list")
-    v-list
-      v-list-group(v-for="category in shotCategories" :key="category.name")
-        template(v-slot:activator)
-          v-list-item-content
-            v-list-item-title {{ category.name }}
+    v-list-group(v-for="category in shotCategories" :key="category.name"
+        v-model="category.active")
+      template(v-slot:activator)
+        v-list-item-content
+          v-list-item-title {{ category.name }}
 
-        v-list-item(v-for="shot in category.shots" :key="shot.title" @click="addShot(shot.id)")
-          v-list-item-content
-            v-list-item-title {{ shot.title }}
-            v-list-item-subtitle {{ shot.desc }}
-          v-btn(icon)
-            v-icon(color="grey lighten-1") mdi-information
+      v-list-item(v-for="shot in category.shots" :key="shot.title" @click="addShot(shot.id)")
+        v-list-item-content
+          v-list-item-title {{ shot.title }}
+          v-list-item-subtitle {{ shot.desc }}
+        v-btn(icon)
+          v-icon(color="grey lighten-1") mdi-information
 
-        v-list-item(v-if="!category.shots.length")
-          v-list-item-content
-            v-list-item-title(class="gma-list-item__empty") ( no shots )
+      v-list-item(v-if="!category.shots.length")
+        v-list-item-content
+          v-list-item-title(class="gma-list-item__empty") ( no shots )
 </template>
 
 <script lang="ts">
@@ -30,6 +30,11 @@ import { ADD_SHOT_TO_HOLE } from '../../../store/current-round/mutation-types';
 
 const MistakeDefsModule = namespace('mistakeDefs');
 const CurrentRoundModule = namespace('currentRound');
+
+declare interface Categories extends ShotCategory {
+  active: boolean;
+  shots: Array<MistakeDef>;
+}
 
 @Component({
   name: 'AddShot',

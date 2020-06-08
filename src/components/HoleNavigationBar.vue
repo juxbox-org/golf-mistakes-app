@@ -10,7 +10,7 @@
           v-icon mdi-chevron-right
     template(v-if="isAddingMistake")
       div(class="flex-grow-0 flex-shrink-0 nav-button")
-        v-btn(icon @click="onBack")
+        v-btn(icon @click="onBackFromAddShot")
           v-icon mdi-chevron-left
       div(class="d-flex flex-grow-1 nav-title")
         span Select a Shot Type
@@ -68,7 +68,7 @@ export default class HoleNavigationBar extends Vue {
     this.$router.push(`/track/hole/${toHole}`);
   }
 
-  onBack() {
+  onBackFromAddShot() {
     this.doneAddingMistake();
   }
 }

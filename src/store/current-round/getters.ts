@@ -6,6 +6,8 @@ import {
   HOLES,
   PAR_CURRENT_HOLE,
   MISTAKES_FOR_HOLE,
+  COURSE_DETAILS,
+  ROUND_DETAILS,
 } from './getter-types';
 
 const getters = {
@@ -44,6 +46,41 @@ const getters = {
 
       return acc;
     }, []);
+  },
+  [COURSE_DETAILS](state: CurrentRoundState) {
+    return {
+      course: state.course,
+      date: state.date,
+    };
+  },
+  [ROUND_DETAILS](state: CurrentRoundState) {
+    let totalShots = 0;
+    let totalMistakes = 0;
+    let parForHolesPlayed = 0;
+
+    state.holes.forEach((hole) => {
+      /*
+       * Only count holes that have a par and have
+       * shots that have been played
+       */
+      if (hole.shots.length && hole.par) {
+        parForHolesPlayed += hole.par;
+      }
+
+      hole.shots.forEach((shot) => {
+        if (shot.mistake) {
+          totalMistakes += 1;
+        }
+
+        totalShots += 1;
+      });
+    });
+
+    return {
+      shots: totalShots,
+      mistakes: totalMistakes,
+      score: parForHolesPlayed ? (totalShots - parForHolesPlayed) : 0,
+    };
   },
 };
 

@@ -68,17 +68,14 @@ const mutations = {
 
     hole.par = par;
   },
-  [ADD_MISTAKES_TO_HOLE](state: CurrentRoundState, mistakes: Array<number>) {
+  [ADD_MISTAKES_TO_HOLE](state: CurrentRoundState, shotIndex: number) {
     const hole = state.holes[state.currentHole - 1];
 
     if (!hole) {
       throw Error(`No hole exists for hole: ${state.currentHole}`);
     }
 
-    hole.shots.forEach((shot, index) => {
-      /* eslint-disable no-param-reassign */
-      shot.mistake = mistakes.includes(index);
-    });
+    hole.shots[shotIndex].mistake = !hole.shots[shotIndex].mistake;
   },
 };
 
