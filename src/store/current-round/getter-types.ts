@@ -6,3 +6,4 @@ export const PAR_CURRENT_HOLE = 'par_current_hole';
 export const MISTAKES_FOR_HOLE = 'mistakes_for_hole';
 export const COURSE_DETAILS = 'course_details';
 export const ROUND_DETAILS = 'round_details';
+export const PUTTS_FOR_HOLE = 'putts_for_hole';

@@ -7,7 +7,7 @@
       v-list-item-group
         v-list-item(v-for="shot in shots" :key="shot.shotIndex"
             v-bind:class="[ shot.mistake ? 'shot-mistake' : 'shot-success' ]"
-            @contextmenu.prevent="onContextMenu")
+            @contextmenu.prevent="onContextMenu" :ripple="false")
           v-list-item-content(v-touch:touchhold="onToggleMistake(shot.shotIndex)")
             v-list-item-title {{ shot.shotType.title }}
             v-list-item-subtitle(class="text--primary") {{ shot.category }}
@@ -26,7 +26,7 @@
           v-icon mdi-golf
           div(class="hole-info")
             div(class="hole-info__content")
-              span(class="hole-info-label") Par: {{ par || '?' }}
+              span(class="hole-info-label") {{ holeInfoString }}
       v-speed-dial(fixed right bottom v-show="!isAddingShot" v-model="edit")
         template(v-slot:activator)
           v-fab-transition
@@ -68,6 +68,7 @@ import {
   CURRENT_HOLE,
   PAR_CURRENT_HOLE,
   MISTAKES_FOR_HOLE,
+  PUTTS_FOR_HOLE,
 } from '@/store/current-round/getter-types';
 import { Hole } from '@/store/current-round/types.d';
 import { MISTAKES, CATEGORIES } from '@/store/mistake-defs/getter-types';
@@ -151,6 +152,9 @@ export default class CurrentRound extends Vue {
   @CurrentRoundModule.Getter(MISTAKES_FOR_HOLE)
   mistakesForCurrentHole!: Array<number>;
 
+  @CurrentRoundModule.Getter(PUTTS_FOR_HOLE)
+  numPutts!: number;
+
   @ShotTypesModule.Getter(CATEGORIES)
   categories!: Array<ShotCategory>;
 
@@ -164,6 +168,14 @@ export default class CurrentRound extends Vue {
   holeInfoTimeout?: number = null;
 
   edit = false;
+
+  blah = false;
+
+  /* eslint-disable */
+  get holeInfoString() {
+    return `Par: ${this.par || '?'} \xa0 Shots: ${this.shots.length} \xa0 `
+      + `Mistakes: ${this.mistakesForCurrentHole.length} \xa0 Putts: ${this.numPutts}`;
+  }
 
   get selected() {
     return this.mistakesForCurrentHole;
@@ -312,7 +324,7 @@ export default class CurrentRound extends Vue {
 
 .btn-info--active .hole-info-label
   padding-left: 16px;
-  padding-right: 80px;
+  padding-right: 16px;
   max-width: none;
 
 .par-actions

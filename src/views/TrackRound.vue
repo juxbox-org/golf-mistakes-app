@@ -2,9 +2,8 @@
   v-layout
     v-flex(v-show="!isTracking && !isStarting")
       v-card(class="d-flex justify-center align-center" elevation="0" height="100%")
-        v-fab-transition
-          v-btn(dark fab v-show="!hidden" @click="isStarting = true")
-            v-icon mdi-plus
+        v-btn(dark fab v-show="!hidden" @click="isStarting = true")
+          v-icon mdi-plus
     StartRound(v-if="isStarting" v-on:cancel-start="isStarting = false"
       v-on:start-round="onRoundStarted")
 </template>

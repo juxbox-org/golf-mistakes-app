@@ -4,7 +4,7 @@
       v-list-item(v-if="roundInProgress" to="/track")
         v-list-item-content
           v-list-item-title {{ inProgressTitleString }}
-          v-list-item-subtitle {{ courseDetails.date }}
+          v-list-item-subtitle In progress (through {{ holesPlayed }} holes)
           v-list-item-subtitle {{ summaryString }}
       v-list-item(v-if="!roundInProgress" class="gma-list-item__empty") (no rounds)
 
@@ -37,13 +37,13 @@ export default class ViewRounds extends Vue {
   }
 
   get inProgressTitleString() {
-    return `${this.courseDetails.course} (in progress...through ${this.roundDetails.holesPlayed} holes)`;
+    return `${this.courseDetails.course}`;
   }
 
   get summaryString() {
-    return `Shots: ${this.roundDetails.shots} \xa0\xa0 Mistakes: ${this.roundDetails.mistakes} `
-    + ` \xa0\xa0 Score: ${this.roundDetails.score > 0 ? '+' : ''}${this.roundDetails.score}`
-    + ` \xa0\xa0 Putts: ${this.roundDetails.putts}`;
+    return `Shots: ${this.roundDetails.shots} \xa0\xa0 Mistakes: ${this.roundDetails.mistakes}`
+    + ` \xa0\xa0 Putts: ${this.roundDetails.putts}`
+    + ` \xa0\xa0 Score: ${this.roundDetails.score > 0 ? '+' : ''}${this.roundDetails.score}`;
   }
 }
 </script>

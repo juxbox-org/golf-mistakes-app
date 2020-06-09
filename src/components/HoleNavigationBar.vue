@@ -4,7 +4,8 @@
       div(class="flex-grow-0 flex-shrink-0 nav-button")
         v-btn(v-show="currentHole > 1" icon=true @click="previousHole")
           v-icon mdi-chevron-left
-      div(class="d-flex flex-grow-1 nav-title") Hole {{ currentHole }}
+      div(class="d-flex flex-grow-1 nav-title")
+        v-btn(text @click.stop="jumpToHole = true" :ripple="false") Hole {{ currentHole }}
       div(class="flex-grow-0 flex-shrink-0 nav-button")
         v-btn(v-show="currentHole < 18" icon=true @click="nextHole")
           v-icon mdi-chevron-right
@@ -15,6 +16,32 @@
       div(class="d-flex flex-grow-1 nav-title")
         span Select a Shot Type
       div(class="flex-grow-0 flex-shrink-0 nav-button")
+
+    v-dialog(v-model="jumpToHole" max-width="300" transition=false)
+      v-card(class="pars-card")
+        v-card-title(class="headline") Jump to Hole
+        div(class="d-flex par-actions")
+          v-btn(class="ma-2" dark small fab @click="navigateToHole(1)") 1
+          v-btn(class="ma-2" dark small fab @click="navigateToHole(2)") 2
+          v-btn(class="ma-2" dark small fab @click="navigateToHole(3)") 3
+          v-btn(class="ma-2" dark small fab @click="navigateToHole(4)") 4
+          v-btn(class="ma-2" dark small fab @click="navigateToHole(5)") 5
+        div(class="d-flex par-actions")
+          v-btn(class="ma-2" dark small fab @click="navigateToHole(6)") 6
+          v-btn(class="ma-2" dark small fab @click="navigateToHole(7)") 7
+          v-btn(class="ma-2" dark small fab @click="navigateToHole(8)") 8
+          v-btn(class="ma-2" dark small fab @click="navigateToHole(9)") 9
+          v-btn(class="ma-2" dark small fab @click="navigateToHole(10)") 10
+        div(class="d-flex par-actions")
+          v-btn(class="ma-2" dark small fab @click="navigateToHole(11)") 11
+          v-btn(class="ma-2" dark small fab @click="navigateToHole(12)") 12
+          v-btn(class="ma-2" dark small fab @click="navigateToHole(13)") 13
+          v-btn(class="ma-2" dark small fab @click="navigateToHole(14)") 14
+          v-btn(class="ma-2" dark small fab @click="navigateToHole(15)") 15
+        div(class="d-flex par-actions")
+          v-btn(class="ma-2" dark small fab @click="navigateToHole(16)") 16
+          v-btn(class="ma-2" dark small fab @click="navigateToHole(17)") 17
+          v-btn(class="ma-2" dark small fab @click="navigateToHole(18)") 18
 </template>
 
 <script lang="ts">
@@ -47,6 +74,8 @@ export default class HoleNavigationBar extends Vue {
 
   showHoleInfo = false;
 
+  jumpToHole = false;
+
   previousHole() {
     if (this.currentHole === FIRST_HOLE) {
       return;
@@ -63,6 +92,11 @@ export default class HoleNavigationBar extends Vue {
     this.updateHole(this.currentHole + 1);
   }
 
+  navigateToHole(hole: number) {
+    this.updateHole(hole);
+    this.jumpToHole = false;
+  }
+
   updateHole(toHole: number) {
     this.updateCurrentHole(toHole);
     this.$router.push(`/track/hole/${toHole}`);
@@ -75,16 +109,14 @@ export default class HoleNavigationBar extends Vue {
 </script>
 
 <style lang="stylus" scoped>
-  .nav-bar {
-    width: 100%;
-  }
+.nav-bar
+  width: 100%;
 
-  .nav-title {
-    justify-content: center;
-    align-items: center;
-  }
+.nav-title
+  justify-content: center;
+  align-items: center;
 
-  .nav-button {
-    width: 48px;
-  }
+.nav-button
+  width: 48px;
+
 </style>

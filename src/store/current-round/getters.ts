@@ -11,6 +11,7 @@ import {
   MISTAKES_FOR_HOLE,
   COURSE_DETAILS,
   ROUND_DETAILS,
+  PUTTS_FOR_HOLE,
 } from './getter-types';
 import { MistakeDefsState } from '../mistake-defs/types.d';
 
@@ -108,6 +109,21 @@ const getters = {
       holesPlayed,
       putts: totalPutts,
     };
+  },
+  [PUTTS_FOR_HOLE](state: CurrentRoundState,
+    currentRoundGetters: GetterTree<CurrentRoundState, RootState>, rootState: RootState) {
+    const mistakeDefsState = rootState.mistakeDefs;
+    const currentHole = state.holes[state.currentHole - 1];
+
+    let totalPutts = 0;
+
+    currentHole.shots.forEach((shot) => {
+      if (isPutt(shot.shotId, mistakeDefsState)) {
+        totalPutts += 1;
+      }
+    });
+
+    return totalPutts;
   },
 };
 
