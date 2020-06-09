@@ -1,8 +1,8 @@
 <template lang="pug">
   div
-    v-btn(icon=true class="md-2")
+    v-btn(icon class="ma-2")
       v-icon mdi-delete
-    v-btn(icon=true class="md-2")
+    v-btn(icon class="ma-2")
       v-icon mdi-content-save
 </template>
 

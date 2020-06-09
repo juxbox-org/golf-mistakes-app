@@ -7,6 +7,8 @@
           template(v-slot:activator)
             v-list-item-content
               v-list-item-title {{ category.name }}
+            v-list-item-action(v-show="isEditingShots" @click.stop="onDeleteCategory(category.id)")
+              v-icon mdi-delete
 
           v-list-item(v-for="shot in category.shots" :key="shot.title" @click="editShot(shot.id)"
               :ripple="false")
@@ -35,11 +37,13 @@
 /* eslint-disable operator-linebreak */
 import _ from 'lodash';
 import Vue from 'vue';
+import bus from '@/event-bus';
 import Component from 'vue-class-component';
 import EditShot from '@/views/screens/summary/EditShot.vue';
 import { namespace } from 'vuex-class';
 import { MISTAKES, CATEGORIES } from '@/store/mistake-defs/getter-types';
 import { MistakeDef, ShotCategory } from '@/store/mistake-defs/types.d';
+import { DELETE_CATEGORY } from '@/store/mistake-defs/action-types';
 
 const MistakeDefsModule = namespace('mistakeDefs');
 
@@ -67,6 +71,9 @@ export default class Summary extends Vue {
   @MistakeDefsModule.Getter(CATEGORIES)
   categories!: Array<ShotCategory>;
 
+  @MistakeDefsModule.Action(DELETE_CATEGORY)
+  deleteCategory!: (arg0: number) => Promise<void>;
+
   hideFab = true;
 
   isEditing = false;
@@ -80,6 +87,8 @@ export default class Summary extends Vue {
   savedCategoryId?: number = null;
 
   categoriesWithShots: Array<Categories> = [];
+
+  isEditingShots = false;
 
   get activeCategoryId() {
     const index = this.categoriesWithShots.findIndex((category) => category.active);
@@ -125,6 +134,12 @@ export default class Summary extends Vue {
     match.active = true;
   }
 
+  onDeleteCategory(id: number) {
+    this.deleteCategory(id).then(() => {
+      this.refreshCategories();
+    });
+  }
+
   refreshCategories() {
     const update = this.categories.map((category) => {
       const groupedShots =
@@ -136,13 +151,23 @@ export default class Summary extends Vue {
     this.categoriesForDisplay = update;
   }
 
+  toggleEditingShots() {
+    this.isEditingShots = !this.isEditingShots;
+  }
+
   mounted() {
+    bus.$on('edit-shots', this.toggleEditingShots);
+
     this.refreshCategories();
 
     this.$nextTick(() => {
       // trigger the fab transition animation
       this.hideFab = false;
     });
+  }
+
+  destroyed() {
+    bus.$off('edit-shots', this.toggleEditingShots);
   }
 }
 </script>

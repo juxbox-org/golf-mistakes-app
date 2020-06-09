@@ -3,8 +3,11 @@ import {
   INSERT_CATEGORY,
   UPDATE_MISTAKE,
   REMOVE_MISTAKE,
+  REMOVE_CATEGORY,
 } from './mutation-types';
 import { MistakeDefsState, MistakeDef, ShotCategory } from './types.d';
+
+const PUTT_CATEGORY_ID = 0;
 
 const mutations = {
   [INSERT_MISTAKE](state: MistakeDefsState, mistakeDef: MistakeDef) {
@@ -27,6 +30,27 @@ const mutations = {
     if (index >= 0) {
       state.mistakeDefs.splice(index, 1);
     }
+  },
+  [REMOVE_CATEGORY](state: MistakeDefsState, id: number) {
+    // Don't delete putts
+    if (id === PUTT_CATEGORY_ID) {
+      return;
+    }
+
+    const shotsToDelete: Array<number> = [];
+
+    state.mistakeDefs.forEach((shotType, index) => {
+      if (shotType.categoryId === id) {
+        shotsToDelete.push(index);
+      }
+    });
+
+    shotsToDelete.forEach((shotIndex) => {
+      state.mistakeDefs.splice(shotIndex, 1);
+    });
+
+    const index = state.shotCategories.findIndex((category) => category.id === id);
+    state.shotCategories.splice(index, 1);
   },
 };
 

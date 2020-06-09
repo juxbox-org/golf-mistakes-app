@@ -6,12 +6,14 @@ import {
   CREATE_CATEGORY,
   SAVE_MISTAKE,
   DELETE_MISTAKE,
+  DELETE_CATEGORY,
 } from './action-types';
 import {
   INSERT_MISTAKE,
   INSERT_CATEGORY,
   UPDATE_MISTAKE,
   REMOVE_MISTAKE,
+  REMOVE_CATEGORY,
 } from './mutation-types';
 import { MistakeDefsState, MistakeDef } from './types.d';
 
@@ -31,6 +33,9 @@ const actions = {
   },
   [DELETE_MISTAKE](context: ActionContext<MistakeDefsState, RootState>, id: number) {
     context.commit(REMOVE_MISTAKE, id);
+  },
+  [DELETE_CATEGORY](context: ActionContext<MistakeDefsState, RootState>, id: number) {
+    context.commit(REMOVE_CATEGORY, id);
   },
 };
 
