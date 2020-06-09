@@ -1,6 +1,6 @@
 <template lang="pug">
   v-layout
-    v-flex(v-show="!isTracking && !isStarting")
+    v-flex(v-show="!isStarting")
       v-card(class="d-flex justify-center align-center" elevation="0" height="100%")
         v-btn(dark fab v-show="!hidden" @click="isStarting = true")
           v-icon mdi-plus
@@ -20,13 +20,10 @@ import StartRound from '@/views/screens/track-round/StartRound.vue';
 export default class TrackRound extends Vue {
   hidden = true;
 
-  isTracking = false;
-
   isStarting = false;
 
   onRoundStarted() {
     this.isStarting = false;
-    this.isTracking = true;
   }
 
   mounted() {

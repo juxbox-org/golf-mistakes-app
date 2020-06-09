@@ -31,8 +31,6 @@ export default class StartRound extends Vue {
   @CurrentRoundModule.Mutation(BEGIN_TRACKING)
   beginTracking!: (arg0: object) => void;
 
-  // @Mutation(UPDATE_SCREEN) updateScreen!: (arg0: object) => void;
-
   course = '';
 
   nowDate = new Date().toISOString().substr(0, 10);
@@ -44,22 +42,11 @@ export default class StartRound extends Vue {
       this.beginTracking({ course: this.course, date: this.date });
       this.$emit(START_ROUND_EVENT);
       this.$router.push('/track/hole/1');
-      // this.updateScreen({ type: TRACKING_VIEW, view: START_ROUND_SCREEN });
     }
   }
 
   onCancel() {
     this.$emit(CANCEL_EVENT);
   }
-
-  /*
-  destroyed() {
-    this.updateScreen({ type: TRACKING_VIEW, view: '' });
-  }
-
-  mounted() {
-    this.updateScreen({ type: TRACKING_VIEW, view: START_ROUND_SCREEN });
-  }
-   */
 }
 </script>

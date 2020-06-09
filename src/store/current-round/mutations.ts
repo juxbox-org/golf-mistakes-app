@@ -7,6 +7,7 @@ import {
   DELETE_SHOT_FROM_HOLE,
   ADD_PAR_TO_HOLE,
   ADD_MISTAKES_TO_HOLE,
+  DELETE_ROUND,
 } from './mutation-types';
 import {
   CurrentRoundState,
@@ -76,6 +77,15 @@ const mutations = {
     }
 
     hole.shots[shotIndex].mistake = !hole.shots[shotIndex].mistake;
+  },
+  [DELETE_ROUND](state: CurrentRoundState) {
+    state.inProgress = false;
+    state.isAddingShot = false;
+    state.currentHole = 1;
+    state.date = '';
+    state.course = '';
+    state.holes = [] as Array<Hole>;
+    initHoles(state.holes);
   },
 };
 

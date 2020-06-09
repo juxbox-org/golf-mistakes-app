@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-btn(icon class="ma-2" @click="editShots")
+  v-btn(icon @click="editShots")
     v-icon mdi-pencil
 </template>
 

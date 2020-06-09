@@ -7,3 +7,4 @@ export const ADD_SHOT_TO_HOLE = 'add_shot_to_hole';
 export const DELETE_SHOT_FROM_HOLE = 'delete_shot_from_hole';
 export const ADD_PAR_TO_HOLE = 'add_par_to_hole';
 export const ADD_MISTAKES_TO_HOLE = 'add_mistakes_to_hole';
+export const DELETE_ROUND = 'delete_round';

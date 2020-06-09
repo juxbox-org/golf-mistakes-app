@@ -2,7 +2,7 @@
   v-app-bar(app color="primary" dark)
     v-toolbar-title {{ title }}
     v-spacer
-    SaveRoundButton(v-if="isTrackingStarted")
+    SaveRoundButtonGroup(v-if="isTrackingStarted")
     EditShotsButtonGroup(v-if="isSummary")
     template(v-if="isTrackingStarted" v-slot:extension)
       HoleNavigationBar
@@ -14,14 +14,14 @@ import Component from 'vue-class-component';
 import { mapState } from 'vuex';
 import { Route } from '@/store/route';
 import HoleNavigationBar from '@/components/HoleNavigationBar.vue';
-import SaveRoundButton from '@/components/SaveRoundButton.vue';
+import SaveRoundButtonGroup from '@/components/SaveRoundButtonGroup.vue';
 import EditShotsButtonGroup from '@/components/EditShotsButtonGroup.vue';
 
 @Component({
   name: 'AppBar',
   components: {
     HoleNavigationBar,
-    SaveRoundButton,
+    SaveRoundButtonGroup,
     EditShotsButtonGroup,
   },
   computed: {

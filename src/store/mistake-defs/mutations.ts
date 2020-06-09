@@ -4,6 +4,7 @@ import {
   UPDATE_MISTAKE,
   REMOVE_MISTAKE,
   REMOVE_CATEGORY,
+  INCREMENT_ID,
 } from './mutation-types';
 import { MistakeDefsState, MistakeDef, ShotCategory } from './types.d';
 
@@ -32,7 +33,7 @@ const mutations = {
     }
   },
   [REMOVE_CATEGORY](state: MistakeDefsState, id: number) {
-    // Don't delete putts
+    // Don't delete Putt category, since we require it to track putts
     if (id === PUTT_CATEGORY_ID) {
       return;
     }
@@ -51,6 +52,9 @@ const mutations = {
 
     const index = state.shotCategories.findIndex((category) => category.id === id);
     state.shotCategories.splice(index, 1);
+  },
+  [INCREMENT_ID](state: MistakeDefsState) {
+    state.id += 1;
   },
 };
 

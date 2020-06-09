@@ -6,6 +6,7 @@ const puttCategory: ShotCategory = {
 };
 
 const state = {
+  id: 1,
   mistakeDefs: new Array(0),
   shotCategories: [puttCategory],
 };

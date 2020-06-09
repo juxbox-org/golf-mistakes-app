@@ -16,6 +16,7 @@ export interface ShotCategory {
 export interface MistakeDefsState {
   mistakeDefs: Array<MistakeDef>;
   shotCategories: Array<ShotCategory>;
+  id: number;
 }
 
 export interface MistakeRecord {
