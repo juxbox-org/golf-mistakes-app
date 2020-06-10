@@ -204,8 +204,9 @@ export default class CurrentRound extends Vue {
   /* eslint-disable */
   get holeInfoString() {
     const shots = this.shots.length + this.penaltiesForCurrentHole;
-    return `Par: ${this.par || '?'} \xa0 Shots: ${shots} \xa0 `
-      + `Mistakes: ${this.mistakesForCurrentHole} \xa0 Putts: ${this.numPutts}`;
+    const penaltiesStr = this.penaltiesForCurrentHole ? `+${this.penaltiesForCurrentHole}` : null;
+    return `Par: ${this.par || '?'} \xa0Shots: ${shots}${penaltiesStr || ''} \xa0`
+      + `Mistakes: ${this.mistakesForCurrentHole} \xa0Putts: ${this.numPutts}`;
   }
 
   get par() {
