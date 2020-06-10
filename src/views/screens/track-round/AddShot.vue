@@ -11,19 +11,9 @@
         v-list-item-content
           v-list-item-title {{ shot.title }}
           v-list-item-subtitle {{ shot.desc }}
-        v-btn(icon @click.stop="showShotInfo = true")
+        v-btn(icon @click.stop="openInfoDialog(shot.title, shot.desc, category.name)")
           v-icon(color="grey lighten-1") mdi-information
 
-        v-dialog(v-model="showShotInfo")
-          v-card(@click.stop="showShotInfo = false")
-            v-card-title Details
-            div(class="shot-details")
-              div(class="shot-title") Shot Type:
-              div(class="shot-content") {{ shot.title }}
-              div(class="shot-title") Shot Category:
-              div(class="shot-content") {{ category.name }}
-              div(Class="shot-title") Description:
-              div(class="shot-content") {{ shot.desc }}
 
       v-list-item(v-if="!category.shots.length" :ripple="false")
         v-list-item-content
@@ -32,6 +22,17 @@
     v-fab-transition
       v-btn(dark small fixed fab bottom right @click="doneAddingMistake")
         v-icon mdi-arrow-left
+
+    v-dialog(v-model="showShotInfo")
+      v-card(@click.stop="showShotInfo = false")
+        v-card-title Details
+        div(class="shot-details")
+          div(class="shot-title") Shot Type:
+          div(class="shot-content") {{ shotInfo.title }}
+          div(class="shot-title") Shot Category:
+          div(class="shot-content") {{ shotInfo.category }}
+          div(Class="shot-title") Description:
+          div(class="shot-content") {{ shotInfo.desc }}
 </template>
 
 <script lang="ts">
@@ -73,6 +74,12 @@ export default class AddShot extends Vue {
 
   showShotInfo = false;
 
+  shotInfo = {
+    title: '',
+    category: '',
+    desc: '',
+  };
+
   get shotCategories() {
     return this.categories.map((category) => {
       const groupedShots =
@@ -85,6 +92,16 @@ export default class AddShot extends Vue {
   addShot(id: number) {
     this.addShotToHole(id);
     this.$emit('done-add');
+  }
+
+  openInfoDialog(title: string, desc: string, category: string) {
+    this.shotInfo = {
+      title,
+      desc,
+      category,
+    };
+
+    this.showShotInfo = true;
   }
 }
 </script>

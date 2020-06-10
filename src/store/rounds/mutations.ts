@@ -1,9 +1,9 @@
 import { INSERT_ROUND } from './mutation-types';
-import { RoundsState, RoundRecord } from './types.d';
+import { RoundState, Round } from './types.d';
 
 const mutations = {
-  [INSERT_ROUND](state: RoundsState, roundRecord: RoundRecord) {
-    state.rounds.set(roundRecord.id, roundRecord.data);
+  [INSERT_ROUND](state: RoundState, round: Round) {
+    state.rounds.push(round);
   },
 };
 

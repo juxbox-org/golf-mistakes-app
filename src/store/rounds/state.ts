@@ -1,5 +1,7 @@
+import { Round } from './types.d';
+
 const state = {
-  rounds: new Map(),
+  rounds: [] as Array<Round>,
 };
 
 export default state;

@@ -2,7 +2,7 @@
   v-layout(class="gma-scrolling-layout" ref="shotsList")
     v-list(v-show="!isAddingShot" class="gma-mistake-list")
       v-list-item(v-show="!par")
-        v-list-item-title(class="gma-list-item__link" @click.stop="addPar = true") + add par
+        v-list-item-title(class="gma-list-item__link" @click.stop="addPar = true") + add par blah
       v-divider(v-show="!par")
       v-list-item-group
         v-list-item(v-for="shot in shots" :key="shot.shotIndex"
@@ -12,6 +12,9 @@
             v-list-item-title {{ shot.shotType.title }}
             v-list-item-subtitle(class="text--primary") {{ shot.category }}
             v-list-item-subtitle {{ shot.shotType.desc }}
+          v-list-item-action
+            v-btn(icon x-small outlined fab)
+              v-icon(color="grey") mdi-plus-one
           v-list-item-action
             v-list-item-action-text Shot {{ shot.shotIndex + 1 }}
             v-btn(icon v-on:click.stop="deleteShot(shot.shotIndex)")
@@ -27,16 +30,10 @@
           div(class="hole-info")
             div(class="hole-info__content")
               span(class="hole-info-label") {{ holeInfoString }}
-      v-speed-dial(fixed right bottom v-show="!isAddingShot" v-model="edit")
-        template(v-slot:activator)
-          v-fab-transition
-            v-btn(dark small fab v-show="!isAddingShot")
-              v-icon(v-if="edit") mdi-close
-              v-icon(v-else) mdi-file-edit-outline
-        v-btn(fab small dark @click="addShot(false)")
-          v-icon mdi-plus
-        v-btn(fab small color="secondary" @click="addPar = true")
-          v-icon mdi-pencil
+
+
+      v-btn(fab fixed right bottom v-show="!isAddingShot" small dark @click="addPar = true")
+        v-icon mdi-file-edit-outline
 
     AddShot(v-show="isAddingShot" v-on:done-add="onShotAdded" :key="isAddingShot")
 
@@ -47,6 +44,17 @@
           v-btn(class="ma-2" dark small fab @click="par = 3") 3
           v-btn(class="ma-2" dark small fab @click="par = 4") 4
           v-btn(class="ma-2" dark small fab @click="par = 5") 5
+
+  //
+    v-speed-dial(fixed right bottom v-show="!isAddingShot" v-model="edit")
+      template(v-slot:activator)
+        v-btn(dark small fab)
+          v-icon(v-if="edit") mdi-close
+          v-icon(v-else) mdi-file-edit-outline
+      v-btn(fab small dark @click="addShot(false)")
+        v-icon mdi-plus
+      v-btn(fab small color="secondary" @click="addPar = true")
+        v-icon mdi-pencil
 </template>
 
 <script lang="ts">
@@ -54,6 +62,7 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import store from '@/store/index';
+import bus from '@/event-bus';
 import AddShot from '@/views/screens/track-round/AddShot.vue';
 import { namespace } from 'vuex-class';
 import {
@@ -61,6 +70,7 @@ import {
   DELETE_SHOT_FROM_HOLE,
   ADD_PAR_TO_HOLE,
   ADD_MISTAKES_TO_HOLE,
+  DELETE_ROUND,
 } from '@/store/current-round/mutation-types';
 import {
   IS_ADDING_MISTAKE,
@@ -69,13 +79,17 @@ import {
   PAR_CURRENT_HOLE,
   MISTAKES_FOR_HOLE,
   PUTTS_FOR_HOLE,
+  COURSE_DETAILS,
 } from '@/store/current-round/getter-types';
-import { Hole } from '@/store/current-round/types.d';
+import { Hole, CourseDetails } from '@/store/current-round/types.d';
 import { MISTAKES, CATEGORIES } from '@/store/mistake-defs/getter-types';
 import { MistakeDef, ShotCategory } from '@/store/mistake-defs/types.d';
+import { SAVE_ROUND } from '@/store/rounds/action-types';
+import { RoundData } from '@/store/rounds/types.d';
 
 const CurrentRoundModule = namespace('currentRound');
 const ShotTypesModule = namespace('mistakeDefs');
+const RoundsModule = namespace('rounds');
 
 const TRACK_BASE_PATH = '/track';
 const TRACK_HOLE_PATH = '/track/hole';
@@ -125,6 +139,12 @@ Component.registerHooks([
   },
 })
 export default class CurrentRound extends Vue {
+  @RoundsModule.Action(SAVE_ROUND)
+  saveRound!: (arg0: RoundData) => Promise<void>;
+
+  @CurrentRoundModule.Mutation(DELETE_ROUND)
+  deleteRound!: () => Promise<void>;
+
   @CurrentRoundModule.Mutation(START_ADDING_MISTAKE)
   startAddingShot!: () => void;
 
@@ -155,6 +175,9 @@ export default class CurrentRound extends Vue {
   @CurrentRoundModule.Getter(PUTTS_FOR_HOLE)
   numPutts!: number;
 
+  @CurrentRoundModule.Getter(COURSE_DETAILS)
+  courseDetails!: CourseDetails;
+
   @ShotTypesModule.Getter(CATEGORIES)
   categories!: Array<ShotCategory>;
 
@@ -168,8 +191,6 @@ export default class CurrentRound extends Vue {
   holeInfoTimeout?: number = null;
 
   edit = false;
-
-  blah = false;
 
   /* eslint-disable */
   get holeInfoString() {
@@ -267,12 +288,36 @@ export default class CurrentRound extends Vue {
     };
   }
 
+  onSaveRound() {
+    const roundDetails = {
+      course: this.courseDetails.course,
+      date: this.courseDetails.date,
+      holes: this.holes,
+    };
+
+    this.saveRound(roundDetails)
+      .then(() => {
+        this.deleteRound();
+      })
+      .then(() => {
+        this.$router.push('/track').catch(() => null);
+      });
+  }
+
   /* eslint-disable class-methods-use-this */
   onContextMenu() {
     // don't show the context menu for long press in browsers
     return false;
   }
   /* eslint-enable class-methods-use-this */
+
+  mounted() {
+    bus.$on('save-round', this.onSaveRound);
+  }
+
+  destroyed() {
+    bus.$off('save-round', this.onSaveRound);
+  }
 }
 </script>
 

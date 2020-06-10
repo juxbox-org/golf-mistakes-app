@@ -1,19 +1,34 @@
-export interface RoundType {
+import { Hole } from '@/store/current-round/types.d';
+
+export interface RoundState {
+  rounds: Array<Round>;
+}
+
+export interface Round {
   course: string;
   date: string;
-  score?: number;
+  holes: Array<RoundHole>;
 }
 
-export interface RoundRecord {
+export interface RoundHole {
   id: number;
-  data: RoundType;
+  shots: Array<RoundShot>;
 }
 
-export interface RoundsState {
-  rounds: Map<number, RoundType>;
+export interface RoundShot {
+  type: string;
+  desc: string;
+  category: string;
+  mistake: boolean;
+}
+
+export interface RoundData {
+  course: string;
+  date: string;
+  holes: Array<Hole>;
 }
 
 // Action function types
 export interface CreateRoundAction {
-  (roundData: RoundType): Promise<void>;
+  (roundData: RoundData): Promise<void>;
 }

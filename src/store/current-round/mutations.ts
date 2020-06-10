@@ -27,6 +27,7 @@ const mutations = {
     state.date = roundData.date;
     state.currentHole = 1;
     state.inProgress = true;
+    state.holes = [] as Array<Hole>;
     initHoles(state.holes);
   },
   [UPDATE_CURRENT_HOLE](state: CurrentRoundState, newHole: number) {
