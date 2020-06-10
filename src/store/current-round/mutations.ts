@@ -8,6 +8,7 @@ import {
   ADD_PAR_TO_HOLE,
   ADD_MISTAKES_TO_HOLE,
   DELETE_ROUND,
+  TOGGLE_PENALTY_FOR_HOLE,
 } from './mutation-types';
 import {
   CurrentRoundState,
@@ -46,7 +47,7 @@ const mutations = {
       throw Error(`No hole exists for hole: ${state.currentHole}`);
     }
 
-    hole.shots.push({ shotId: id, mistake: false });
+    hole.shots.push({ shotId: id, mistake: false, addPenalty: false });
 
     state.isAddingShot = false;
   },
@@ -78,6 +79,15 @@ const mutations = {
     }
 
     hole.shots[shotIndex].mistake = !hole.shots[shotIndex].mistake;
+  },
+  [TOGGLE_PENALTY_FOR_HOLE](state: CurrentRoundState, shotIndex: number) {
+    const hole = state.holes[state.currentHole - 1];
+
+    if (!hole) {
+      throw Error(`No hole exists for hole: ${state.currentHole}`);
+    }
+
+    hole.shots[shotIndex].addPenalty = !hole.shots[shotIndex].addPenalty;
   },
   [DELETE_ROUND](state: CurrentRoundState) {
     state.inProgress = false;

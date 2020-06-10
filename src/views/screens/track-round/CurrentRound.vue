@@ -2,7 +2,7 @@
   v-layout(class="gma-scrolling-layout" ref="shotsList")
     v-list(v-show="!isAddingShot" class="gma-mistake-list")
       v-list-item(v-show="!par")
-        v-list-item-title(class="gma-list-item__link" @click.stop="addPar = true") + add par blah
+        v-list-item-title(class="gma-list-item__link" @click.stop="addPar = true") + add par
       v-divider(v-show="!par")
       v-list-item-group
         v-list-item(v-for="shot in shots" :key="shot.shotIndex"
@@ -13,8 +13,9 @@
             v-list-item-subtitle(class="text--primary") {{ shot.category }}
             v-list-item-subtitle {{ shot.shotType.desc }}
           v-list-item-action
-            v-btn(icon x-small outlined fab)
-              v-icon(color="grey") mdi-plus-one
+            v-btn(icon x-small fab :ripple="false" :outlined="!shot.penalty"
+                v-bind:class="['penalty--icon', {'penalty--active': shot.penalty}]"
+                @click.stop="addPenalty(shot.shotIndex)") +1
           v-list-item-action
             v-list-item-action-text Shot {{ shot.shotIndex + 1 }}
             v-btn(icon v-on:click.stop="deleteShot(shot.shotIndex)")
@@ -31,7 +32,6 @@
             div(class="hole-info__content")
               span(class="hole-info-label") {{ holeInfoString }}
 
-
       v-btn(fab fixed right bottom v-show="!isAddingShot" small dark @click="addPar = true")
         v-icon mdi-file-edit-outline
 
@@ -45,7 +45,8 @@
           v-btn(class="ma-2" dark small fab @click="par = 4") 4
           v-btn(class="ma-2" dark small fab @click="par = 5") 5
 
-  //
+  // This isn't working on Android when installed as debug apk, but works when debugging
+  // using local web server :(
     v-speed-dial(fixed right bottom v-show="!isAddingShot" v-model="edit")
       template(v-slot:activator)
         v-btn(dark small fab)
@@ -71,6 +72,7 @@ import {
   ADD_PAR_TO_HOLE,
   ADD_MISTAKES_TO_HOLE,
   DELETE_ROUND,
+  TOGGLE_PENALTY_FOR_HOLE,
 } from '@/store/current-round/mutation-types';
 import {
   IS_ADDING_MISTAKE,
@@ -78,6 +80,7 @@ import {
   CURRENT_HOLE,
   PAR_CURRENT_HOLE,
   MISTAKES_FOR_HOLE,
+  PENALTIES_FOR_HOLE,
   PUTTS_FOR_HOLE,
   COURSE_DETAILS,
 } from '@/store/current-round/getter-types';
@@ -157,6 +160,9 @@ export default class CurrentRound extends Vue {
   @CurrentRoundModule.Mutation(ADD_MISTAKES_TO_HOLE)
   toggleMistakeForHole!: (arg0: number) => void;
 
+  @CurrentRoundModule.Mutation(TOGGLE_PENALTY_FOR_HOLE)
+  togglePenaltyForHole!: (arg0: number) => void;
+
   @CurrentRoundModule.Getter(IS_ADDING_MISTAKE)
   isAddingShot!: boolean;
 
@@ -170,7 +176,10 @@ export default class CurrentRound extends Vue {
   parForCurrentHole!: number;
 
   @CurrentRoundModule.Getter(MISTAKES_FOR_HOLE)
-  mistakesForCurrentHole!: Array<number>;
+  mistakesForCurrentHole!: number;
+
+  @CurrentRoundModule.Getter(PENALTIES_FOR_HOLE)
+  penaltiesForCurrentHole!: number;
 
   @CurrentRoundModule.Getter(PUTTS_FOR_HOLE)
   numPutts!: number;
@@ -194,12 +203,9 @@ export default class CurrentRound extends Vue {
 
   /* eslint-disable */
   get holeInfoString() {
-    return `Par: ${this.par || '?'} \xa0 Shots: ${this.shots.length} \xa0 `
-      + `Mistakes: ${this.mistakesForCurrentHole.length} \xa0 Putts: ${this.numPutts}`;
-  }
-
-  get selected() {
-    return this.mistakesForCurrentHole;
+    const shots = this.shots.length + this.penaltiesForCurrentHole;
+    return `Par: ${this.par || '?'} \xa0 Shots: ${shots} \xa0 `
+      + `Mistakes: ${this.mistakesForCurrentHole} \xa0 Putts: ${this.numPutts}`;
   }
 
   get par() {
@@ -224,6 +230,7 @@ export default class CurrentRound extends Vue {
         this.categories.find((category) => category.id === shotType.categoryId);
       return {
         mistake: shot.mistake,
+        penalty: shot.addPenalty,
         shotIndex,
         shotType,
         category: shotCategory.name,
@@ -302,6 +309,10 @@ export default class CurrentRound extends Vue {
       .then(() => {
         this.$router.push('/track').catch(() => null);
       });
+  }
+
+  addPenalty(shotIndex: number) {
+    this.togglePenaltyForHole(shotIndex);
   }
 
   /* eslint-disable class-methods-use-this */
@@ -404,4 +415,18 @@ export default class CurrentRound extends Vue {
 .action--divider
   margin-top: 10px;
 
+.penalty--icon
+  height: 24px !important;
+  width: 24px !important;
+
+.penalty--icon span
+  color: grey;
+  font-size: 12px;
+
+.penalty--active
+  background-color: #ffce44;
+
+.penalty--active span
+  color: white;
+  font-weight: bold;
 </style>

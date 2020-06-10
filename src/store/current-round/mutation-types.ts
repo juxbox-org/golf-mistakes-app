@@ -9,3 +9,4 @@ export const ADD_PAR_TO_HOLE = 'add_par_to_hole';
 export const ADD_MISTAKES_TO_HOLE = 'add_mistakes_to_hole';
 export const DELETE_ROUND = 'delete_round';
 export const SAVE_ROUND = 'save_round';
+export const TOGGLE_PENALTY_FOR_HOLE = 'toggle_penalty_for_hole';

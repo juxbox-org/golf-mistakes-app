@@ -21,6 +21,7 @@ export interface CurrentRoundRecord {
 export interface Shot {
   shotId: number;
   mistake: boolean;
+  addPenalty: boolean;
 }
 
 export interface CourseDetails {
@@ -31,6 +32,7 @@ export interface CourseDetails {
 export interface RoundDetails {
   shots: number;
   mistakes: number;
+  penalties: number;
   score: number;
   holesPlayed: number;
   putts: number;

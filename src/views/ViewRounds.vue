@@ -54,9 +54,12 @@ export default class ViewRounds extends Vue {
   }
 
   get summaryString() {
-    return `Shots: ${this.roundDetails.shots} \xa0\xa0 Mistakes: ${this.roundDetails.mistakes}`
-    + ` \xa0\xa0 Putts: ${this.roundDetails.putts}`
-    + ` \xa0\xa0 Score: ${this.roundDetails.score > 0 ? '+' : ''}${this.roundDetails.score}`;
+    const penaltiesStr = `(+${this.roundDetails.penalties})`;
+    return `Shots: ${this.roundDetails.shots} `
+      + `${this.roundDetails.penalties ? penaltiesStr : ''}`
+      + ` \xa0\xa0 Mistakes: ${this.roundDetails.mistakes}`
+      + ` \xa0\xa0 Putts: ${this.roundDetails.putts}`
+      + ` \xa0\xa0 Score: ${this.roundDetails.score > 0 ? '+' : ''}${this.roundDetails.score}`;
   }
 }
 </script>

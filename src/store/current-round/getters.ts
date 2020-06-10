@@ -1,7 +1,7 @@
 /* eslint-disable operator-linebreak */
 import { RootState } from '@/store/rootTypes.d';
 import { GetterTree } from 'vuex';
-import { CurrentRoundState, Shot } from './types.d';
+import { CurrentRoundState } from './types.d';
 import {
   IN_PROGRESS,
   CURRENT_HOLE,
@@ -12,6 +12,7 @@ import {
   COURSE_DETAILS,
   ROUND_DETAILS,
   PUTTS_FOR_HOLE,
+  PENALTIES_FOR_HOLE,
 } from './getter-types';
 import { MistakeDefsState } from '../mistake-defs/types.d';
 
@@ -55,13 +56,32 @@ const getters = {
       throw Error(`No hole exists for hole: ${state.currentHole}`);
     }
 
-    return hole.shots.reduce((acc: Array<number>, shot: Shot, index: number): Array<number> => {
-      if (shot.mistake) {
-        acc.push(index);
-      }
+    let numMistakes = 0;
 
-      return acc;
-    }, []);
+    hole.shots.forEach((shot) => {
+      if (shot.mistake) {
+        numMistakes += 1;
+      }
+    });
+
+    return numMistakes;
+  },
+  [PENALTIES_FOR_HOLE](state: CurrentRoundState) {
+    const hole = state.holes[state.currentHole - 1];
+
+    if (!hole) {
+      throw Error(`No hole exists for hole: ${state.currentHole}`);
+    }
+
+    let numPenalties = 0;
+
+    hole.shots.forEach((shot) => {
+      if (shot.addPenalty) {
+        numPenalties += 1;
+      }
+    });
+
+    return numPenalties;
   },
   [COURSE_DETAILS](state: CurrentRoundState) {
     return {
@@ -75,6 +95,7 @@ const getters = {
 
     let totalShots = 0;
     let totalMistakes = 0;
+    let totalPenalties = 0;
     let parForHolesPlayed = 0;
     let holesPlayed = 0;
     let totalPutts = 0;
@@ -94,6 +115,10 @@ const getters = {
           totalMistakes += 1;
         }
 
+        if (shot.addPenalty) {
+          totalPenalties += 1;
+        }
+
         if (isPutt(shot.shotId, mistakeDefsState)) {
           totalPutts += 1;
         }
@@ -105,7 +130,8 @@ const getters = {
     return {
       shots: totalShots,
       mistakes: totalMistakes,
-      score: parForHolesPlayed ? (totalShots - parForHolesPlayed) : 0,
+      penalties: totalPenalties,
+      score: parForHolesPlayed ? ((totalShots + totalPenalties) - parForHolesPlayed) : 0,
       holesPlayed,
       putts: totalPutts,
     };
