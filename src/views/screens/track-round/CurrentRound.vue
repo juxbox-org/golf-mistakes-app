@@ -7,7 +7,7 @@
       v-list-item-group
         v-list-item(v-for="shot in shots" :key="shot.shotIndex"
             v-bind:class="[ shot.mistake ? 'shot-mistake' : 'shot-success' ]"
-            @contextmenu.prevent="onContextMenu" :ripple="false")
+            @contextmenu.prevent="onContextMenu" :ripple="false" inactive)
           v-list-item-content(v-touch:touchhold="onToggleMistake(shot.shotIndex)")
             v-list-item-title {{ shot.shotType.title }}
             v-list-item-subtitle(class="text--primary") {{ shot.category }}
