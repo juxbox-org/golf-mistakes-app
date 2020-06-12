@@ -7,7 +7,7 @@
       v-list-item-group
         v-list-item(v-for="shot in shots" :key="shot.shotIndex"
             v-bind:class="[ shot.mistake ? 'shot-mistake' : 'shot-success' ]"
-            @contextmenu.prevent="onContextMenu" :ripple="false" inactive)
+            @contextmenu.prevent="onContextMenu" :ripple="false" inactive :selectable="false")
           v-list-item-content(v-touch:touchhold="onToggleMistake(shot.shotIndex)")
             v-list-item-title {{ shot.shotType.title }}
             v-list-item-subtitle(class="text--primary") {{ shot.category }}
@@ -18,8 +18,10 @@
                 @click.stop="addPenalty(shot.shotIndex)") +1
           v-list-item-action
             v-list-item-action-text Shot {{ shot.shotIndex + 1 }}
-            v-btn(icon v-on:click.stop="deleteShot(shot.shotIndex)")
-              v-icon(color="grey") mdi-delete-circle
+            v-btn(v-if="isEditing" icon v-on:click.stop="deleteShot(shot.shotIndex)")
+              v-icon(color="red") mdi-close-circle
+            v-btn(v-else icon v-on:click.stop="openShotInfoDialog(shot)")
+              v-icon(color="grey") mdi-information
       v-divider(v-show="shots.length" class="action--divider")
       v-list-item(id="addItem")
         v-list-item-title(class="gma-list-item__link" @click="addShot(true)") + add a shot
@@ -44,6 +46,22 @@
           v-btn(class="ma-2" dark small fab @click="par = 3") 3
           v-btn(class="ma-2" dark small fab @click="par = 4") 4
           v-btn(class="ma-2" dark small fab @click="par = 5") 5
+
+    v-dialog(v-model="showShotInfo" max-width="300")
+      v-card(@click.stop="showShotInfo = false")
+        v-card-title(class="headline") Shot {{ shotInfo.shotNo }}
+        div(class="gma-shot-details")
+          div(class="gma-shot-title") Type:
+          div(class="gma-shot-content") {{ shotInfo.type }}
+          div(class="gma-shot-title") Category:
+          div(class="gma-shot-content") {{ shotInfo.category }}
+          div(class="gma-shot-title") Description:
+          div(class="gma-shot-content") {{ shotInfo.desc }}
+          div(class="d-flex")
+            span(class="gma-shot-title") Mistake:
+            span(class="gma-shot-content-inline") {{ shotInfo.mistake }}
+            span(class="gma-shot-title-inline") Penalty:
+            span(class="gma-shot-content-inline") {{ shotInfo.penalty }}
 
   // This isn't working on Android when installed as debug apk, but works when debugging
   // using local web server :(
@@ -110,7 +128,6 @@ Component.registerHooks([
   },
 
   beforeRouteLeave(to, from, next) {
-    (this as CurrentRound).edit = false; // eslint-disable-line no-param-reassign
     next();
   },
 
@@ -195,17 +212,27 @@ export default class CurrentRound extends Vue {
 
   showHoleInfo = false;
 
+  showShotInfo = false;
+
   addPar = false;
 
   holeInfoTimeout?: number = null;
 
-  edit = false;
+  isEditing = false;
+
+  shotInfo = {
+    shotNo: '',
+    type: '',
+    desc: '',
+    category: '',
+    mistake: '',
+    penalty: '',
+  };
 
   /* eslint-disable */
   get holeInfoString() {
-    const shots = this.shots.length + this.penaltiesForCurrentHole;
     const penaltiesStr = this.penaltiesForCurrentHole ? `+${this.penaltiesForCurrentHole}` : null;
-    return `Par: ${this.par || '?'} \xa0Shots: ${shots}${penaltiesStr || ''} \xa0`
+    return `Par: ${this.par || '?'} \xa0Shots: ${this.shots.length}${penaltiesStr || ''} \xa0`
       + `Mistakes: ${this.mistakesForCurrentHole} \xa0Putts: ${this.numPutts}`;
   }
 
@@ -239,11 +266,7 @@ export default class CurrentRound extends Vue {
     });
   }
 
-  addShot(closeFab: boolean) {
-    if (closeFab) {
-      this.edit = false;
-    }
-
+  addShot() {
     this.startAddingShot();
   }
 
@@ -316,6 +339,19 @@ export default class CurrentRound extends Vue {
     this.togglePenaltyForHole(shotIndex);
   }
 
+  openShotInfoDialog(shot: any) {
+    this.shotInfo = {
+      shotNo: shot.shotIndex + 1,
+      type: shot.shotType.title,
+      desc: shot.shotType.desc,
+      category: shot.category,
+      mistake: `\xa0${shot.mistake ? 'yes' : 'no'}`,
+      penalty: `\xa0${shot.penalty ? 'yes' : 'no'}`,
+    };
+
+    this.showShotInfo = true;
+  }
+
   /* eslint-disable class-methods-use-this */
   onContextMenu() {
     // don't show the context menu for long press in browsers
@@ -323,12 +359,18 @@ export default class CurrentRound extends Vue {
   }
   /* eslint-enable class-methods-use-this */
 
+  onToggleEditing() {
+    this.isEditing = !this.isEditing;
+  }
+
   mounted() {
     bus.$on('save-round', this.onSaveRound);
+    bus.$on('toggle-edit', this.onToggleEditing);
   }
 
   destroyed() {
     bus.$off('save-round', this.onSaveRound);
+    bus.$off('toggle-edit', this.onToggleEditing);
   }
 }
 </script>

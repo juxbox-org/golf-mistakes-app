@@ -107,13 +107,4 @@ export default class AddShot extends Vue {
 </script>
 
 <style lang="stylus" scoped>
-.shot-details
-  padding: 0 16px 24px 24px;
-
-.shot-title
-  margin-top: 5px;
-  font-weight: bold;
-
-.shot-content
-  font-size: 14px;
 </style>

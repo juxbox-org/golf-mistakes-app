@@ -4,6 +4,8 @@
       v-icon mdi-delete
     v-btn(icon @click="onSaveRound")
       v-icon mdi-content-save
+    v-btn(icon fab small :ripple="false" v-bind:class="{active: active}" @click="onEditRound")
+      v-icon mdi-pencil
 </template>
 
 <script lang="ts">
@@ -22,6 +24,8 @@ export default class SaveRoundButtonGroup extends Vue {
   @CurrentRoundModule.Mutation(DELETE_ROUND)
   deleteRound!: () => void;
 
+  active = false;
+
   onDeleteRound() {
     this.deleteRound();
     this.$router.push('/track');
@@ -31,6 +35,21 @@ export default class SaveRoundButtonGroup extends Vue {
   onSaveRound() {
     bus.$emit('save-round');
   }
+
+  onEditRound() {
+    bus.$emit('toggle-edit');
+    this.active = !this.active;
+  }
   /* eslint-enable class-methods-use-this */
 }
 </script>
+
+<style lang="stylus" scoped>
+.active {
+  background-color: #ffffff;
+}
+
+.active i {
+ color: #9e9e9e !important;
+}
+</style>

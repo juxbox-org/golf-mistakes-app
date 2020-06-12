@@ -4,7 +4,7 @@
       v-list(class="gma-mistake-list")
         v-list-item(v-if="roundInProgress" to="/track")
           v-list-item-content
-            v-list-item-title {{ inProgressTitleString }}
+            v-list-item-title {{ courseDetails.course }}
             v-list-item-subtitle In progress (through {{ holesPlayed }} holes)
             v-list-item-subtitle {{ summaryString }}
         v-list-item(v-if="!roundInProgress && !pastRounds.length"
@@ -49,14 +49,10 @@ export default class ViewRounds extends Vue {
     return this.roundDetails.holesPlayed;
   }
 
-  get inProgressTitleString() {
-    return `${this.courseDetails.course}`;
-  }
-
   get summaryString() {
     const penaltiesStr = `(+${this.roundDetails.penalties})`;
-    return `Shots: ${this.roundDetails.shots} `
-      + `${this.roundDetails.penalties ? penaltiesStr : ''}`
+    return `Shots: ${this.roundDetails.shots}`
+      + ` ${this.roundDetails.penalties ? penaltiesStr : ''}`
       + ` \xa0\xa0 Mistakes: ${this.roundDetails.mistakes}`
       + ` \xa0\xa0 Putts: ${this.roundDetails.putts}`
       + ` \xa0\xa0 Score: ${this.roundDetails.score > 0 ? '+' : ''}${this.roundDetails.score}`;
