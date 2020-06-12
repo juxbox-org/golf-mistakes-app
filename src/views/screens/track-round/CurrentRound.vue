@@ -4,11 +4,11 @@
       v-list-item(v-show="!par || isEditing")
         v-list-item-title(class="gma-list-item__link"
           @click.stop="addPar = true") + {{ !par ? 'add ' : 'change ' }} par
-      v-divider(v-show="!par")
+      v-divider(v-show="!par || isEditing" v-bind:class="{'par-action--divider': shots.length}")
       v-list-item-group
         v-list-item(v-for="shot in shots" :key="shot.shotIndex"
-            v-bind:class="[ shot.mistake ? 'shot-mistake' : 'shot-success' ]"
-            @contextmenu.prevent="onContextMenu" :ripple="false" inactive :selectable="false")
+            v-bind:class="[ shot.mistake ? 'shot-mistake' : 'shot-success', 'shot-list-item' ]"
+            @contextmenu.prevent="onContextMenu" :ripple="false" inactive)
           v-list-item-content(v-touch:touchhold="onToggleMistake(shot.shotIndex)")
             v-list-item-title {{ shot.shotType.title }}
             v-list-item-subtitle(class="text--primary") {{ shot.category }}
@@ -456,8 +456,15 @@ export default class CurrentRound extends Vue {
 .shot-mistake .v-list-item__title
   color: #F44336 !important;
 
+.shot-list-item
+  user-select: none;
+  -webkit-user-select: none;
+
 .action--divider
   margin-top: 10px;
+
+.par-action--divider
+  margin-bottom: 10px;
 
 .penalty--icon
   height: 24px !important;
