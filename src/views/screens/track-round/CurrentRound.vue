@@ -1,8 +1,9 @@
 <template lang="pug">
   v-layout(class="gma-scrolling-layout" ref="shotsList")
     v-list(v-show="!isAddingShot" class="gma-mistake-list")
-      v-list-item(v-show="!par")
-        v-list-item-title(class="gma-list-item__link" @click.stop="addPar = true") + add par
+      v-list-item(v-show="!par || isEditing")
+        v-list-item-title(class="gma-list-item__link"
+          @click.stop="addPar = true") + {{ !par ? 'add ' : 'change ' }} par
       v-divider(v-show="!par")
       v-list-item-group
         v-list-item(v-for="shot in shots" :key="shot.shotIndex"
@@ -24,7 +25,7 @@
               v-icon(color="grey") mdi-information
       v-divider(v-show="shots.length" class="action--divider")
       v-list-item(id="addItem")
-        v-list-item-title(class="gma-list-item__link" @click="addShot(true)") + add a shot
+        v-list-item-title(class="gma-list-item__link" @click="addShot") + add a shot
       v-fab-transition
         v-btn(class="btn-info--fab" color="secondary"
               active-class="btn-info--active" small fixed fab
@@ -34,8 +35,8 @@
             div(class="hole-info__content")
               span(class="hole-info-label") {{ holeInfoString }}
 
-      v-btn(fab fixed right bottom v-show="!isAddingShot" small dark @click="addPar = true")
-        v-icon mdi-file-edit-outline
+      v-btn(fab fixed right bottom v-show="!isAddingShot" small dark @click="addShot")
+        v-icon mdi-plus
 
     AddShot(v-show="isAddingShot" v-on:done-add="onShotAdded" :key="isAddingShot")
 
@@ -51,17 +52,17 @@
       v-card(@click.stop="showShotInfo = false")
         v-card-title(class="headline") Shot {{ shotInfo.shotNo }}
         div(class="gma-shot-details")
-          div(class="gma-shot-title") Type:
-          div(class="gma-shot-content") {{ shotInfo.type }}
-          div(class="gma-shot-title") Category:
-          div(class="gma-shot-content") {{ shotInfo.category }}
-          div(class="gma-shot-title") Description:
-          div(class="gma-shot-content") {{ shotInfo.desc }}
+          div(class="gma-shot__title") Type:
+          div(class="gma-shot__content") {{ shotInfo.type }}
+          div(class="gma-shot__title") Category:
+          div(class="gma-shot__content") {{ shotInfo.category }}
+          div(class="gma-shot__title") Description:
+          div(class="gma-shot__content") {{ shotInfo.desc }}
           div(class="d-flex")
-            span(class="gma-shot-title") Mistake:
-            span(class="gma-shot-content-inline") {{ shotInfo.mistake }}
-            span(class="gma-shot-title-inline") Penalty:
-            span(class="gma-shot-content-inline") {{ shotInfo.penalty }}
+            span(class="gma-shot__title") Mistake:
+            span(class="gma-shot__content-inline") {{ shotInfo.mistake }}
+            span(class="gma-shot__title-inline") Penalty:
+            span(class="gma-shot__content-inline") {{ shotInfo.penalty }}
 
   // This isn't working on Android when installed as debug apk, but works when debugging
   // using local web server :(

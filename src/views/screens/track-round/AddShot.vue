@@ -26,13 +26,13 @@
     v-dialog(v-model="showShotInfo")
       v-card(@click.stop="showShotInfo = false")
         v-card-title Details
-        div(class="shot-details")
-          div(class="shot-title") Shot Type:
-          div(class="shot-content") {{ shotInfo.title }}
-          div(class="shot-title") Shot Category:
-          div(class="shot-content") {{ shotInfo.category }}
-          div(Class="shot-title") Description:
-          div(class="shot-content") {{ shotInfo.desc }}
+        div(class="gma-shot-details")
+          div(class="gma-shot__title") Shot Type:
+          div(class="gma-shot__content") {{ shotInfo.title }}
+          div(class="gma-shot__title") Shot Category:
+          div(class="gma-shot__content") {{ shotInfo.category }}
+          div(Class="gma-shot__title") Description:
+          div(class="gma-shot__content") {{ shotInfo.desc }}
 </template>
 
 <script lang="ts">
