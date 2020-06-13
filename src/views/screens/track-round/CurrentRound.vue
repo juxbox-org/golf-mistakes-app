@@ -2,9 +2,10 @@
   v-layout(class="gma-scrolling-layout" ref="shotsList"
       v-touch:swipe.left="onSwipeLeft" v-touch:swipe.right="onSwipeRight")
     v-list(v-show="!isAddingShot" class="gma-mistake-list")
-      v-list-item(v-show="!par || isEditing")
-        v-list-item-title(class="gma-list-item__link"
-          @click.stop="addPar = true") + {{ !par ? 'add ' : 'change ' }} par
+      v-list-item(v-show="!par || isEditing" class="gma-list-item__link"
+          @click.stop="addPar = true")
+        v-chip(v-if="!par || isEditing" dark) + {{ !par ? 'add ' : 'change ' }} par
+        v-chip(v-else) + {{ !par ? 'add ' : 'change ' }} par
       v-divider(v-show="!par || isEditing" v-bind:class="{'par-action--divider': shots.length}")
       v-list-item-group
         v-list-item(v-for="shot in shots" :key="shot.shotIndex"
@@ -25,8 +26,9 @@
             v-btn(v-else icon v-on:click.stop="openShotInfoDialog(shot)")
               v-icon(color="grey") mdi-information
       v-divider(v-show="shots.length" class="action--divider")
-      v-list-item(id="addItem")
-        v-list-item-title(class="gma-list-item__link" @click="addShot") + add a shot
+      v-list-item(id="addItem" class="gma-list-item__link" @click="addShot")
+        v-chip(v-if="isEditing || !par") + add a shot
+        v-chip(v-else dark) + add a shot
       v-fab-transition
         v-btn(class="btn-info--fab" color="secondary"
               active-class="btn-info--active" small fixed fab
