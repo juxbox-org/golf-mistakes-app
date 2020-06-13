@@ -100,4 +100,6 @@ export default class HoleNavigationBar extends Vue {
 .nav-button
   width: 48px;
 
+.par-actions
+  flex-wrap: wrap;
 </style>
