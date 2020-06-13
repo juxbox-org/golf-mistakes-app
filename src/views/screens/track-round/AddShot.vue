@@ -19,10 +19,6 @@
         v-list-item-content
           v-list-item-title(class="gma-list-item__empty") ( no shots )
 
-    v-fab-transition
-      v-btn(dark small fixed fab bottom right @click="doneAddingMistake")
-        v-icon mdi-arrow-left
-
     v-dialog(v-model="showShotInfo")
       v-card(@click.stop="showShotInfo = false")
         v-card-title Details
