@@ -20,7 +20,7 @@
                 v-icon(color="grey lighten-1") mdi-pencil-circle
           v-divider(v-show="category.shots.length")
           v-list-item(class='gma-list-item__link' @click="createShot")
-            v-chip(dark) + create a shot for {{ category.name }}
+            v-btn(small rounded outlined elevation="0") + create a shot for {{ category.name }}
 
     v-fab-transition
       v-btn(dark fixed small bottom right fab v-show="!hideFab && !isEditing && !isAdding"

@@ -11,6 +11,7 @@ export interface CurrentRoundState {
   currentHole: number;
   inProgress: boolean;
   isAddingShot: boolean;
+  isEditingHole: boolean;
 }
 
 export interface CurrentRoundRecord {

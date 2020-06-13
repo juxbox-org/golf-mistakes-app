@@ -4,7 +4,8 @@
       v-icon mdi-delete
     v-btn(icon @click="onSaveRound")
       v-icon mdi-content-save
-    v-btn(icon fab small :ripple="false" v-bind:class="{active: active}" @click="onEditRound")
+    v-btn(icon fab small :ripple="false" v-bind:class="{active: isEditingHole}"
+        @click="onEditRound")
       v-icon mdi-pencil
 </template>
 
@@ -13,7 +14,8 @@ import Vue from 'vue';
 import bus from '@/event-bus';
 import Component from 'vue-class-component';
 import { namespace } from 'vuex-class';
-import { DELETE_ROUND } from '../store/current-round/mutation-types';
+import { DELETE_ROUND, EDIT_HOLE } from '@/store/current-round/mutation-types';
+import { IS_EDITING_HOLE } from '@/store/current-round/getter-types';
 
 const CurrentRoundModule = namespace('currentRound');
 
@@ -23,6 +25,12 @@ const CurrentRoundModule = namespace('currentRound');
 export default class SaveRoundButtonGroup extends Vue {
   @CurrentRoundModule.Mutation(DELETE_ROUND)
   deleteRound!: () => void;
+
+  @CurrentRoundModule.Mutation(EDIT_HOLE)
+  editHole!: (arg0: boolean) => void;
+
+  @CurrentRoundModule.Getter(IS_EDITING_HOLE)
+  isEditingHole!: boolean;
 
   active = false;
 
@@ -37,8 +45,7 @@ export default class SaveRoundButtonGroup extends Vue {
   }
 
   onEditRound() {
-    bus.$emit('toggle-edit');
-    this.active = !this.active;
+    this.editHole(!this.isEditingHole);
   }
   /* eslint-enable class-methods-use-this */
 }

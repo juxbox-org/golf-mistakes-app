@@ -6,14 +6,14 @@
         v-list-item-content
           v-list-item-title {{ category.name }}
 
-      v-list-item(v-for="shot in category.shots" :key="shot.title" @click="addShot(shot.id)"
+      v-list-item(v-for="shot in category.shots" :key="shot.title"
           :ripple="false" color="secondary")
-        v-list-item-content
+        v-list-item-content(@click="addShot(shot.id)")
           v-list-item-title {{ shot.title }}
           v-list-item-subtitle {{ shot.desc }}
-        v-btn(icon @click.stop="openInfoDialog(shot.title, shot.desc, category.name)")
-          v-icon(color="grey lighten-1") mdi-information
-
+        v-list-item-action
+          v-btn(icon @click.stop="openInfoDialog(shot.title, shot.desc, category.name)")
+            v-icon(color="grey lighten-1") mdi-information
 
       v-list-item(v-if="!category.shots.length" :ripple="false")
         v-list-item-content

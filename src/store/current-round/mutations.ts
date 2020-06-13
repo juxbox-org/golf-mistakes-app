@@ -9,6 +9,7 @@ import {
   ADD_MISTAKES_TO_HOLE,
   DELETE_ROUND,
   TOGGLE_PENALTY_FOR_HOLE,
+  EDIT_HOLE,
 } from './mutation-types';
 import {
   CurrentRoundState,
@@ -97,6 +98,9 @@ const mutations = {
     state.course = '';
     state.holes = [] as Array<Hole>;
     initHoles(state.holes);
+  },
+  [EDIT_HOLE](state: CurrentRoundState, isEditing: boolean) {
+    state.isEditingHole = isEditing;
   },
 };
 

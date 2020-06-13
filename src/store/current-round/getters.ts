@@ -13,6 +13,7 @@ import {
   ROUND_DETAILS,
   PUTTS_FOR_HOLE,
   PENALTIES_FOR_HOLE,
+  IS_EDITING_HOLE,
 } from './getter-types';
 import { MistakeDefsState } from '../mistake-defs/types.d';
 
@@ -151,6 +152,8 @@ const getters = {
 
     return totalPutts;
   },
+  [IS_EDITING_HOLE](state: CurrentRoundState) {
+    return state.isEditingHole;
+  },
 };
-
 export default getters;

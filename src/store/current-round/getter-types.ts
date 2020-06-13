@@ -8,3 +8,4 @@ export const PENALTIES_FOR_HOLE = 'penalties_for_hole';
 export const COURSE_DETAILS = 'course_details';
 export const ROUND_DETAILS = 'round_details';
 export const PUTTS_FOR_HOLE = 'putts_for_hole';
+export const IS_EDITING_HOLE = 'is_editing_hole';

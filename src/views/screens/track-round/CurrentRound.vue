@@ -4,8 +4,8 @@
     v-list(v-show="!isAddingShot" class="gma-mistake-list")
       v-list-item(v-show="!par || isEditing" class="gma-list-item__link"
           @click.stop="addPar = true")
-        v-chip(v-if="!par || isEditing" dark) + {{ !par ? 'add ' : 'change ' }} par
-        v-chip(v-else) + {{ !par ? 'add ' : 'change ' }} par
+        v-btn(v-if="!par || isEditing" dark rounded small) + {{ !par ? 'add ' : 'change ' }} par
+        v-btn(v-else rounded small) + {{ !par ? 'add ' : 'change ' }} par
       v-divider(v-show="!par || isEditing" v-bind:class="{'par-action--divider': shots.length}")
       v-list-item-group
         v-list-item(v-for="shot in shots" :key="shot.shotIndex"
@@ -27,8 +27,8 @@
               v-icon(color="grey") mdi-information
       v-divider(v-show="shots.length" class="action--divider")
       v-list-item(id="addItem" class="gma-list-item__link" @click="addShot")
-        v-chip(v-if="isEditing || !par") + add a shot
-        v-chip(v-else dark) + add a shot
+        v-btn(v-if="isEditing || !par" rounded small outlined) + add a shot
+        v-btn(v-else dark rounded small elevation="0") + add a shot
       v-fab-transition
         v-btn(class="btn-info--fab" color="secondary"
               active-class="btn-info--active" small fixed fab
@@ -105,6 +105,7 @@ import {
   PENALTIES_FOR_HOLE,
   PUTTS_FOR_HOLE,
   COURSE_DETAILS,
+  IS_EDITING_HOLE,
 } from '@/store/current-round/getter-types';
 import { Hole, CourseDetails } from '@/store/current-round/types.d';
 import { MISTAKES, CATEGORIES } from '@/store/mistake-defs/getter-types';
@@ -211,6 +212,9 @@ export default class CurrentRound extends Vue {
   @CurrentRoundModule.Getter(COURSE_DETAILS)
   courseDetails!: CourseDetails;
 
+  @CurrentRoundModule.Getter(IS_EDITING_HOLE)
+  isEditing!: boolean;
+
   @ShotTypesModule.Getter(CATEGORIES)
   categories!: Array<ShotCategory>;
 
@@ -224,8 +228,6 @@ export default class CurrentRound extends Vue {
   addPar = false;
 
   holeInfoTimeout?: number = null;
-
-  isEditing = false;
 
   shotInfo = {
     shotNo: '',
@@ -366,10 +368,6 @@ export default class CurrentRound extends Vue {
   }
   /* eslint-enable class-methods-use-this */
 
-  onToggleEditing() {
-    this.isEditing = !this.isEditing;
-  }
-
   /* eslint-disable class-methods-use-this */
   onSwipeLeft() {
     if (this.currentHole === 18) {
@@ -393,12 +391,10 @@ export default class CurrentRound extends Vue {
 
   mounted() {
     bus.$on('save-round', this.onSaveRound);
-    bus.$on('toggle-edit', this.onToggleEditing);
   }
 
   destroyed() {
     bus.$off('save-round', this.onSaveRound);
-    bus.$off('toggle-edit', this.onToggleEditing);
   }
 }
 </script>
