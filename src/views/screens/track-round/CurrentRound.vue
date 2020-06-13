@@ -45,9 +45,8 @@
       v-card(class="pars-card")
         v-card-title(class="headline") Select Par
         div(class="d-flex par-actions")
-          v-btn(class="ma-2" dark small fab @click="par = 3") 3
-          v-btn(class="ma-2" dark small fab @click="par = 4") 4
-          v-btn(class="ma-2" dark small fab @click="par = 5") 5
+          div(v-for="n in 3")
+            v-btn(class="ma-2" dark elevation="0" small fab @click="par = n + 2") {{ n + 2}}
 
     v-dialog(v-model="showShotInfo" max-width="300")
       v-card(@click.stop="showShotInfo = false")

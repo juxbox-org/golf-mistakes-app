@@ -21,27 +21,8 @@
       v-card(class="pars-card")
         v-card-title(class="headline") Jump to Hole
         div(class="d-flex par-actions")
-          v-btn(class="ma-2" dark small fab @click="navigateToHole(1)") 1
-          v-btn(class="ma-2" dark small fab @click="navigateToHole(2)") 2
-          v-btn(class="ma-2" dark small fab @click="navigateToHole(3)") 3
-          v-btn(class="ma-2" dark small fab @click="navigateToHole(4)") 4
-          v-btn(class="ma-2" dark small fab @click="navigateToHole(5)") 5
-        div(class="d-flex par-actions")
-          v-btn(class="ma-2" dark small fab @click="navigateToHole(6)") 6
-          v-btn(class="ma-2" dark small fab @click="navigateToHole(7)") 7
-          v-btn(class="ma-2" dark small fab @click="navigateToHole(8)") 8
-          v-btn(class="ma-2" dark small fab @click="navigateToHole(9)") 9
-          v-btn(class="ma-2" dark small fab @click="navigateToHole(10)") 10
-        div(class="d-flex par-actions")
-          v-btn(class="ma-2" dark small fab @click="navigateToHole(11)") 11
-          v-btn(class="ma-2" dark small fab @click="navigateToHole(12)") 12
-          v-btn(class="ma-2" dark small fab @click="navigateToHole(13)") 13
-          v-btn(class="ma-2" dark small fab @click="navigateToHole(14)") 14
-          v-btn(class="ma-2" dark small fab @click="navigateToHole(15)") 15
-        div(class="d-flex par-actions")
-          v-btn(class="ma-2" dark small fab @click="navigateToHole(16)") 16
-          v-btn(class="ma-2" dark small fab @click="navigateToHole(17)") 17
-          v-btn(class="ma-2" dark small fab @click="navigateToHole(18)") 18
+          div(v-for="n in 18")
+            v-btn(class="ma-2" dark small elevation="0" fab @click="navigateToHole(n)") {{ n }}
 </template>
 
 <script lang="ts">
