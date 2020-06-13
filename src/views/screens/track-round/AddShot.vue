@@ -1,13 +1,13 @@
 <template lang="pug">
-  v-list(two-line class="gma-mistake-list")
+  v-list(class="gma-mistake-list")
     v-list-group(v-for="category in shotCategories" :key="category.name"
         v-model="category.active" :ripple="false")
       template(v-slot:activator)
-          v-list-item-content
-            v-list-item-title {{ category.name }}
+        v-list-item-content
+          v-list-item-title {{ category.name }}
 
       v-list-item(v-for="shot in category.shots" :key="shot.title" @click="addShot(shot.id)"
-          :ripple="false")
+          :ripple="false" color="secondary")
         v-list-item-content
           v-list-item-title {{ shot.title }}
           v-list-item-subtitle {{ shot.desc }}

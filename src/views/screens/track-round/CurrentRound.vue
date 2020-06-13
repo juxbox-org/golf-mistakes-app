@@ -1,5 +1,6 @@
 <template lang="pug">
-  v-layout(class="gma-scrolling-layout" ref="shotsList")
+  v-layout(class="gma-scrolling-layout" ref="shotsList"
+      v-touch:swipe.left="onSwipeLeft" v-touch:swipe.right="onSwipeRight")
     v-list(v-show="!isAddingShot" class="gma-mistake-list")
       v-list-item(v-show="!par || isEditing")
         v-list-item-title(class="gma-list-item__link"
@@ -92,6 +93,7 @@ import {
   ADD_MISTAKES_TO_HOLE,
   DELETE_ROUND,
   TOGGLE_PENALTY_FOR_HOLE,
+  UPDATE_CURRENT_HOLE,
 } from '@/store/current-round/mutation-types';
 import {
   IS_ADDING_MISTAKE,
@@ -180,6 +182,9 @@ export default class CurrentRound extends Vue {
 
   @CurrentRoundModule.Mutation(TOGGLE_PENALTY_FOR_HOLE)
   togglePenaltyForHole!: (arg0: number) => void;
+
+  @CurrentRoundModule.Mutation(UPDATE_CURRENT_HOLE)
+  updateCurrentHole!: (arg0: number) => void;
 
   @CurrentRoundModule.Getter(IS_ADDING_MISTAKE)
   isAddingShot!: boolean;
@@ -362,6 +367,27 @@ export default class CurrentRound extends Vue {
 
   onToggleEditing() {
     this.isEditing = !this.isEditing;
+  }
+
+  /* eslint-disable class-methods-use-this */
+  onSwipeLeft() {
+    if (this.currentHole === 18) {
+      return;
+    }
+
+    const toHole = this.currentHole + 1;
+    this.updateCurrentHole(toHole);
+    this.$router.push(`/track/hole/${toHole}`);
+  }
+
+  onSwipeRight() {
+    if (this.currentHole === 1) {
+      return;
+    }
+
+    const toHole = this.currentHole - 1;
+    this.updateCurrentHole(toHole);
+    this.$router.push(`/track/hole/${toHole}`);
   }
 
   mounted() {
