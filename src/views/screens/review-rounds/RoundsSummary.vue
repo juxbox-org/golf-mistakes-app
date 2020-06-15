@@ -2,7 +2,7 @@
   v-tab-item(value="Rounds" :transition="false" :reverse-transition="false")
     div(class="rounds-col")
       v-list(class="gma-mistake-list")
-        v-list-item(v-if="roundInProgress" to="/track" inactive :ripple="false")
+        v-list-item(v-if="roundInProgress" to="/track" :ripple="false")
           v-list-item-content
             v-list-item-title {{ courseDetails.course }}
             v-list-item-subtitle In progress (through {{ holesPlayed }} holes)
@@ -10,30 +10,42 @@
         v-list-item(v-if="!roundInProgress && !pastRounds.length"
             class="gma-list-item__empty") (no rounds)
       v-list(class="gma-mistake-list")
-        v-list-item-group(v-for="round in pastRounds"  :key="round.course")
+        v-list-item-group(v-for="round in pastRounds" :key="round.course")
           v-list-item(inactive :ripple="false")
             v-list-item-content
               v-list-item-title {{ round.course }}
               v-list-item-subtitle {{ roundInfoString(round) }}
               v-list-item-subtitle {{ pastSummaryString(round) }}
+            v-list-item-action(v-show="isEditingRounds" @click.stop="onDeleteRound(round)")
+              v-icon mdi-delete
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import bus from '@/event-bus';
 import Component from 'vue-class-component';
 import { namespace } from 'vuex-class';
 import { COURSE_DETAILS, IN_PROGRESS, ROUND_DETAILS } from '@/store/current-round/getter-types';
 import { CourseDetails, RoundDetails } from '@/store/current-round/types.d';
 import { GET_ALL_ROUNDS } from '@/store/rounds/getter-types';
 import { Round } from '@/store/rounds/types.d';
+import { DELETE_ROUND } from '@/store/current-round/mutation-types';
+import { DELETE_STATS } from '@/store/mistake-defs/action-types';
 
 const CurrentRoundModule = namespace('currentRound');
 const RoundsModule = namespace('rounds');
+const ShotTypesModule = namespace('mistakeDefs');
 
 @Component({
   name: 'RoundsSummary',
 })
 export default class RoundsSummary extends Vue {
+  @RoundsModule.Action(DELETE_ROUND)
+  deleteRound!: (arg0: Round) => Promise<void>;
+
+  @ShotTypesModule.Action(DELETE_STATS)
+  deleteStatsForRound!: (arg0: Round) => Promise<void>;
+
   @CurrentRoundModule.Getter(COURSE_DETAILS)
   courseDetails!: CourseDetails;
 
@@ -45,6 +57,8 @@ export default class RoundsSummary extends Vue {
 
   @RoundsModule.Getter(GET_ALL_ROUNDS)
   pastRounds!: Array<Round>
+
+  isEditingRounds = false;
 
   get holesPlayed() {
     return this.roundDetails.holesPlayed;
@@ -74,6 +88,21 @@ export default class RoundsSummary extends Vue {
       + ` \xa0\xa0 Score: ${score > 0 ? '+' : ''}${score}`;
   }
   /* eslint-enable class-methods-use-this */
+
+  onDeleteRound(round: Round) {
+    this.deleteStatsForRound(round)
+      .then(() => {
+        this.deleteRound(round);
+      });
+  }
+
+  toggleEditingRounds() {
+    this.isEditingRounds = !this.isEditingRounds;
+  }
+
+  mounted() {
+    bus.$on('edit-rounds', this.toggleEditingRounds);
+  }
 }
 </script>
 

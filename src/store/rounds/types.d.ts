@@ -2,14 +2,16 @@ export interface RoundState {
   rounds: Array<Round>;
   currentOverviewTab: string;
   hasUpdated: boolean;
+  id: number;
 }
 
 export interface Round {
+  id: number;
   course: string;
   date: string;
   rating?: number;
   slope?: number;
-  teest?: string;
+  tees?: string;
   totalMistakes: number;
   totalShots: number;
   totalPenalties: number;

@@ -20,7 +20,7 @@ const getters = {
         totalMistakes += shot.totalMistakes || 0;
       });
 
-      const average = totalShots ? (totalMistakes / totalShots) * 100 : 0;
+      const average = totalShots ? Math.round((totalMistakes / totalShots) * 100) : 0;
 
       return {
         ...category,

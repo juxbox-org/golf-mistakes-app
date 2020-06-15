@@ -5,3 +5,4 @@ export const CREATE_CATEGORY = 'create_category';
 export const DELETE_CATEGORY = 'delete_category';
 export const UPDATE_ALL_SHOTS = 'update_all_shots';
 export const UPDATE_STATS = 'update_stats';
+export const DELETE_STATS = 'delete_stats';

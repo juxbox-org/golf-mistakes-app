@@ -6,3 +6,5 @@ export const REMOVE_CATEGORY = 'remove_category';
 export const INCREMENT_ID = 'increment_id';
 export const UPDATE_MISTAKES_FOR_SHOTTYPE = 'update_mistakes_for_shottype';
 export const UPDATE_SHOTS_FOR_SHOTTYPE = 'update_shots_for_shottype';
+export const REMOVE_MISTAKE_FOR_SHOTTYPE = 'remove_mistake_for_shottype';
+export const REMOVE_SHOT_FOR_SHOTTYPE = 'remove_shot_for_shottype';

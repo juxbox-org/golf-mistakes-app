@@ -3,7 +3,8 @@
     v-toolbar-title {{ title }}
     v-spacer
     SaveRoundButtonGroup(v-if="isTrackingStarted")
-    EditShotsButtonGroup(v-if="isSummary")
+    EditShotsButtonGroup(v-else-if="isSummary")
+    EditRoundsButtonGroup(v-else-if="isReviewing")
     template(v-if="isTrackingStarted" v-slot:extension)
       HoleNavigationBar
     template(v-else-if="isReviewing" v-slot:extension)
@@ -19,6 +20,7 @@ import HoleNavigationBar from '@/components/HoleNavigationBar.vue';
 import SaveRoundButtonGroup from '@/components/SaveRoundButtonGroup.vue';
 import EditShotsButtonGroup from '@/components/EditShotsButtonGroup.vue';
 import ReviewNavigationBar from '@/components/ReviewNavigationBar.vue';
+import EditRoundsButtonGroup from '@/components/EditRoundsButtonGroup.vue';
 
 @Component({
   name: 'AppBar',
@@ -27,6 +29,7 @@ import ReviewNavigationBar from '@/components/ReviewNavigationBar.vue';
     SaveRoundButtonGroup,
     EditShotsButtonGroup,
     ReviewNavigationBar,
+    EditRoundsButtonGroup,
   },
   computed: {
     ...mapState('route', {

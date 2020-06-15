@@ -11,7 +11,7 @@
 
         v-list-item(v-for="shot in category.shots" :key="shot.title"
             :ripple="false" color="secondary")
-          v-list-item-content(@click="addShot(shot.id)")
+          v-list-item-content
             v-list-item-title {{ shot.title }}
             v-list-item-subtitle {{ shotSummaryStr(shot) }}
           v-list-item-action
@@ -83,7 +83,7 @@ export default class StatsSummary extends Vue {
   shotSummaryStr(shot: MistakeDef) {
     const totalShots = shot.totalShots || 0;
     const totalMistakes = shot.totalMistakes || 0;
-    const average = totalShots ? (totalMistakes / totalShots) * 100 : 0;
+    const average = totalShots ? Math.round((totalMistakes / totalShots) * 100) : 0;
     return `Shots: ${totalShots} \xa0\xa0 Mistakes: ${totalMistakes} \xa0\xa0 (${average}%)`;
   }
   /* eslint-enable class-methods-use-this */
@@ -98,13 +98,15 @@ export default class StatsSummary extends Vue {
     this.showShotInfo = true;
   }
 
+  /*
   mounted() {
     if (!this.hasUpdated) {
       this.updateAllShots().then(() => {
         this.setHasUpdated();
       });
     }
-  }
+    }
+   */
 }
 </script>
 

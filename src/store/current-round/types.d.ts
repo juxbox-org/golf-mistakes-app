@@ -15,6 +15,9 @@ export interface CurrentRoundRecord {
 export interface CourseDetails {
   course: string;
   date: string;
+  rating?: number;
+  slope?: number;
+  tees?: string;
 }
 
 export interface RoundDetails {

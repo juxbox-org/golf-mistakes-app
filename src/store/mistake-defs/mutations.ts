@@ -7,6 +7,8 @@ import {
   INCREMENT_ID,
   UPDATE_MISTAKES_FOR_SHOTTYPE,
   UPDATE_SHOTS_FOR_SHOTTYPE,
+  REMOVE_MISTAKE_FOR_SHOTTYPE,
+  REMOVE_SHOT_FOR_SHOTTYPE,
 } from './mutation-types';
 import { MistakeDefsState, MistakeDef, ShotCategory } from './types.d';
 
@@ -93,6 +95,32 @@ const mutations = {
     }
 
     state.mistakeDefs[index].totalShots += 1;
+  },
+  [REMOVE_MISTAKE_FOR_SHOTTYPE](state: MistakeDefsState, shotId: number) {
+    const index = state.mistakeDefs.findIndex((item) => item.id === shotId);
+
+    if (index < 0) {
+      throw Error(`UPDATE_MISTAKES_FOR_SHOTTYPE: shot type doesn't exist for id: ${shotId}`);
+    }
+
+    const shot = state.mistakeDefs[index];
+
+    if (shot.totalMistakes > 0) {
+      shot.totalMistakes -= 1;
+    }
+  },
+  [REMOVE_SHOT_FOR_SHOTTYPE](state: MistakeDefsState, shotId: number) {
+    const index = state.mistakeDefs.findIndex((item) => item.id === shotId);
+
+    if (index < 0) {
+      throw Error(`UPDATE_SHOTS_FOR_SHOTTYPE: shot type doesn't exist for id: ${shotId}`);
+    }
+
+    const shot = state.mistakeDefs[index];
+
+    if (shot.totalShots > 0) {
+      state.mistakeDefs[index].totalShots -= 1;
+    }
   },
 };
 

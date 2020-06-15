@@ -1,6 +1,6 @@
 import { ActionContext } from 'vuex';
 import { RootState } from '@/store/rootTypes.d';
-import { RoundData } from '@/store/rounds/types.d';
+import { RoundData, Round } from '@/store/rounds/types.d';
 import {
   CREATE_MISTAKE,
   CREATE_CATEGORY,
@@ -9,6 +9,7 @@ import {
   DELETE_CATEGORY,
   UPDATE_ALL_SHOTS,
   UPDATE_STATS,
+  DELETE_STATS,
 } from './action-types';
 import {
   INSERT_MISTAKE,
@@ -19,6 +20,8 @@ import {
   INCREMENT_ID,
   UPDATE_SHOTS_FOR_SHOTTYPE,
   UPDATE_MISTAKES_FOR_SHOTTYPE,
+  REMOVE_MISTAKE_FOR_SHOTTYPE,
+  REMOVE_SHOT_FOR_SHOTTYPE,
 } from './mutation-types';
 import { MistakeDefsState, MistakeDef } from './types.d';
 
@@ -69,6 +72,19 @@ const actions = {
           }
 
           context.commit(UPDATE_SHOTS_FOR_SHOTTYPE, shot.shotId);
+        });
+      }
+    });
+  },
+  [DELETE_STATS](context: ActionContext<MistakeDefsState, RootState>, round: Round) {
+    round.holes.forEach((hole) => {
+      if (hole.par) {
+        hole.shots.forEach((shot) => {
+          if (shot.mistake) {
+            context.commit(REMOVE_MISTAKE_FOR_SHOTTYPE, shot.shotId);
+          }
+
+          context.commit(REMOVE_SHOT_FOR_SHOTTYPE, shot.shotId);
         });
       }
     });

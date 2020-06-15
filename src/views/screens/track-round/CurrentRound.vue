@@ -347,7 +347,7 @@ export default class CurrentRound extends Vue {
         this.deleteRound();
       })
       .then(() => {
-        this.$router.push('/track').catch(() => null);
+        this.$router.push('/review');
       });
   }
 

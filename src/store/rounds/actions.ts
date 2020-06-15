@@ -1,13 +1,14 @@
 /* eslint-disable operator-linebreak */
 import { ActionContext } from 'vuex';
 import { RootState } from '@/store/rootTypes.d';
-import { SAVE_ROUND } from './action-types';
-import { INSERT_ROUND } from './mutation-types';
+import { SAVE_ROUND, DELETE_ROUND } from './action-types';
+import { INSERT_ROUND, INCREMENT_ID, REMOVE_ROUND } from './mutation-types';
 import {
   RoundState,
   RoundData,
   RoundShot,
   RoundHole,
+  Round,
 } from './types.d';
 
 const PUTT_CATEGORY_ID = 0;
@@ -17,6 +18,7 @@ const actions = {
     const shotTypesState = context.rootState.mistakeDefs;
 
     const round = {
+      id: context.rootState.rounds.id,
       course: roundData.course,
       date: roundData.date,
       holes: [] as Array<RoundHole>,
@@ -26,6 +28,8 @@ const actions = {
       totalPenalties: 0,
       par: 0,
     };
+
+    context.commit(INCREMENT_ID);
 
     roundData.holes.forEach((hole) => {
       /*
@@ -77,6 +81,9 @@ const actions = {
     });
 
     context.commit(INSERT_ROUND, round);
+  },
+  [DELETE_ROUND](context: ActionContext<RoundState, RootState>, round: Round) {
+    context.commit(REMOVE_ROUND, round);
   },
 };
 
