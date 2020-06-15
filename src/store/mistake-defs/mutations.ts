@@ -58,15 +58,41 @@ const mutations = {
   [INCREMENT_ID](state: MistakeDefsState) {
     state.id += 1;
   },
-  [UPDATE_MISTAKES_FOR_SHOTTYPE](state: MistakeDefsState, shotType: string) {
-    const shot = state.mistakeDefs.find((item) => item.title === shotType);
+  [UPDATE_MISTAKES_FOR_SHOTTYPE](state: MistakeDefsState, shotId: number) {
+    const index = state.mistakeDefs.findIndex((item) => item.id === shotId);
+
+    if (index < 0) {
+      throw Error(`UPDATE_MISTAKES_FOR_SHOTTYPE: shot type doesn't exist for id: ${shotId}`);
+    }
+
+    const shot = state.mistakeDefs[index];
+
+    /*
+     * Guard against old versions not having totalMistakes initalized to zero
+     */
+    if (Number.isNaN(shot.totalMistakes)) {
+      shot.totalMistakes = 0;
+    }
 
     shot.totalMistakes += 1;
   },
-  [UPDATE_SHOTS_FOR_SHOTTYPE](state: MistakeDefsState, shotType: string) {
-    const shot = state.mistakeDefs.find((item) => item.title === shotType);
+  [UPDATE_SHOTS_FOR_SHOTTYPE](state: MistakeDefsState, shotId: number) {
+    const index = state.mistakeDefs.findIndex((item) => item.id === shotId);
 
-    shot.totalShots += 1;
+    if (index < 0) {
+      throw Error(`UPDATE_SHOTS_FOR_SHOTTYPE: shot type doesn't exist for id: ${shotId}`);
+    }
+
+    const shot = state.mistakeDefs[index];
+
+    /*
+     * Guard against old versions not having totalShots initalized to zero
+     */
+    if (Number.isNaN(shot.totalShots)) {
+      shot.totalShots = 0;
+    }
+
+    state.mistakeDefs[index].totalShots += 1;
   },
 };
 

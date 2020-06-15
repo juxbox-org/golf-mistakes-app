@@ -77,7 +77,7 @@ export default class StatsSummary extends Vue {
 
   /* eslint-disable class-methods-use-this */
   categorySummaryStr(category: ShotCategoryWithSummary) {
-    return `${category.totalShots} / ${category.totalMistakes} \xa0 (${category.average}%)`;
+    return `${category.totalMistakes} / ${category.totalShots} \xa0 (${category.average}%)`;
   }
 
   shotSummaryStr(shot: MistakeDef) {

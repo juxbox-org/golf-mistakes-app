@@ -112,6 +112,7 @@ import { MISTAKES, CATEGORIES } from '@/store/mistake-defs/getter-types';
 import { MistakeDef, ShotCategory } from '@/store/mistake-defs/types.d';
 import { SAVE_ROUND } from '@/store/rounds/action-types';
 import { RoundHole, RoundShot, RoundData } from '@/store/rounds/types.d';
+import { UPDATE_STATS } from '@/store/mistake-defs/action-types';
 
 const CurrentRoundModule = namespace('currentRound');
 const ShotTypesModule = namespace('mistakeDefs');
@@ -166,6 +167,9 @@ Component.registerHooks([
 export default class CurrentRound extends Vue {
   @RoundsModule.Action(SAVE_ROUND)
   saveRound!: (arg0: RoundData) => Promise<void>;
+
+  @ShotTypesModule.Action(UPDATE_STATS)
+  updateStats!: (arg0: RoundData) => Promise<void>;
 
   @CurrentRoundModule.Mutation(DELETE_ROUND)
   deleteRound!: () => Promise<void>;
@@ -336,6 +340,9 @@ export default class CurrentRound extends Vue {
     };
 
     this.saveRound(roundDetails)
+      .then(() => {
+        this.updateStats(roundDetails);
+      })
       .then(() => {
         this.deleteRound();
       })
