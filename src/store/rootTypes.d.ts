@@ -1,5 +1,6 @@
 import { CurrentRoundState } from './current-round/types.d';
 import { MistakeDefsState } from './mistake-defs/types.d';
+import { RoundState } from './rounds/types.d';
 
 declare interface Screen {
   summary: string;
@@ -18,4 +19,5 @@ export interface RootState {
   screen: Screen;
   currentRound?: CurrentRoundState;
   mistakeDefs?: MistakeDefsState;
+  rounds?: RoundState;
 }

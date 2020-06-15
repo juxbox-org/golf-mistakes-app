@@ -6,6 +6,7 @@ import {
   SAVE_MISTAKE,
   DELETE_MISTAKE,
   DELETE_CATEGORY,
+  UPDATE_ALL_SHOTS,
 } from './action-types';
 import {
   INSERT_MISTAKE,
@@ -14,6 +15,8 @@ import {
   REMOVE_MISTAKE,
   REMOVE_CATEGORY,
   INCREMENT_ID,
+  UPDATE_SHOTS_FOR_SHOTTYPE,
+  UPDATE_MISTAKES_FOR_SHOTTYPE,
 } from './mutation-types';
 import { MistakeDefsState, MistakeDef } from './types.d';
 
@@ -34,6 +37,21 @@ const actions = {
   },
   [DELETE_CATEGORY](context: ActionContext<MistakeDefsState, RootState>, id: number) {
     context.commit(REMOVE_CATEGORY, id);
+  },
+  [UPDATE_ALL_SHOTS](context: ActionContext<MistakeDefsState, RootState>) {
+    const { rounds } = context.rootState.rounds;
+
+    rounds.forEach((round) => {
+      round.holes.forEach((hole) => {
+        hole.shots.forEach((shot) => {
+          context.commit(UPDATE_SHOTS_FOR_SHOTTYPE, shot.type);
+
+          if (shot.mistake) {
+            context.commit(UPDATE_MISTAKES_FOR_SHOTTYPE, shot.type);
+          }
+        });
+      });
+    });
   },
 };
 

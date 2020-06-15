@@ -13,7 +13,6 @@
             :ripple="false" color="secondary")
           v-list-item-content(@click="addShot(shot.id)")
             v-list-item-title {{ shot.title }}
-            v-list-item-subtitle {{ shot.desc }}
             v-list-item-subtitle {{ shotSummaryStr(shot) }}
           v-list-item-action
             v-btn(icon @click.stop="openInfoDialog(shot.title, shot.desc, category.name)")
@@ -42,8 +41,12 @@ import Component from 'vue-class-component';
 import { MISTAKES, SHOTS_CATEGORIES_WITH_SUMMARY } from '@/store/mistake-defs/getter-types';
 import { MistakeDef, ShotCategoryWithSummary } from '@/store/mistake-defs/types.d';
 import { namespace } from 'vuex-class';
+import { UPDATE_ALL_SHOTS } from '../../../store/mistake-defs/action-types';
+import { HAS_UPDATED } from '../../../store/rounds/getter-types';
+import { SET_HAS_UPDATED } from '../../../store/rounds/mutation-types';
 
 const MistakeDefsModule = namespace('mistakeDefs');
+const RoundsModule = namespace('rounds');
 
 @Component({
   name: 'StatsSummary',
@@ -54,6 +57,15 @@ export default class StatsSummary extends Vue {
 
   @MistakeDefsModule.Getter(SHOTS_CATEGORIES_WITH_SUMMARY)
   categories!: Array<ShotCategoryWithSummary>;
+
+  @MistakeDefsModule.Action(UPDATE_ALL_SHOTS)
+  updateAllShots!: () => Promise<void>;
+
+  @RoundsModule.Getter(HAS_UPDATED)
+  hasUpdated!: boolean;
+
+  @RoundsModule.Mutation(SET_HAS_UPDATED)
+  setHasUpdated!: () => void;
 
   showShotInfo = false;
 
@@ -85,9 +97,16 @@ export default class StatsSummary extends Vue {
 
     this.showShotInfo = true;
   }
+
+  mounted() {
+    if (!this.hasUpdated) {
+      this.updateAllShots().then(() => {
+        this.setHasUpdated();
+      });
+    }
+  }
 }
 </script>
 
 <style lang="stylus" scoped>
-
 </style>

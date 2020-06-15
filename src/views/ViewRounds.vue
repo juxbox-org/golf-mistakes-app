@@ -10,11 +10,9 @@ import Component from 'vue-class-component';
 import { namespace } from 'vuex-class';
 import { GET_OVERVIEW_TAB } from '@/store/rounds/getter-types';
 import { UPDATE_OVERVIEW_TAB } from '@/store/rounds/mutation-types';
-import { Round } from '@/store/rounds/types.d';
 import RoundsSummary from '@/views/screens/review-rounds/RoundsSummary.vue';
 import StatsSummary from '@/views/screens/review-rounds/StatsSummary.vue';
 
-const CurrentRoundModule = namespace('currentRound');
 const RoundsModule = namespace('rounds');
 
 @Component({

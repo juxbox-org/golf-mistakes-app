@@ -1,3 +1,5 @@
+import { RoundHole } from '@/store/rounds/types.d';
+import { MistakeDef } from '@/store/mistake-defs/types.d';
 import {
   BEGIN_TRACKING,
   UPDATE_CURRENT_HOLE,
@@ -14,10 +16,9 @@ import {
 import {
   CurrentRoundState,
   CurrentRoundRecord,
-  Hole,
 } from './types.d';
 
-function initHoles(holes: Array<Hole>) {
+function initHoles(holes: Array<RoundHole>) {
   for (let i = 1; i <= 18; i += 1) {
     holes.push({ id: i, shots: [], par: null });
   }
@@ -29,7 +30,7 @@ const mutations = {
     state.date = roundData.date;
     state.currentHole = 1;
     state.inProgress = true;
-    state.holes = [] as Array<Hole>;
+    state.holes = [] as Array<RoundHole>;
     initHoles(state.holes);
   },
   [UPDATE_CURRENT_HOLE](state: CurrentRoundState, newHole: number) {
@@ -41,14 +42,21 @@ const mutations = {
   [STOP_ADDING_MISTAKE](state: CurrentRoundState) {
     state.isAddingShot = false;
   },
-  [ADD_SHOT_TO_HOLE](state: CurrentRoundState, id: number) {
+  [ADD_SHOT_TO_HOLE](state: CurrentRoundState, shot: MistakeDef) {
     const hole = state.holes[state.currentHole - 1];
 
     if (!hole) {
       throw Error(`No hole exists for hole: ${state.currentHole}`);
     }
 
-    hole.shots.push({ shotId: id, mistake: false, addPenalty: false });
+    hole.shots.push({
+      shotId: shot.id,
+      mistake: false,
+      addPenalty: false,
+      categoryId: shot.categoryId,
+      type: shot.title,
+      desc: shot.desc,
+    });
 
     state.isAddingShot = false;
   },
@@ -96,7 +104,7 @@ const mutations = {
     state.currentHole = 1;
     state.date = '';
     state.course = '';
-    state.holes = [] as Array<Hole>;
+    state.holes = [] as Array<RoundHole>;
     initHoles(state.holes);
   },
   [EDIT_HOLE](state: CurrentRoundState, isEditing: boolean) {

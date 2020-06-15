@@ -8,7 +8,7 @@
 
       v-list-item(v-for="shot in category.shots" :key="shot.title"
           :ripple="false" color="secondary")
-        v-list-item-content(@click="addShot(shot.id)")
+        v-list-item-content(@click="addShot(shot)")
           v-list-item-title {{ shot.title }}
           v-list-item-subtitle {{ shot.desc }}
         v-list-item-action
@@ -63,7 +63,7 @@ export default class AddShot extends Vue {
   currentHole!: number;
 
   @CurrentRoundModule.Mutation(ADD_SHOT_TO_HOLE)
-  addShotToHole!: (arg0: number) => void;
+  addShotToHole!: (arg0: MistakeDef) => void;
 
   @CurrentRoundModule.Mutation(STOP_ADDING_MISTAKE)
   doneAddingMistake!: () => void;
@@ -85,8 +85,8 @@ export default class AddShot extends Vue {
     });
   }
 
-  addShot(id: number) {
-    this.addShotToHole(id);
+  addShot(shot: MistakeDef) {
+    this.addShotToHole(shot);
     this.$emit('done-add');
   }
 

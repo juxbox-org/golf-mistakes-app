@@ -107,11 +107,11 @@ import {
   COURSE_DETAILS,
   IS_EDITING_HOLE,
 } from '@/store/current-round/getter-types';
-import { Hole, CourseDetails } from '@/store/current-round/types.d';
+import { CourseDetails } from '@/store/current-round/types.d';
 import { MISTAKES, CATEGORIES } from '@/store/mistake-defs/getter-types';
 import { MistakeDef, ShotCategory } from '@/store/mistake-defs/types.d';
 import { SAVE_ROUND } from '@/store/rounds/action-types';
-import { RoundData } from '@/store/rounds/types.d';
+import { RoundHole, RoundShot, RoundData } from '@/store/rounds/types.d';
 
 const CurrentRoundModule = namespace('currentRound');
 const ShotTypesModule = namespace('mistakeDefs');
@@ -192,7 +192,7 @@ export default class CurrentRound extends Vue {
   isAddingShot!: boolean;
 
   @CurrentRoundModule.Getter(HOLES)
-  holes!: Array<Hole>;
+  holes!: Array<RoundHole>;
 
   @CurrentRoundModule.Getter(CURRENT_HOLE)
   currentHole!: number;
@@ -261,7 +261,7 @@ export default class CurrentRound extends Vue {
   get shots() {
     const index = this.currentHole - 1;
 
-    return this.holes[index].shots.map((shot, shotIndex) => {
+    return this.holes[index].shots.map((shot: RoundShot, shotIndex: number) => {
       const shotType = this.shotTypes.find((type) => type.id === shot.shotId);
       const shotCategory =
         this.categories.find((category) => category.id === shotType.categoryId);

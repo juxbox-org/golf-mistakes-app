@@ -5,6 +5,8 @@ import {
   REMOVE_MISTAKE,
   REMOVE_CATEGORY,
   INCREMENT_ID,
+  UPDATE_MISTAKES_FOR_SHOTTYPE,
+  UPDATE_SHOTS_FOR_SHOTTYPE,
 } from './mutation-types';
 import { MistakeDefsState, MistakeDef, ShotCategory } from './types.d';
 
@@ -55,6 +57,16 @@ const mutations = {
   },
   [INCREMENT_ID](state: MistakeDefsState) {
     state.id += 1;
+  },
+  [UPDATE_MISTAKES_FOR_SHOTTYPE](state: MistakeDefsState, shotType: string) {
+    const shot = state.mistakeDefs.find((item) => item.title === shotType);
+
+    shot.totalMistakes += 1;
+  },
+  [UPDATE_SHOTS_FOR_SHOTTYPE](state: MistakeDefsState, shotType: string) {
+    const shot = state.mistakeDefs.find((item) => item.title === shotType);
+
+    shot.totalShots += 1;
   },
 };
 

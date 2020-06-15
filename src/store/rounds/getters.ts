@@ -1,4 +1,4 @@
-import { GET_ALL_ROUNDS, GET_OVERVIEW_TAB } from './getter-types';
+import { GET_ALL_ROUNDS, GET_OVERVIEW_TAB, HAS_UPDATED } from './getter-types';
 import { RoundState } from './types.d';
 
 const getters = {
@@ -7,6 +7,9 @@ const getters = {
   },
   [GET_OVERVIEW_TAB](state: RoundState) {
     return state.currentOverviewTab;
+  },
+  [HAS_UPDATED](state: RoundState) {
+    return state.hasUpdated;
   },
 };
 

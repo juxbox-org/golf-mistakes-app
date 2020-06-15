@@ -1,13 +1,6 @@
-export interface Hole {
-  id: number;
-  shots: Array<Shot>;
-  par?: number;
-}
+import { Round } from '@/store/rounds/types.d';
 
-export interface CurrentRoundState {
-  course: string;
-  date: string;
-  holes: Array<Hole>;
+export interface CurrentRoundState extends Round {
   currentHole: number;
   inProgress: boolean;
   isAddingShot: boolean;
@@ -17,12 +10,6 @@ export interface CurrentRoundState {
 export interface CurrentRoundRecord {
   course: string;
   date: string;
-}
-
-export interface Shot {
-  shotId: number;
-  mistake: boolean;
-  addPenalty: boolean;
 }
 
 export interface CourseDetails {
