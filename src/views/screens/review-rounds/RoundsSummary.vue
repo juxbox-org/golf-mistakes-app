@@ -2,19 +2,20 @@
   v-tab-item(value="Rounds" :transition="false" :reverse-transition="false")
     div(class="rounds-col")
       v-list(class="gma-mistake-list")
-        v-list-item(v-if="roundInProgress" to="/track")
+        v-list-item(v-if="roundInProgress" to="/track" inactive :ripple="false")
           v-list-item-content
             v-list-item-title {{ courseDetails.course }}
             v-list-item-subtitle In progress (through {{ holesPlayed }} holes)
-            v-list-item-subtitle {{ summaryString }}
+            v-list-item-subtitle {{ currSummaryString }}
         v-list-item(v-if="!roundInProgress && !pastRounds.length"
             class="gma-list-item__empty") (no rounds)
       v-list(class="gma-mistake-list")
         v-list-item-group(v-for="round in pastRounds"  :key="round.course")
-          v-list-item
+          v-list-item(inactive :ripple="false")
             v-list-item-content
               v-list-item-title {{ round.course }}
-              v-list-item-subtitle {{ round.date }}
+              v-list-item-subtitle {{ roundInfoString(round) }}
+              v-list-item-subtitle {{ pastSummaryString(round) }}
 </template>
 
 <script lang="ts">
@@ -49,7 +50,7 @@ export default class RoundsSummary extends Vue {
     return this.roundDetails.holesPlayed;
   }
 
-  get summaryString() {
+  get currSummaryString() {
     const penaltiesStr = `(+${this.roundDetails.penalties})`;
     return `Shots: ${this.roundDetails.shots}`
       + ` ${this.roundDetails.penalties ? penaltiesStr : ''}`
@@ -57,6 +58,22 @@ export default class RoundsSummary extends Vue {
       + ` \xa0\xa0 Putts: ${this.roundDetails.putts}`
       + ` \xa0\xa0 Score: ${this.roundDetails.score > 0 ? '+' : ''}${this.roundDetails.score}`;
   }
+
+  /* eslint-disable class-methods-use-this */
+  roundInfoString(round: Round) {
+    return `${round.date} \xa0\xa0 Par: ${round.par}`;
+  }
+
+  pastSummaryString(round: Round) {
+    const penaltiesStr = `(+${round.totalPenalties})`;
+    const score = round.totalShots + round.totalPenalties - round.par;
+    return `Shots: ${round.totalShots}`
+      + ` ${round.totalPenalties ? penaltiesStr : ''}`
+      + ` \xa0\xa0 Mistakes: ${round.totalMistakes}`
+      + ` \xa0\xa0 Putts: ${round.totalPutts}`
+      + ` \xa0\xa0 Score: ${score > 0 ? '+' : ''}${score}`;
+  }
+  /* eslint-enable class-methods-use-this */
 }
 </script>
 

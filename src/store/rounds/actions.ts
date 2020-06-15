@@ -10,6 +10,8 @@ import {
   RoundHole,
 } from './types.d';
 
+const PUTT_CATEGORY_ID = 0;
+
 const actions = {
   [SAVE_ROUND](context: ActionContext<RoundState, RootState>, roundData: RoundData) {
     const shotTypesState = context.rootState.mistakeDefs;
@@ -37,6 +39,8 @@ const actions = {
           shots: [] as Array<RoundShot>,
         };
 
+        round.par += hole.par;
+
         hole.shots.forEach((shot) => {
           const shotType =
             shotTypesState.mistakeDefs.find((item) => item.id === shot.shotId);
@@ -52,6 +56,20 @@ const actions = {
             mistake: shot.mistake,
             addPenalty: shot.addPenalty,
           });
+
+          round.totalShots += 1;
+
+          if (shot.mistake) {
+            round.totalMistakes += 1;
+          }
+
+          if (shot.addPenalty) {
+            round.totalPenalties += 1;
+          }
+
+          if (category.id === PUTT_CATEGORY_ID) {
+            round.totalPutts += 1;
+          }
         });
 
         round.holes.push(roundHole);

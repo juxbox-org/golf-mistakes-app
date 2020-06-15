@@ -7,6 +7,9 @@ export interface RoundState {
 export interface Round {
   course: string;
   date: string;
+  rating?: number;
+  slope?: number;
+  teest?: string;
   totalMistakes: number;
   totalShots: number;
   totalPenalties: number;
