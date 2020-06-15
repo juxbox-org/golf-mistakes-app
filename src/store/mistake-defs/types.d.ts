@@ -6,11 +6,21 @@ export interface MistakeDef {
   title: string;
   desc: string;
   categoryId?: number;
+  totalShots?: number;
+  totalMistakes?: number;
 }
 
 export interface ShotCategory {
   id?: number;
   name: string;
+}
+
+export interface ShotCategoryWithSummary {
+  id?: number;
+  name: string;
+  totalShots?: number;
+  totalMistakes?: number;
+  average?: number;
 }
 
 export interface MistakeDefsState {

@@ -2,6 +2,8 @@ import { Hole } from '@/store/current-round/types.d';
 
 export interface RoundState {
   rounds: Array<Round>;
+  currentOverviewTab: string;
+  hasUpdated: boolean;
 }
 
 export interface Round {

@@ -1,11 +1,11 @@
 <template lang="pug">
-  div
+  div(class="app-bar-btn-group")
     v-btn(icon @click="onDeleteRound")
       v-icon mdi-delete
     v-btn(icon @click="onSaveRound")
       v-icon mdi-content-save
-    v-btn(icon fab small :ripple="false" v-bind:class="{active: isEditingHole}"
-        @click="onEditRound")
+    v-btn(icon fab small :ripple="false"  @click="onEditRound"
+        v-bind:class="{'gma-app-bar-btn--active': isEditingHole}")
       v-icon mdi-pencil
 </template>
 
@@ -32,8 +32,6 @@ export default class SaveRoundButtonGroup extends Vue {
   @CurrentRoundModule.Getter(IS_EDITING_HOLE)
   isEditingHole!: boolean;
 
-  active = false;
-
   onDeleteRound() {
     this.deleteRound();
     this.$router.push('/track');
@@ -52,11 +50,4 @@ export default class SaveRoundButtonGroup extends Vue {
 </script>
 
 <style lang="stylus" scoped>
-.active {
-  background-color: #ffffff;
-}
-
-.active i {
- color: #9e9e9e !important;
-}
 </style>

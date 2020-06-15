@@ -1,30 +1,22 @@
 <template lang="pug">
-  v-tabs-items(v-model="currentOverViewTab")
-    RoundsSummary
-    StatsSummary
+  v-tabs(fixed-tabs v-model="currentOverViewTab")
+    v-tab(href="#Rounds" :ripple="false") Rounds
+    v-tab(href="#Stats" :ripple="false") Stats
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import { namespace } from 'vuex-class';
-import { GET_OVERVIEW_TAB } from '@/store/rounds/getter-types';
 import { UPDATE_OVERVIEW_TAB } from '@/store/rounds/mutation-types';
-import { Round } from '@/store/rounds/types.d';
-import RoundsSummary from '@/views/screens/review-rounds/RoundsSummary.vue';
-import StatsSummary from '@/views/screens/review-rounds/StatsSummary.vue';
+import { GET_OVERVIEW_TAB } from '@/store/rounds/getter-types';
 
-const CurrentRoundModule = namespace('currentRound');
 const RoundsModule = namespace('rounds');
 
 @Component({
-  name: 'ViewRounds',
-  components: {
-    RoundsSummary,
-    StatsSummary,
-  },
+  name: 'ReviewNavigationBar',
 })
-export default class ViewRounds extends Vue {
+export default class ReviewNavigationBar extends Vue {
   @RoundsModule.Mutation(UPDATE_OVERVIEW_TAB)
   updateOverviewTab!: (arg0: string) => void;
 
@@ -39,7 +31,4 @@ export default class ViewRounds extends Vue {
     return this.getOverviewTab;
   }
 }
-</script>
-
-<style lang="stylus" scoped>
-</style>
+</script>>
