@@ -28,16 +28,17 @@
       v-divider(v-show="shots.length" class="action--divider")
       v-list-item(id="addItem" class="gma-list-item__link" @click="addShot")
         v-btn(v-if="isEditing || !par" rounded small outlined) + add a shot
-        v-btn(v-else dark rounded small elevation="0") + add a shot
+        v-btn(v-else dark rounded small) + add a shot
       v-fab-transition
-        v-btn(class="btn-info--fab" color="secondary"
-              active-class="btn-info--active" small fixed fab
+        v-btn(color="secondary" small
+              active-class="btn-info--active" fixed fab
               bottom right v-model="showHoleInfo" @click="onInfoButtonClicked")
           v-icon mdi-golf
           div(class="hole-info")
             div(class="hole-info__content")
               span(class="hole-info-label") {{ holeInfoString }}
 
+    // Having the "add shot" button as a fab doesn't seem to be helpful - I never use it, anyways
       v-btn(fab fixed right bottom v-show="!isAddingShot" small dark @click="addShot")
         v-icon mdi-plus
 
@@ -65,6 +66,10 @@
             span(class="gma-shot__content-inline") {{ shotInfo.mistake }}
             span(class="gma-shot__title-inline") Penalty:
             span(class="gma-shot__content-inline") {{ shotInfo.penalty }}
+
+    v-dialog(v-model="showResultsDialog")
+      ResultsDialog(@click.stop="showResultsDialog = false" :key="currentShot"
+        :shotId="currentShot" v-on:results-done="showResultsDialog = false")
 
   // This isn't working on Android when installed as debug apk, but works when debugging
   // using local web server :(
@@ -113,6 +118,7 @@ import { MistakeDef, ShotCategory } from '@/store/mistake-defs/types.d';
 import { SAVE_ROUND } from '@/store/rounds/action-types';
 import { RoundHole, RoundShot, RoundData } from '@/store/rounds/types.d';
 import { UPDATE_STATS } from '@/store/mistake-defs/action-types';
+import ResultsDialog from '@/components/ResultsDialog.vue';
 
 const CurrentRoundModule = namespace('currentRound');
 const ShotTypesModule = namespace('mistakeDefs');
@@ -131,6 +137,7 @@ Component.registerHooks([
 
   components: {
     AddShot,
+    ResultsDialog,
   },
 
   beforeRouteLeave(to, from, next) {
@@ -229,9 +236,13 @@ export default class CurrentRound extends Vue {
 
   showShotInfo = false;
 
+  showResultsDialog = false;
+
   addPar = false;
 
   holeInfoTimeout?: number = null;
+
+  currentShot?: number = null;
 
   shotInfo = {
     shotNo: '',
@@ -328,6 +339,11 @@ export default class CurrentRound extends Vue {
 
       this.toggleMistakeForHole(shotIndex);
 
+      if (this.shots[shotIndex].mistake) {
+        this.currentShot = shotIndex;
+        this.showResultsDialog = true;
+      }
+
       return true;
     };
   }
@@ -337,7 +353,19 @@ export default class CurrentRound extends Vue {
       course: this.courseDetails.course,
       date: this.courseDetails.date,
       holes: this.holes,
-    };
+    } as RoundData;
+
+    if (this.courseDetails.slope) {
+      roundDetails.slope = this.courseDetails.slope;
+    }
+
+    if (this.courseDetails.rating) {
+      roundDetails.rating = this.courseDetails.rating;
+    }
+
+    if (this.courseDetails.tees) {
+      roundDetails.tees = this.courseDetails.tees;
+    }
 
     this.saveRound(roundDetails)
       .then(() => {

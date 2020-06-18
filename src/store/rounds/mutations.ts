@@ -13,7 +13,12 @@ const mutations = {
     state.rounds.unshift(round);
   },
   [REMOVE_ROUND](state: RoundState, round: Round) {
-    const index = state.rounds.findIndex((item) => item.id === round.id);
+    const index = state.rounds.findIndex((item) => item.date === round.date);
+
+    if (index < 0) {
+      return;
+    }
+
     state.rounds.splice(index, 1);
   },
   [UPDATE_OVERVIEW_TAB](state: RoundState, newTab: string) {

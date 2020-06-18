@@ -41,6 +41,9 @@ export interface RoundData {
   course: string;
   date: string;
   holes: Array<RoundHole>;
+  rating?: number;
+  slope?: number;
+  tees?: string;
 }
 
 // Action function types

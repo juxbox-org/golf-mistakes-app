@@ -27,9 +27,21 @@ const actions = {
       totalPutts: 0,
       totalPenalties: 0,
       par: 0,
-    };
+    } as Round;
 
     context.commit(INCREMENT_ID);
+
+    if (roundData.slope) {
+      round.slope = roundData.slope;
+    }
+
+    if (roundData.rating) {
+      round.rating = roundData.rating;
+    }
+
+    if (roundData.tees) {
+      round.tees = roundData.tees;
+    }
 
     roundData.holes.forEach((hole) => {
       /*

@@ -1,8 +1,7 @@
 <template lang="pug">
   v-tab-item(value="Stats" :transition="false" :reverse-transition="false")
     v-list(class="gma-mistake-list")
-      v-list-group(v-for="category in categories" :key="category.name"
-          v-model="category.active" :ripple="false")
+      v-list-group(v-for="category in categories" :key="category.name" :ripple="false")
         template(v-slot:activator)
           v-list-item-content
             v-list-item-title {{ category.name }}
@@ -77,6 +76,10 @@ export default class StatsSummary extends Vue {
 
   /* eslint-disable class-methods-use-this */
   categorySummaryStr(category: ShotCategoryWithSummary) {
+    if (!category.totalShots) {
+      return '-';
+    }
+
     return `${category.totalMistakes} / ${category.totalShots} \xa0 (${category.average}%)`;
   }
 
@@ -84,6 +87,11 @@ export default class StatsSummary extends Vue {
     const totalShots = shot.totalShots || 0;
     const totalMistakes = shot.totalMistakes || 0;
     const average = totalShots ? Math.round((totalMistakes / totalShots) * 100) : 0;
+
+    if (!totalShots) {
+      return '( no data yet )';
+    }
+
     return `Shots: ${totalShots} \xa0\xa0 Mistakes: ${totalMistakes} \xa0\xa0 (${average}%)`;
   }
   /* eslint-enable class-methods-use-this */

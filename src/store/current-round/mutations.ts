@@ -31,6 +31,10 @@ const mutations = {
     state.currentHole = 1;
     state.inProgress = true;
     state.holes = [] as Array<RoundHole>;
+    state.tees = roundData.tees || null;
+    state.rating = roundData.rating || null;
+    state.slope = roundData.slope || null;
+
     initHoles(state.holes);
   },
   [UPDATE_CURRENT_HOLE](state: CurrentRoundState, newHole: number) {

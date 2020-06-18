@@ -1,7 +1,8 @@
 <template lang="pug">
-  v-tabs-items(v-model="currentOverViewTab")
-    RoundsSummary
-    StatsSummary
+  #reviewtabs(class="tabs-container" v-touch:swipe="onSwipe")
+    v-tabs-items(v-model="currentOverViewTab")
+      RoundsSummary
+      StatsSummary
 </template>
 
 <script lang="ts">
@@ -36,8 +37,19 @@ export default class ViewRounds extends Vue {
   get currentOverViewTab() {
     return this.getOverviewTab;
   }
+
+  onSwipe(direction: string) {
+    if (direction === 'left' && this.currentOverViewTab === 'Rounds') {
+      this.currentOverViewTab = 'Stats';
+    } else if (direction === 'right' && this.currentOverViewTab === 'Stats') {
+      this.currentOverViewTab = 'Rounds';
+    }
+  }
 }
 </script>
 
 <style lang="stylus" scoped>
+.tabs-container
+  width: 100%;
+  height: 100%;
 </style>

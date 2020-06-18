@@ -10,6 +10,9 @@ export interface CurrentRoundState extends Round {
 export interface CurrentRoundRecord {
   course: string;
   date: string;
+  rating?: number;
+  slope?: number;
+  tees?: string;
 }
 
 export interface CourseDetails {

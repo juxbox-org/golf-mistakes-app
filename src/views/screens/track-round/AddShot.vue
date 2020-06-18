@@ -1,7 +1,6 @@
 <template lang="pug">
   v-list(class="gma-mistake-list")
-    v-list-group(v-for="category in shotCategories" :key="category.name"
-        v-model="category.active" :ripple="false")
+    v-list-group(v-for="category in shotCategories" :key="category.name" :ripple="false")
       template(v-slot:activator)
         v-list-item-content
           v-list-item-title {{ category.name }}

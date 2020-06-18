@@ -78,6 +78,9 @@ const getters = {
     return {
       course: state.course,
       date: state.date,
+      slope: state.slope,
+      rating: state.rating,
+      tees: state.tees,
     };
   },
   [ROUND_DETAILS](state: CurrentRoundState,

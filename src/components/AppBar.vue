@@ -2,9 +2,9 @@
   v-app-bar(app color="primary" dark)
     v-toolbar-title {{ title }}
     v-spacer
-    SaveRoundButtonGroup(v-if="isTrackingStarted")
-    EditShotsButtonGroup(v-else-if="isSummary")
-    EditRoundsButtonGroup(v-else-if="isReviewing")
+    SaveRoundButtonGroup(v-show="isTrackingStarted")
+    EditShotsButtonGroup(v-show="isSummary")
+    EditRoundsButtonGroup(v-show="isReviewing")
     template(v-if="isTrackingStarted" v-slot:extension)
       HoleNavigationBar
     template(v-else-if="isReviewing" v-slot:extension)
@@ -59,7 +59,7 @@ export default class AppBar extends Vue {
     }
 
     if (this.isSummary) {
-      return 'Shot Types';
+      return 'Edit Shot Types';
     }
 
     return '(Unknown)';

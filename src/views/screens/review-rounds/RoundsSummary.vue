@@ -103,6 +103,10 @@ export default class RoundsSummary extends Vue {
   mounted() {
     bus.$on('edit-rounds', this.toggleEditingRounds);
   }
+
+  destroyed() {
+    bus.$off('edit-rounds', this.toggleEditingRounds);
+  }
 }
 </script>
 
