@@ -35,6 +35,7 @@ export interface RoundShot {
   category?: string;
   mistake: boolean;
   addPenalty: boolean;
+  result?: number;
 }
 
 export interface RoundData {

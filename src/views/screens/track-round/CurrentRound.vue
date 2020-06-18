@@ -67,7 +67,7 @@
             span(class="gma-shot__title-inline") Penalty:
             span(class="gma-shot__content-inline") {{ shotInfo.penalty }}
 
-    v-dialog(v-model="showResultsDialog")
+    v-dialog(v-model="showResultsDialog" persistent)
       ResultsDialog(@click.stop="showResultsDialog = false" :key="currentShot"
         :shotId="currentShot" v-on:results-done="showResultsDialog = false")
 

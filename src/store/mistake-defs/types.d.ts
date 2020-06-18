@@ -2,12 +2,26 @@
  * Declare typescript types for mistake-types Vuex module
  */
 export interface MistakeDef {
-  id?: number; // this is the DB ID
+  id?: number;
   title: string;
   desc: string;
   categoryId?: number;
   totalShots?: number;
   totalMistakes?: number;
+  results?: Results;
+}
+
+export interface Results {
+  slice?: number;
+  hook?: number;
+  thin?: number;
+  fat?: number;
+  top?: number;
+  left?: number;
+  right?: number;
+  short?: number;
+  long?: number;
+  shank?: number;
 }
 
 export interface ShotCategory {

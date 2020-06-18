@@ -8,8 +8,8 @@
             v-icon(v-if="hook" class="offset-top-icon icon-y-flip" :ripple="false") mdi-share
             v-icon(v-else class="offset-top-icon icon-y-flip" :ripple="false") mdi-share-outline
           v-card(class="ma-3" elevation="0" @click.stop="onSelect('long')" :ripple="false")
-            v-icon(v-if="long" class="result-icon") mdi-arrow-up-bold
-            v-icon(v-else class="result-icon") mdi-arrow-up-bold-outline
+            v-icon(v-if="long" class="result-icon top-icon") mdi-arrow-up-bold
+            v-icon(v-else class="result-icon top-icon") mdi-arrow-up-bold-outline
           v-card(class="ma-3" elevation="0" @click.stop="onSelect('slice')" :ripple="false")
             v-icon(v-if="slice" class="offset-top-icon") mdi-share
             v-icon(v-else class="offset-top-icon") mdi-share-outline
@@ -21,6 +21,9 @@
             div(@click.stop="onSelect('thin')")
               v-btn(v-if="thin" class="result-btn result-btn--selected" elevation="0") thin
               v-btn(v-else class="result-btn" outlined) thin
+            div(style="margin-top: 10px;" @click.stop="onSelect('top')")
+              v-btn(v-if="top" class="result-btn result-btn--selected" elevation="0") top
+              v-btn(v-else class="result-btn" outlined) top
             div(style="margin-top: 10px;" @click.stop="onSelect('fat')")
               v-btn(v-if="fat" class="result-btn result-btn--selected" elevation="0") fat
               v-btn(v-else class="result-btn" outlined) fat
@@ -31,8 +34,8 @@
           v-card(class="ma-3" elevation="0")
             div(class="icon-spacer")
           v-card(class="ma-3" elevation="0" @click.stop="onSelect('short')" :ripple="false")
-            v-icon(v-if="short" class="result-icon") mdi-arrow-down-bold
-            v-icon(v-else class="result-icon") mdi-arrow-down-bold-outline
+            v-icon(v-if="short" class="result-icon bottom-icon") mdi-arrow-down-bold
+            v-icon(v-else class="result-icon bottom-icon") mdi-arrow-down-bold-outline
           v-card(class="ma-3" elevation="0" @click.stop="onSelect('shank')" :ripple="false")
             v-icon(v-if="shank" class="offset-bottom-icon icon-x-flip") mdi-share
             v-icon(v-else class="offset-bottom-icon icon-x-flip") mdi-share-outline
@@ -41,6 +44,7 @@
           v-chip(v-show="hook" class="ma-2") hook
           v-chip(v-show="thin" class="ma-2") thin
           v-chip(v-show="fat" class="ma-2") fat
+          v-chip(v-show="top" class="ma-2") top
           v-chip(v-show="left" class="ma-2") left
           v-chip(v-show="right" class="ma-2") right
           v-chip(v-show="short" class="ma-2") short
@@ -82,6 +86,8 @@ export default class ResultsDialog extends Vue {
 
   shank = false;
 
+  top = false;
+
   onSkip() {
     this.$emit('results-done');
   }
@@ -100,6 +106,7 @@ export default class ResultsDialog extends Vue {
           this.left = false;
           this.right = false;
           this.shank = false;
+          this.top = false;
         }
 
         break;
@@ -113,6 +120,7 @@ export default class ResultsDialog extends Vue {
           this.left = false;
           this.right = false;
           this.shank = false;
+          this.top = false;
         }
 
         break;
@@ -125,6 +133,7 @@ export default class ResultsDialog extends Vue {
           this.short = false;
           this.shank = false;
           this.fat = false;
+          this.top = false;
         }
 
         break;
@@ -149,6 +158,7 @@ export default class ResultsDialog extends Vue {
           this.slice = false;
           this.hook = false;
           this.shank = false;
+          this.top = false;
         }
 
         break;
@@ -162,6 +172,7 @@ export default class ResultsDialog extends Vue {
           this.slice = false;
           this.hook = false;
           this.shank = false;
+          this.top = false;
         }
 
         break;
@@ -173,6 +184,7 @@ export default class ResultsDialog extends Vue {
         if (this.thin) {
           this.fat = false;
           this.shank = false;
+          this.top = false;
         }
 
         break;
@@ -185,6 +197,7 @@ export default class ResultsDialog extends Vue {
           this.thin = false;
           this.shank = false;
           this.long = false;
+          this.top = false;
         }
 
         break;
@@ -200,6 +213,24 @@ export default class ResultsDialog extends Vue {
           this.right = false;
           this.long = false;
           this.short = false;
+          this.thin = false;
+          this.fat = false;
+          this.top = false;
+        }
+
+        break;
+      }
+
+      case 'top': {
+        this.top = !this.top;
+
+        if (this.top) {
+          this.hook = false;
+          this.slice = false;
+          this.left = false;
+          this.right = false;
+          this.long = false;
+          this.shank = false;
           this.thin = false;
           this.fat = false;
         }
@@ -223,11 +254,18 @@ export default class ResultsDialog extends Vue {
   margin-left: -20px;
   margin-right: -20px;
   font-size: 70px;
+  height: 70px;
 
 .offset-bottom-icon
   font-size: 70px;
   margin-left: -20px;
-  margin-top: -50px;
+  margin-top: -70px;
+
+.top-icon
+  margin-bottom: -15px;
+
+.bottom-icon
+  margin-top: -30px;
 
 .icon-y-flip
   transform: rotateY(180deg);
