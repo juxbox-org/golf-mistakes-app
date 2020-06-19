@@ -13,6 +13,7 @@
           v-list-item-content
             v-list-item-title {{ shot.title }}
             v-list-item-subtitle {{ shotSummaryStr(shot) }}
+            v-list-item-subtitle {{ resultsSummaryString() }}
           v-list-item-action
             v-btn(icon @click.stop="openInfoDialog(shot.title, shot.desc, category.name)")
               v-icon(color="grey lighten-1") mdi-information
@@ -93,6 +94,11 @@ export default class StatsSummary extends Vue {
     }
 
     return `Shots: ${totalShots} \xa0\xa0 Mistakes: ${totalMistakes} \xa0\xa0 (${average}%)`;
+  }
+
+  resultsSummaryString() {
+    const pct = '10%';
+    return `Long: ${pct} \xa0\xa0 Short: 10% \xa0\xa0 Right: 10%  ...`;
   }
   /* eslint-enable class-methods-use-this */
 

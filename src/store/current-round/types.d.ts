@@ -31,3 +31,21 @@ export interface RoundDetails {
   holesPlayed: number;
   putts: number;
 }
+
+export interface ShotInfo {
+  shotIndex: number;
+  category: string;
+  mistake: boolean;
+  penalty: boolean;
+  shotType: ShotType;
+}
+
+export interface ShotType {
+  title: string;
+  desc: string;
+}
+
+export interface ResultData {
+  shotId: number;
+  result: number;
+}

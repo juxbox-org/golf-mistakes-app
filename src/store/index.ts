@@ -15,11 +15,6 @@ export default new Vuex.Store({
   state: {
     version: 1.0,
     view: '',
-    screen: {
-      summary: '',
-      review: '',
-      track: '',
-    },
   },
   mutations: {
   },

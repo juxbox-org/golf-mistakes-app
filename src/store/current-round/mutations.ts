@@ -12,10 +12,12 @@ import {
   DELETE_ROUND,
   TOGGLE_PENALTY_FOR_HOLE,
   EDIT_HOLE,
+  ADD_RESULT_TO_SHOT,
 } from './mutation-types';
 import {
   CurrentRoundState,
   CurrentRoundRecord,
+  ResultData,
 } from './types.d';
 
 function initHoles(holes: Array<RoundHole>) {
@@ -113,6 +115,12 @@ const mutations = {
   },
   [EDIT_HOLE](state: CurrentRoundState, isEditing: boolean) {
     state.isEditingHole = isEditing;
+  },
+  [ADD_RESULT_TO_SHOT](state: CurrentRoundState, resultData: ResultData) {
+    const hole = state.holes[state.currentHole - 1];
+    const shot = hole.shots[resultData.shotId];
+
+    shot.result = resultData.result;
   },
 };
 

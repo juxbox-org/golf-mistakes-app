@@ -69,7 +69,7 @@
 
     v-dialog(v-model="showResultsDialog" persistent)
       ResultsDialog(@click.stop="showResultsDialog = false" :key="currentShot"
-        :shotId="currentShot" v-on:results-done="showResultsDialog = false")
+        :shotId="currentShot" v-on:results-done="onResultsDone($event)")
 
   // This isn't working on Android when installed as debug apk, but works when debugging
   // using local web server :(
@@ -100,6 +100,7 @@ import {
   DELETE_ROUND,
   TOGGLE_PENALTY_FOR_HOLE,
   UPDATE_CURRENT_HOLE,
+  ADD_RESULT_TO_SHOT,
 } from '@/store/current-round/mutation-types';
 import {
   IS_ADDING_MISTAKE,
@@ -112,7 +113,7 @@ import {
   COURSE_DETAILS,
   IS_EDITING_HOLE,
 } from '@/store/current-round/getter-types';
-import { CourseDetails } from '@/store/current-round/types.d';
+import { CourseDetails, ShotInfo, ResultData } from '@/store/current-round/types.d';
 import { MISTAKES, CATEGORIES } from '@/store/mistake-defs/getter-types';
 import { MistakeDef, ShotCategory } from '@/store/mistake-defs/types.d';
 import { SAVE_ROUND } from '@/store/rounds/action-types';
@@ -199,6 +200,9 @@ export default class CurrentRound extends Vue {
   @CurrentRoundModule.Mutation(UPDATE_CURRENT_HOLE)
   updateCurrentHole!: (arg0: number) => void;
 
+  @CurrentRoundModule.Mutation(ADD_RESULT_TO_SHOT)
+  addResultToShot!: (arg0: ResultData) => void;
+
   @CurrentRoundModule.Getter(IS_ADDING_MISTAKE)
   isAddingShot!: boolean;
 
@@ -245,7 +249,7 @@ export default class CurrentRound extends Vue {
   currentShot?: number = null;
 
   shotInfo = {
-    shotNo: '',
+    shotNo: 0,
     type: '',
     desc: '',
     category: '',
@@ -253,7 +257,6 @@ export default class CurrentRound extends Vue {
     penalty: '',
   };
 
-  /* eslint-disable */
   get holeInfoString() {
     const penaltiesStr = this.penaltiesForCurrentHole ? `+${this.penaltiesForCurrentHole}` : null;
     return `Par: ${this.par || '?'} \xa0Shots: ${this.shots.length}${penaltiesStr || ''} \xa0`
@@ -331,7 +334,7 @@ export default class CurrentRound extends Vue {
   }
 
   onToggleMistake(shotIndex: number) {
-    return (event: any) => {
+    return (event: TouchEvent) => {
       if (event.cancelable) {
         event.preventDefault();
         event.stopPropagation();
@@ -342,6 +345,10 @@ export default class CurrentRound extends Vue {
       if (this.shots[shotIndex].mistake) {
         this.currentShot = shotIndex;
         this.showResultsDialog = true;
+      } else {
+        // Clear the mistake result(s) from the shot
+        this.addResultToShot({ shotId: shotIndex, result: 0 });
+        this.expandHoleInfo();
       }
 
       return true;
@@ -381,9 +388,11 @@ export default class CurrentRound extends Vue {
 
   addPenalty(shotIndex: number) {
     this.togglePenaltyForHole(shotIndex);
+
+    this.expandHoleInfo();
   }
 
-  openShotInfoDialog(shot: any) {
+  openShotInfoDialog(shot: ShotInfo) {
     this.shotInfo = {
       shotNo: shot.shotIndex + 1,
       type: shot.shotType.title,
@@ -394,6 +403,14 @@ export default class CurrentRound extends Vue {
     };
 
     this.showShotInfo = true;
+  }
+
+  onResultsDone(skip: boolean) {
+    this.showResultsDialog = false;
+
+    if (!skip) {
+      this.expandHoleInfo();
+    }
   }
 
   /* eslint-disable class-methods-use-this */

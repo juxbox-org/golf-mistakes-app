@@ -16,7 +16,6 @@ export interface ScreenData {
 export interface RootState {
   version: number;
   view: string;
-  screen: Screen;
   currentRound?: CurrentRoundState;
   mistakeDefs?: MistakeDefsState;
   rounds?: RoundState;
