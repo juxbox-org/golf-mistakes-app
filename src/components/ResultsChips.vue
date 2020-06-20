@@ -1,7 +1,7 @@
 <template lang="pug">
   v-row(justify="center" align="center" class="chip-results")
     v-chip(v-for="type in resultTypes" :key="type" v-show="results[type]"
-      :close="isCloseable" class="ma-2" @click.close="onClose(type)") {{ type }}
+      :close="isCloseable" class="ma-2" @click:close="onClose(type)") {{ type }}
 </template>
 
 <script lang="ts">
