@@ -1,70 +1,55 @@
 <template lang="pug">
-  v-card
-    v-card-title(class="headline") Mistake Result
-    v-card-text
-      v-container
-        v-row(justify="center" align="center")
-          v-card(class="ma-3" elevation="0" @click.stop="onSelect('hook')" :ripple="false")
-            v-icon(v-if="results.hook" class="offset-top-icon icon-y-flip"
-              :ripple="false") mdi-share
-            v-icon(v-else class="offset-top-icon icon-y-flip" :ripple="false") mdi-share-outline
-          v-card(class="ma-3" elevation="0" @click.stop="onSelect('long')" :ripple="false")
-            v-icon(v-if="results.long" class="result-icon top-icon") mdi-arrow-up-bold
-            v-icon(v-else class="result-icon top-icon") mdi-arrow-up-bold-outline
-          v-card(class="ma-3" elevation="0" @click.stop="onSelect('slice')" :ripple="false")
-            v-icon(v-if="results.slice" class="offset-top-icon") mdi-share
-            v-icon(v-else class="offset-top-icon") mdi-share-outline
-        v-row(justify="center" align="center")
-          v-card(class="ma-3" elevation="0" @click.stop="onSelect('left')" :ripple="false")
-            v-icon(v-if="results.left" class="result-icon") mdi-arrow-left-bold
-            v-icon(v-else class="result-icon") mdi-arrow-left-bold-outline
-          v-card(class="ma-3" elevation="0")
-            div(@click.stop="onSelect('thin')")
-              v-btn(v-if="results.thin" class="result-btn result-btn--selected" elevation="0") thin
-              v-btn(v-else class="result-btn" outlined) thin
-            div(style="margin-top: 5px;" @click.stop="onSelect('top')")
-              v-btn(v-if="results.top" class="result-btn result-btn--selected" elevation="0") top
-              v-btn(v-else class="result-btn" outlined) top
-            div(style="margin-top: 5px;" @click.stop="onSelect('fat')")
-              v-btn(v-if="results.fat" class="result-btn result-btn--selected" elevation="0") fat
-              v-btn(v-else class="result-btn" outlined) fat
-          v-card(class="ma-3" elevation="0" @click.stop="onSelect('right')" :ripple="false")
-            v-icon(v-if="results.right" class="result-icon") mdi-arrow-right-bold
-            v-icon(v-else class="result-icon") mdi-arrow-right-bold-outline
-        v-row(justify="center" align="center")
-          v-card(class="ma-3" elevation="0")
-            div(class="icon-spacer")
-          v-card(class="ma-3" elevation="0" @click.stop="onSelect('short')" :ripple="false")
-            v-icon(v-if="results.short" class="result-icon bottom-icon") mdi-arrow-down-bold
-            v-icon(v-else class="result-icon bottom-icon") mdi-arrow-down-bold-outline
-          v-card(class="ma-3" elevation="0" @click.stop="onSelect('shank')" :ripple="false")
-            v-icon(v-if="results.shank" class="offset-bottom-icon icon-x-flip") mdi-share
-            v-icon(v-else class="offset-bottom-icon icon-x-flip") mdi-share-outline
-        v-row(justify="center" align="center" class="chip-results")
-          v-chip(v-show="results.slice" class="ma-2" close
-            @click:close="results.slice = false") slice
-          v-chip(v-show="results.hook" class="ma-2" close
-            @click:close="results.hook = false") hook
-          v-chip(v-show="results.thin" class="ma-2" close
-            @click:close="results.thin = false") thin
-          v-chip(v-show="results.fat" class="ma-2" close
-            @click:close="results.fat = false") fat
-          v-chip(v-show="results.top" class="ma-2" close
-            @click:close="results.top = false") top
-          v-chip(v-show="results.left" class="ma-2" close
-            @click:close="results.left = false") left
-          v-chip(v-show="results.right" class="ma-2" close
-            @click:close="results.right = false") right
-          v-chip(v-show="results.short" class="ma-2" close
-            @click:close="results.short = false") short
-          v-chip(v-show="results.long" class="ma-2" close
-            @click:close="results.long = false") long
-          v-chip(v-show="results.shank" class="ma-2" close
-            @click:close="results.shank = false") shank
-    v-card-actions
-        v-spacer
-        v-btn(class="ma-2" text @click="onSkip") skip
-        v-btn(class="ma-2" text @click="onDone") done
+  v-dialog(v-model="showResultsDialog" persistent)
+    v-card
+      v-card-title(class="headline") Mistake Result
+      v-card-text
+        v-container
+          v-row(justify="center" align="center")
+            v-card(class="ma-3" elevation="0" @click.stop="onSelect('hook')" :ripple="false")
+              v-icon(v-if="results.hook" class="offset-top-icon icon-y-flip"
+                :ripple="false") mdi-share
+              v-icon(v-else class="offset-top-icon icon-y-flip" :ripple="false") mdi-share-outline
+            v-card(class="ma-3" elevation="0" @click.stop="onSelect('long')" :ripple="false")
+              v-icon(v-if="results.long" class="result-icon top-icon") mdi-arrow-up-bold
+              v-icon(v-else class="result-icon top-icon") mdi-arrow-up-bold-outline
+            v-card(class="ma-3" elevation="0" @click.stop="onSelect('slice')" :ripple="false")
+              v-icon(v-if="results.slice" class="offset-top-icon") mdi-share
+              v-icon(v-else class="offset-top-icon") mdi-share-outline
+          v-row(justify="center" align="center")
+            v-card(class="ma-3" elevation="0" @click.stop="onSelect('left')" :ripple="false")
+              v-icon(v-if="results.left" class="result-icon") mdi-arrow-left-bold
+              v-icon(v-else class="result-icon") mdi-arrow-left-bold-outline
+            v-card(class="ma-3" elevation="0")
+              div(@click.stop="onSelect('thin')")
+                v-btn(v-if="results.thin" class="result-btn result-btn--selected"
+                  elevation="0") thin
+                v-btn(v-else class="result-btn" outlined) thin
+              div(style="margin-top: 5px;" @click.stop="onSelect('top')")
+                v-btn(v-if="results.top" class="result-btn result-btn--selected" elevation="0") top
+                v-btn(v-else class="result-btn" outlined) top
+              div(style="margin-top: 5px;" @click.stop="onSelect('fat')")
+                v-btn(v-if="results.fat" class="result-btn result-btn--selected" elevation="0") fat
+                v-btn(v-else class="result-btn" outlined) fat
+            v-card(class="ma-3" elevation="0" @click.stop="onSelect('right')" :ripple="false")
+              v-icon(v-if="results.right" class="result-icon") mdi-arrow-right-bold
+              v-icon(v-else class="result-icon") mdi-arrow-right-bold-outline
+          v-row(justify="center" align="center")
+            v-card(class="ma-3" elevation="0")
+              div(class="icon-spacer")
+            v-card(class="ma-3" elevation="0" @click.stop="onSelect('short')" :ripple="false")
+              v-icon(v-if="results.short" class="result-icon bottom-icon") mdi-arrow-down-bold
+              v-icon(v-else class="result-icon bottom-icon") mdi-arrow-down-bold-outline
+            v-card(class="ma-3" elevation="0" @click.stop="onSelect('shank')" :ripple="false")
+              v-icon(v-if="results.shank" class="offset-bottom-icon icon-x-flip") mdi-share
+              v-icon(v-else class="offset-bottom-icon icon-x-flip") mdi-share-outline
+
+          ResultsChips(:results="results" :isCloseable="true"
+            :v-on.chip-closed="onChipClosed('$event')")
+
+        v-card-actions
+          v-spacer
+          v-btn(class="ma-2" text @click="onSkip") skip
+          v-btn(class="ma-2" text @click="onDone") done
 </template>
 
 <script lang="ts">
@@ -74,10 +59,11 @@ import { namespace } from 'vuex-class';
 import { ADD_RESULT_TO_SHOT } from '@/store/current-round/mutation-types';
 import { ResultData } from '@/store/current-round/types.d';
 import { RESULTS_MAP } from '@/store/consts';
+import ResultsChips from '@/components/ResultsChips.vue';
 
 const CurrentRoundModule = namespace('currentRound');
 
-interface ResultsTypes {
+interface IndexableResults {
   [key: string]: boolean;
 }
 
@@ -86,6 +72,11 @@ interface ResultsTypes {
 
   props: {
     shotId: Number,
+    showResultsDialog: Boolean,
+  },
+
+  components: {
+    ResultsChips,
   },
 })
 export default class ResultsDialog extends Vue {
@@ -93,6 +84,8 @@ export default class ResultsDialog extends Vue {
   addResultToShot!: (arg0: ResultData) => void;
 
   shotId!: number;
+
+  showResultsDialog!: boolean;
 
   results = {
     slice: false,
@@ -115,13 +108,17 @@ export default class ResultsDialog extends Vue {
     let resultAccum = 0;
 
     RESULTS_MAP.forEach((value, key) => {
-      if ((this.results as ResultsTypes)[key]) {
+      if ((this.results as IndexableResults)[key]) {
         resultAccum += value;
       }
     });
 
     this.addResultToShot({ shotId: this.shotId, result: resultAccum });
     this.$emit('results-done', false);
+  }
+
+  onChipClosed(type: string) {
+    (this.results as IndexableResults)[type] = false;
   }
 
   onSelect(item: string) {

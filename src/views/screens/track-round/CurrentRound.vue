@@ -67,9 +67,8 @@
             span(class="gma-shot__title-inline") Penalty:
             span(class="gma-shot__content-inline") {{ shotInfo.penalty }}
 
-    v-dialog(v-model="showResultsDialog" persistent)
-      ResultsDialog(@click.stop="showResultsDialog = false" :key="currentShot"
-        :shotId="currentShot" v-on:results-done="onResultsDone($event)")
+    ResultsDialog(v-if="showResultsDialog" :shotId="currentShot"
+      :showResultsDialog="showResultsDialog" v-on:results-done="onResultsDone($event)")
 
   // This isn't working on Android when installed as debug apk, but works when debugging
   // using local web server :(
