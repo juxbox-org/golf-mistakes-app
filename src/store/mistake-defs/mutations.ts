@@ -1,3 +1,4 @@
+import getKeysForResult from '@/store/helpers/results';
 import {
   INSERT_MISTAKE,
   INSERT_CATEGORY,
@@ -9,8 +10,19 @@ import {
   UPDATE_SHOTS_FOR_SHOTTYPE,
   REMOVE_MISTAKE_FOR_SHOTTYPE,
   REMOVE_SHOT_FOR_SHOTTYPE,
+  UPDATE_RESULTS_FOR_SHOTTYPE,
+  REMOVE_RESULT_FOR_SHOTTYPE,
 } from './mutation-types';
-import { MistakeDefsState, MistakeDef, ShotCategory } from './types.d';
+import {
+  MistakeDefsState,
+  MistakeDef,
+  ShotCategory,
+  ShotResult,
+} from './types.d';
+
+interface IndexableResults {
+  [key: string]: number;
+}
 
 const PUTT_CATEGORY_ID = 0;
 
@@ -100,7 +112,7 @@ const mutations = {
     const index = state.mistakeDefs.findIndex((item) => item.id === shotId);
 
     if (index < 0) {
-      throw Error(`UPDATE_MISTAKES_FOR_SHOTTYPE: shot type doesn't exist for id: ${shotId}`);
+      throw Error(`REMOVE_MISTAKE_FOR_SHOTTYPE: shot type doesn't exist for id: ${shotId}`);
     }
 
     const shot = state.mistakeDefs[index];
@@ -113,7 +125,7 @@ const mutations = {
     const index = state.mistakeDefs.findIndex((item) => item.id === shotId);
 
     if (index < 0) {
-      throw Error(`UPDATE_SHOTS_FOR_SHOTTYPE: shot type doesn't exist for id: ${shotId}`);
+      throw Error(`REMOVE_SHOT_FOR_SHOTTYPE: shot type doesn't exist for id: ${shotId}`);
     }
 
     const shot = state.mistakeDefs[index];
@@ -121,6 +133,40 @@ const mutations = {
     if (shot.totalShots > 0) {
       state.mistakeDefs[index].totalShots -= 1;
     }
+  },
+  [UPDATE_RESULTS_FOR_SHOTTYPE](state: MistakeDefsState, shotResult: ShotResult) {
+    const index = state.mistakeDefs.findIndex((item) => item.id === shotResult.shotId);
+
+    if (index < 0) {
+      throw Error('UPDATE_RESULTS_FOR_SHOTTYPE: shot type doesn\'t'
+                  + ` exist for id: ${shotResult.shotId}`);
+    }
+
+    const shot = state.mistakeDefs[index];
+
+    const resultKeys = getKeysForResult(shotResult.result);
+
+    resultKeys.forEach((key) => {
+      (shot.results as IndexableResults)[key] += 1;
+    });
+  },
+  [REMOVE_RESULT_FOR_SHOTTYPE](state: MistakeDefsState, shotResult: ShotResult) {
+    const index = state.mistakeDefs.findIndex((item) => item.id === shotResult.shotId);
+
+    if (index < 0) {
+      throw Error('REMOVE_RESULT_FOR_SHOTTYPE: shot type doesn\'t'
+                  + ` exist for id: ${shotResult.shotId}`);
+    }
+
+    const shot = state.mistakeDefs[index];
+
+    const resultKeys = getKeysForResult(shotResult.result);
+
+    resultKeys.forEach((key) => {
+      if ((shot.results as IndexableResults)[key] > 0) {
+        (shot.results as IndexableResults)[key] -= 1;
+      }
+    });
   },
 };
 

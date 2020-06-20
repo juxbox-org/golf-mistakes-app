@@ -48,6 +48,11 @@ export interface MistakeRecord {
   data: MistakeDef;
 }
 
+export interface ShotResult {
+  shotId: number;
+  result: number;
+}
+
 // Action function types
 export interface CreateMistakeAction {
   (mistakeData: MistakeDef): Promise<void>;

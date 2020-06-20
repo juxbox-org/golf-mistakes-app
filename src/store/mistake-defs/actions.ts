@@ -1,6 +1,7 @@
 import { ActionContext } from 'vuex';
 import { RootState } from '@/store/rootTypes.d';
 import { RoundData, Round } from '@/store/rounds/types.d';
+import { RESULTS_MAP } from '@/store/consts';
 import {
   CREATE_MISTAKE,
   CREATE_CATEGORY,
@@ -22,16 +23,28 @@ import {
   UPDATE_MISTAKES_FOR_SHOTTYPE,
   REMOVE_MISTAKE_FOR_SHOTTYPE,
   REMOVE_SHOT_FOR_SHOTTYPE,
+  UPDATE_RESULTS_FOR_SHOTTYPE,
+  REMOVE_RESULT_FOR_SHOTTYPE,
 } from './mutation-types';
 import { MistakeDefsState, MistakeDef } from './types.d';
 
+interface IndexableResults {
+  [key: string]: number;
+}
 const actions = {
   [CREATE_MISTAKE](context: ActionContext<MistakeDefsState, RootState>, mistakeData: MistakeDef) {
+    const results = {};
+
+    RESULTS_MAP.forEach((value, key) => {
+      (results as IndexableResults)[key] = 0;
+    });
+
     context.commit(INSERT_MISTAKE, {
       ...mistakeData,
       totalShots: 0,
       totalMistakes: 0,
       id: context.rootState.mistakeDefs.id,
+      results,
     });
     context.commit(INCREMENT_ID);
   },
@@ -69,6 +82,8 @@ const actions = {
         hole.shots.forEach((shot) => {
           if (shot.mistake) {
             context.commit(UPDATE_MISTAKES_FOR_SHOTTYPE, shot.shotId);
+            context.commit(UPDATE_RESULTS_FOR_SHOTTYPE,
+              { shotId: shot.shotId, result: shot.result });
           }
 
           context.commit(UPDATE_SHOTS_FOR_SHOTTYPE, shot.shotId);
@@ -82,6 +97,8 @@ const actions = {
         hole.shots.forEach((shot) => {
           if (shot.mistake) {
             context.commit(REMOVE_MISTAKE_FOR_SHOTTYPE, shot.shotId);
+            context.commit(REMOVE_RESULT_FOR_SHOTTYPE,
+              { shotId: shot.shotId, result: shot.result });
           }
 
           context.commit(REMOVE_SHOT_FOR_SHOTTYPE, shot.shotId);
