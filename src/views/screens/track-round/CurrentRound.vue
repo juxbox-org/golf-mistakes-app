@@ -31,8 +31,8 @@
         v-btn(v-else dark rounded small) + add a shot
       v-fab-transition
         v-btn(color="secondary" small
-              active-class="btn-info--active" fixed fab
-              bottom right v-model="showHoleInfo" @click="onInfoButtonClicked")
+            active-class="btn-info--active" fixed fab
+            bottom right v-model="showHoleInfo" @click="onInfoButtonClicked")
           v-icon mdi-golf
           div(class="hole-info")
             div(class="hole-info__content")
@@ -49,7 +49,7 @@
         v-card-title(class="headline") Select Par
         div(class="d-flex par-actions")
           div(v-for="n in 3")
-            v-btn(class="ma-2" dark elevation="0" small fab @click="par = n + 2") {{ n + 2}}
+            v-btn(class="ma-2" dark elevation="0" small fab @click="par = n + 2") {{ n + 2 }}
 
     v-dialog(v-model="showShotInfo" max-width="300")
       v-card(@click.stop="showShotInfo = false")
@@ -70,8 +70,8 @@
     ResultsDialog(v-if="showResultsDialog" :shotId="currentShot"
       :showResultsDialog="showResultsDialog" v-on:results-done="onResultsDone($event)")
 
-  // This isn't working on Android when installed as debug apk, but works when debugging
-  // using local web server :(
+  // This isn't working on Android when installed as apk, but works when debugging
+  // using local web server :( Needs further investigation.
     v-speed-dial(fixed right bottom v-show="!isAddingShot" v-model="edit")
       template(v-slot:activator)
         v-btn(dark small fab)

@@ -7,7 +7,7 @@
           v-row(justify="center" align="center")
             v-card(class="ma-3" elevation="0" @click.stop="onSelect('hook')" :ripple="false")
               v-icon(v-if="results.hook" class="offset-top-icon icon-y-flip"
-                :ripple="false") mdi-share
+                  :ripple="false") mdi-share
               v-icon(v-else class="offset-top-icon icon-y-flip" :ripple="false") mdi-share-outline
             v-card(class="ma-3" elevation="0" @click.stop="onSelect('long')" :ripple="false")
               v-icon(v-if="results.long" class="result-icon top-icon") mdi-arrow-up-bold
@@ -22,7 +22,7 @@
             v-card(class="ma-3" elevation="0")
               div(@click.stop="onSelect('thin')")
                 v-btn(v-if="results.thin" class="result-btn result-btn--selected"
-                  elevation="0") thin
+                    elevation="0") thin
                 v-btn(v-else class="result-btn" outlined) thin
               div(style="margin-top: 5px;" @click.stop="onSelect('top')")
                 v-btn(v-if="results.top" class="result-btn result-btn--selected" elevation="0") top
@@ -44,7 +44,7 @@
               v-icon(v-else class="offset-bottom-icon icon-x-flip") mdi-share-outline
 
           ResultsChips(:results="results" :isCloseable="true"
-            v-on:chip-closed="onChipClosed($event)")
+              v-on:chip-closed="onChipClosed($event)")
 
         v-card-actions
           v-spacer

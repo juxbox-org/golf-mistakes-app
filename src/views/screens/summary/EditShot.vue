@@ -48,6 +48,7 @@ const MistakeDefsModule = namespace('mistakeDefs');
 
   props: {
     shotId: Number,
+    categoryId: Number,
   },
 })
 export default class EditShot extends Vue {
@@ -71,6 +72,8 @@ export default class EditShot extends Vue {
 
   shotId!: number;
 
+  categoryId!: number;
+
   shotTitle = '';
 
   shotDesc = '';
@@ -87,6 +90,10 @@ export default class EditShot extends Vue {
 
   get isExistingShot() {
     return this.shotId || this.shotId === 0;
+  }
+
+  get hasExistingCategory() {
+    return this.categoryId || this.categoryId === 0;
   }
 
   onSave() {
@@ -138,26 +145,33 @@ export default class EditShot extends Vue {
 
   mounted() {
     if (this.isExistingShot) {
-      const shotObj = this.mistakes.find((mistake) => mistake.id === this.shotId);
-      if (!shotObj) {
+      const shot = this.mistakes.find((item) => item.id === this.shotId);
+      if (!shot) {
         throw Error(`Shot for ID, ${this.shotId}, doesn't exist`);
       }
 
-      const categoryObj = this.categories.find((category) => category.id === shotObj.categoryId);
-      if (!categoryObj) {
-        throw Error(`Category for categoryId, ${categoryObj.id}, doesn't exist`);
+      const category = this.categories.find((item) => item.id === shot.categoryId);
+      if (!category) {
+        throw Error(`Category for categoryId, ${category.id}, doesn't exist`);
       }
 
-      this.shotTitle = shotObj.title;
-      this.shotDesc = shotObj.desc;
-      this.shotCategory = categoryObj.name;
+      this.shotTitle = shot.title;
+      this.shotDesc = shot.desc;
+      this.shotCategory = category.name;
+    } else if (this.hasExistingCategory) {
+      const category = this.categories.find((item) => item.id === this.categoryId);
+      if (!category) {
+        throw Error(`Category for categoryId, ${category.id}, doesn't exist`);
+      }
+
+      this.shotCategory = category.name;
     }
   }
 }
 </script>
 
 <style lang="stylus" scoped>
-  .form-content {
-    width: 100%;
-  }
+.form-content {
+  width: 100%;
+}
 </style>

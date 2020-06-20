@@ -19,7 +19,7 @@
               v-btn(icon @click="editShot(shot.id)")
                 v-icon(color="grey lighten-1") mdi-pencil-circle
           v-divider(v-show="category.shots.length")
-          v-list-item(class='gma-list-item__link' @click="createShot")
+          v-list-item(class='gma-list-item__link' @click="createShot()")
             v-btn(small rounded outlined elevation="0") + create a shot for {{ category.name }}
 
     v-fab-transition
@@ -27,7 +27,8 @@
           @click="createShot")
         v-icon mdi-plus
 
-    EditShot(v-if="isEditing || isAdding" v-on:done-edit="doneEditing" :shotId="shotToEdit")
+    EditShot(v-if="isEditing || isAdding" v-on:done-edit="doneEditing" :shotId="shotToEdit"
+        :categoryId="activeCategoryId")
 </template>
 
 <script lang="ts">

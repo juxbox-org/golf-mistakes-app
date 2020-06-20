@@ -45,8 +45,6 @@ export default class StartRound extends Vue {
   date = new Date().toISOString().substr(0, 10);
 
   onCreate() {
-    console.log(typeof this.slope);
-
     if (this.course.length) {
       this.beginTracking({
         course: this.course,

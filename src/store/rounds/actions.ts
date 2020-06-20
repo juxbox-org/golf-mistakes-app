@@ -71,6 +71,7 @@ const actions = {
             category: category.name,
             mistake: shot.mistake,
             addPenalty: shot.addPenalty,
+            result: shot.result,
           });
 
           round.totalShots += 1;
