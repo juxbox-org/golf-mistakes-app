@@ -9,7 +9,8 @@
             div {{ categorySummaryStr(category) }}
 
         v-list-item(v-for="shot in category.shots" :key="shot.title"
-            :ripple="false" color="secondary" @click.stop="openInfoDialog(shot, category.name)")
+            :ripple="false" color="secondary" @click.stop="openInfoDialog(shot, category.name)"
+            v-bind:class="getRiskClass(shot)")
           v-list-item-content
             v-list-item-title {{ shot.title }}
             v-list-item-subtitle {{ shotSummaryStr(shot) }}
@@ -111,6 +112,10 @@ export default class StatsSummary extends Vue {
   resultsSummaryString(shot: MistakeDef) {
     const resultsSummary = resultsSummaryForShot(shot);
 
+    if (!resultsSummary.size) {
+      return '( no mistakes )';
+    }
+
     let summaryStr = '';
 
     resultsSummary.forEach((value: number, key: string) => {
@@ -119,6 +124,26 @@ export default class StatsSummary extends Vue {
     });
 
     return summaryStr;
+  }
+
+  getRiskClass(shot: MistakeDef) {
+    const totalShots = shot.totalShots || 0;
+    const totalMistakes = shot.totalMistakes || 0;
+    const average = totalShots ? Math.round((totalMistakes / totalShots) * 100) : 0;
+
+    if (totalShots < 10) {
+      return 'gma-no-risk';
+    }
+
+    if (average >= 60) {
+      return 'gma-high-risk';
+    }
+
+    if (average <= 20) {
+      return 'gma-low-risk';
+    }
+
+    return 'gma-medium-risk';
   }
   /* eslint-enable class-methods-use-this */
 
