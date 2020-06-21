@@ -44,7 +44,7 @@
               v-icon(v-else class="offset-bottom-icon icon-x-flip") mdi-share-outline
 
           ResultsChips(:results="results" :isCloseable="true" :justify="'center'"
-              v-on:chip-closed="onChipClosed($event)")
+              v-on:chip-closed="onChipClosed($event)" :hasData="false")
 
         v-card-actions
           v-spacer
@@ -93,7 +93,7 @@ export default class ResultsDialog extends Vue {
   };
 
   onSkip() {
-    this.$emit('results-done');
+    this.$emit('results-done', { shotId: this.shotId, result: null });
   }
 
   onDone() {
@@ -105,9 +105,7 @@ export default class ResultsDialog extends Vue {
       }
     });
 
-    this.$nextTick(() => {
-      this.$emit('results-done', { shotId: this.shotId, result: resultAccum });
-    });
+    this.$emit('results-done', { shotId: this.shotId, result: resultAccum });
   }
 
   onChipClosed(type: string) {

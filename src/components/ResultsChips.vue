@@ -1,7 +1,11 @@
 <template lang="pug">
   v-row(:justify="justify" align="center" class="chip-results")
-    v-chip(v-for="type in resultTypes" :key="type" v-show="results[type]"
-        :close="isCloseable" class="ma-2" @click:close="onClose(type)") {{ type }}
+    div(v-if="hasData")
+      v-chip(v-for="result in data" :key="result[0]"
+        class="ma-1") {{ getResultStr(result) }}
+    div(v-else)
+      v-chip(v-for="type in resultTypes" :key="type" v-show="results[type]"
+          :close="isCloseable" class="ma-1" @click:close="onClose(type)") {{ type }}
 </template>
 
 <script lang="ts">
@@ -15,10 +19,14 @@ import { RESULTS_MAP } from '@/store/consts';
   props: {
     isCloseable: Boolean,
     results: Object,
+    data: Array,
     justify: String,
+    hasData: Boolean,
   },
 })
 export default class ResultsChips extends Vue {
+  hasData!: boolean;
+
   results!: Map<string, boolean>;
 
   isCloseable!: boolean;
@@ -26,6 +34,12 @@ export default class ResultsChips extends Vue {
   justify!: string;
 
   resultTypes = [...RESULTS_MAP.keys()];
+
+  /* eslint-disable class-methods-use-this */
+  getResultStr(result: Array<Iterator<number>>) {
+    return `${result[0]} \xa0\xa0${result[1]}%`;
+  }
+  /* eslint-enable class-methods-use-this */
 
   onClose(type: string) {
     this.$emit('chip-closed', type);

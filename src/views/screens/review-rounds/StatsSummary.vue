@@ -9,13 +9,13 @@
             div {{ categorySummaryStr(category) }}
 
         v-list-item(v-for="shot in category.shots" :key="shot.title"
-            :ripple="false" color="secondary")
+            :ripple="false" color="secondary" @click.stop="openInfoDialog(shot, category.name)")
           v-list-item-content
             v-list-item-title {{ shot.title }}
             v-list-item-subtitle {{ shotSummaryStr(shot) }}
             v-list-item-subtitle {{ resultsSummaryString(shot) }}
           v-list-item-action
-            v-btn(icon @click.stop="openInfoDialog(shot.title, shot.desc, category.name)")
+            v-btn(icon)
               v-icon(color="grey lighten-1") mdi-information
 
         v-list-item(v-if="!category.shots.length" :ripple="false")
@@ -32,6 +32,11 @@
           div(class="gma-shot__content") {{ shotInfo.category }}
           div(Class="gma-shot__title") Description:
           div(class="gma-shot__content") {{ shotInfo.desc }}
+          div(class="gma-shot__title") Result:
+          div(class="gma-shot__content")
+            ResultsChips(v-if="shotInfo.result !== null" :isCloseable="false"
+                :data="shotInfo.result" :justify="'start'" :hasData="true")
+            span(v-else) (no result recorded)
 </template>
 
 <script lang="ts">
@@ -42,15 +47,20 @@ import { resultsSummaryForShot } from '@/store/helpers/results';
 import { MISTAKES, SHOTS_CATEGORIES_WITH_SUMMARY } from '@/store/mistake-defs/getter-types';
 import { MistakeDef, ShotCategoryWithSummary } from '@/store/mistake-defs/types.d';
 import { namespace } from 'vuex-class';
-import { UPDATE_ALL_SHOTS } from '../../../store/mistake-defs/action-types';
-import { HAS_UPDATED } from '../../../store/rounds/getter-types';
-import { SET_HAS_UPDATED } from '../../../store/rounds/mutation-types';
+import { UPDATE_ALL_SHOTS } from '@/store/mistake-defs/action-types';
+import { HAS_UPDATED } from '@/store/rounds/getter-types';
+import { SET_HAS_UPDATED } from '@/store/rounds/mutation-types';
+import ResultsChips from '@/components/ResultsChips.vue';
 
 const MistakeDefsModule = namespace('mistakeDefs');
 const RoundsModule = namespace('rounds');
 
 @Component({
   name: 'StatsSummary',
+
+  components: {
+    ResultsChips,
+  },
 })
 export default class StatsSummary extends Vue {
   @MistakeDefsModule.Getter(MISTAKES)
@@ -74,6 +84,7 @@ export default class StatsSummary extends Vue {
     title: '',
     category: '',
     desc: '',
+    result: {},
   };
 
   /* eslint-disable class-methods-use-this */
@@ -111,11 +122,12 @@ export default class StatsSummary extends Vue {
   }
   /* eslint-enable class-methods-use-this */
 
-  openInfoDialog(title: string, desc: string, category: string) {
+  openInfoDialog(shot: MistakeDef, category: string) {
     this.shotInfo = {
-      title,
-      desc,
+      title: shot.title,
+      desc: shot.desc,
       category,
+      result: [...resultsSummaryForShot(shot).entries()].sort((a, b) => b[1] - a[1]),
     };
 
     this.showShotInfo = true;

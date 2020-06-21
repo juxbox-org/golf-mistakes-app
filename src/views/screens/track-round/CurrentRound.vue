@@ -415,20 +415,21 @@ export default class CurrentRound extends Vue {
     this.showShotInfo = true;
   }
 
-  onResultsDone(result: ResultData) {
+  onResultsDone(resultData: ResultData) {
     this.showResultsDialog = false;
 
-    if (result) {
-      this.addResultToShot(result);
-      this.expandHoleInfo();
+    if (resultData.result) {
+      this.addResultToShot(resultData);
     }
 
+    this.expandHoleInfo();
+
     /*
-     * Toggle the mistake here, because toggling on long press
+     * Toggle the mistake here, because toggling in onToggleMistake
      * doesn't update the computed shot property when the new
-     * shot result is added (not sure why)
+     * shot result is added from ResultsDialog (not sure why)
      */
-    this.toggleMistakeForHole(result.shotId);
+    this.toggleMistakeForHole(resultData.shotId);
   }
 
   /* eslint-disable class-methods-use-this */
