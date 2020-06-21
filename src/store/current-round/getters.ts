@@ -2,7 +2,7 @@
 import { RootState } from '@/store/rootTypes.d';
 import { GetterTree } from 'vuex';
 import { getRoundDetails, isPutt } from '@/store/helpers/rounds';
-import { Round } from '@/store/rounds/types.d';
+import { Round, RoundShot } from '@/store/rounds/types.d';
 import { CurrentRoundState } from './types.d';
 import {
   IN_PROGRESS,
@@ -16,6 +16,7 @@ import {
   PUTTS_FOR_HOLE,
   PENALTIES_FOR_HOLE,
   IS_EDITING_HOLE,
+  SHOTS_WITH_CATEGORIES,
 } from './getter-types';
 
 const getters = {
@@ -104,6 +105,25 @@ const getters = {
   },
   [IS_EDITING_HOLE](state: CurrentRoundState) {
     return state.isEditingHole;
+  },
+  [SHOTS_WITH_CATEGORIES](state: CurrentRoundState,
+    currentRoundGetters: GetterTree<CurrentRoundState, RootState>, rootState: RootState) {
+    const mistakeDefsState = rootState.mistakeDefs;
+    const index = state.currentHole - 1;
+
+    return state.holes[index].shots.map((shot: RoundShot, shotIndex: number) => {
+      const shotType = mistakeDefsState.mistakeDefs.find((type) => type.id === shot.shotId);
+      const shotCategory =
+        mistakeDefsState.shotCategories.find((category) => category.id === shotType.categoryId);
+      return {
+        mistake: shot.mistake,
+        penalty: shot.addPenalty,
+        shotIndex,
+        shotType,
+        category: shotCategory.name,
+        result: shot.result,
+      };
+    });
   },
 };
 export default getters;

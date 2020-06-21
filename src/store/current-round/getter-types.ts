@@ -9,3 +9,4 @@ export const COURSE_DETAILS = 'course_details';
 export const ROUND_DETAILS = 'round_details';
 export const PUTTS_FOR_HOLE = 'putts_for_hole';
 export const IS_EDITING_HOLE = 'is_editing_hole';
+export const SHOTS_WITH_CATEGORIES = 'shots_with_categories';

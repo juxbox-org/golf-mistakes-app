@@ -55,13 +55,8 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import { namespace } from 'vuex-class';
-import { ADD_RESULT_TO_SHOT } from '@/store/current-round/mutation-types';
-import { ResultData } from '@/store/current-round/types.d';
 import { RESULTS_MAP } from '@/store/consts';
 import ResultsChips from '@/components/ResultsChips.vue';
-
-const CurrentRoundModule = namespace('currentRound');
 
 interface IndexableResults {
   [key: string]: boolean;
@@ -80,9 +75,6 @@ interface IndexableResults {
   },
 })
 export default class ResultsDialog extends Vue {
-  @CurrentRoundModule.Mutation(ADD_RESULT_TO_SHOT)
-  addResultToShot!: (arg0: ResultData) => void;
-
   shotId!: number;
 
   showResultsDialog!: boolean;
@@ -101,7 +93,7 @@ export default class ResultsDialog extends Vue {
   };
 
   onSkip() {
-    this.$emit('results-done', true);
+    this.$emit('results-done');
   }
 
   onDone() {
@@ -113,8 +105,9 @@ export default class ResultsDialog extends Vue {
       }
     });
 
-    this.addResultToShot({ shotId: this.shotId, result: resultAccum });
-    this.$emit('results-done', false);
+    this.$nextTick(() => {
+      this.$emit('results-done', { shotId: this.shotId, result: resultAccum });
+    });
   }
 
   onChipClosed(type: string) {

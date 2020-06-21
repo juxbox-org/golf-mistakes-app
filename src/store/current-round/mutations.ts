@@ -118,9 +118,12 @@ const mutations = {
   },
   [ADD_RESULT_TO_SHOT](state: CurrentRoundState, resultData: ResultData) {
     const hole = state.holes[state.currentHole - 1];
-    const shot = hole.shots[resultData.shotId];
 
-    shot.result = resultData.result;
+    if (!hole) {
+      throw Error(`No hole exists for hole: ${state.currentHole}`);
+    }
+
+    hole.shots[resultData.shotId].result = resultData.result;
   },
 };
 

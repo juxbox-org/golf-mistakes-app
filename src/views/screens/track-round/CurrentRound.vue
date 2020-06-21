@@ -117,12 +117,13 @@ import {
   PUTTS_FOR_HOLE,
   COURSE_DETAILS,
   IS_EDITING_HOLE,
+  SHOTS_WITH_CATEGORIES,
 } from '@/store/current-round/getter-types';
 import { CourseDetails, ShotInfo, ResultData } from '@/store/current-round/types.d';
-import { MISTAKES, CATEGORIES } from '@/store/mistake-defs/getter-types';
-import { MistakeDef, ShotCategory, Results } from '@/store/mistake-defs/types.d';
+import { MISTAKES } from '@/store/mistake-defs/getter-types';
+import { MistakeDef, Results } from '@/store/mistake-defs/types.d';
 import { SAVE_ROUND } from '@/store/rounds/action-types';
-import { RoundHole, RoundShot, RoundData } from '@/store/rounds/types.d';
+import { RoundHole, RoundData } from '@/store/rounds/types.d';
 import { UPDATE_STATS } from '@/store/mistake-defs/action-types';
 import { getKeysForResult } from '@/store/helpers/results';
 import ResultsDialog from '@/components/ResultsDialog.vue';
@@ -242,8 +243,8 @@ export default class CurrentRound extends Vue {
   @CurrentRoundModule.Getter(IS_EDITING_HOLE)
   isEditing!: boolean;
 
-  @ShotTypesModule.Getter(CATEGORIES)
-  categories!: Array<ShotCategory>;
+  @CurrentRoundModule.Getter(SHOTS_WITH_CATEGORIES)
+  shots!: Array<ShotInfo>;
 
   @ShotTypesModule.Getter(MISTAKES)
   shotTypes!: Array<MistakeDef>;
@@ -287,24 +288,6 @@ export default class CurrentRound extends Vue {
 
     this.$nextTick(() => {
       this.expandHoleInfo();
-    });
-  }
-
-  get shots() {
-    const index = this.currentHole - 1;
-
-    return this.holes[index].shots.map((shot: RoundShot, shotIndex: number) => {
-      const shotType = this.shotTypes.find((type) => type.id === shot.shotId);
-      const shotCategory =
-        this.categories.find((category) => category.id === shotType.categoryId);
-      return {
-        mistake: shot.mistake,
-        penalty: shot.addPenalty,
-        shotIndex,
-        shotType,
-        category: shotCategory.name,
-        result: shot.result,
-      };
     });
   }
 
@@ -355,12 +338,11 @@ export default class CurrentRound extends Vue {
         event.stopPropagation();
       }
 
-      this.toggleMistakeForHole(shotIndex);
-
-      if (this.shots[shotIndex].mistake) {
+      if (!this.shots[shotIndex].mistake) {
         this.currentShot = shotIndex;
         this.showResultsDialog = true;
       } else {
+        this.toggleMistakeForHole(shotIndex);
         // Clear the mistake result(s) from the shot
         this.addResultToShot({ shotId: shotIndex, result: 0 });
         this.expandHoleInfo();
@@ -433,12 +415,20 @@ export default class CurrentRound extends Vue {
     this.showShotInfo = true;
   }
 
-  onResultsDone(skip: boolean) {
+  onResultsDone(result: ResultData) {
     this.showResultsDialog = false;
 
-    if (!skip) {
+    if (result) {
+      this.addResultToShot(result);
       this.expandHoleInfo();
     }
+
+    /*
+     * Toggle the mistake here, because toggling on long press
+     * doesn't update the computed shot property when the new
+     * shot result is added (not sure why)
+     */
+    this.toggleMistakeForHole(result.shotId);
   }
 
   /* eslint-disable class-methods-use-this */
