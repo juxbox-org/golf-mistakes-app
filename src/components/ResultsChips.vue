@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-row(justify="center" align="center" class="chip-results")
+  v-row(:justify="justify" align="center" class="chip-results")
     v-chip(v-for="type in resultTypes" :key="type" v-show="results[type]"
         :close="isCloseable" class="ma-2" @click:close="onClose(type)") {{ type }}
 </template>
@@ -15,12 +15,15 @@ import { RESULTS_MAP } from '@/store/consts';
   props: {
     isCloseable: Boolean,
     results: Object,
+    justify: String,
   },
 })
 export default class ResultsChips extends Vue {
   results!: Map<string, boolean>;
 
   isCloseable!: boolean;
+
+  justify!: string;
 
   resultTypes = [...RESULTS_MAP.keys()];
 

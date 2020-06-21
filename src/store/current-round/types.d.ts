@@ -38,6 +38,7 @@ export interface ShotInfo {
   mistake: boolean;
   penalty: boolean;
   shotType: ShotType;
+  result?: number;
 }
 
 export interface ShotType {

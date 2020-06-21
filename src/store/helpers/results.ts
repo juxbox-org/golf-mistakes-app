@@ -1,5 +1,6 @@
 /* eslint-disable no-bitwise */
 import { RESULTS_MAP } from '@/store/consts';
+import { MistakeDef } from '@/store/mistake-defs/types.d';
 
 function getKeysForResult(result: number) {
   const keys: Array<string> = [];
@@ -17,4 +18,27 @@ function getKeysForResult(result: number) {
   return keys;
 }
 
-export default getKeysForResult;
+function resultsSummaryForShot(shotType: MistakeDef): Map<string, number> {
+  const results = Object.entries(shotType.results);
+
+  const summary = new Map<string, number>();
+
+  results.forEach((result) => {
+    if (!shotType.totalShots) {
+      return;
+    }
+
+    const resultAvg = Math.round((result[1] / shotType.totalShots) * 100);
+
+    if (resultAvg) {
+      summary.set(result[0], resultAvg);
+    }
+  });
+
+  return new Map([...summary.entries()].sort((a, b) => b[1] - a[1]));
+}
+
+export {
+  getKeysForResult,
+  resultsSummaryForShot,
+};

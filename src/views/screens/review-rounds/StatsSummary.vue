@@ -13,7 +13,7 @@
           v-list-item-content
             v-list-item-title {{ shot.title }}
             v-list-item-subtitle {{ shotSummaryStr(shot) }}
-            v-list-item-subtitle {{ resultsSummaryString() }}
+            v-list-item-subtitle {{ resultsSummaryString(shot) }}
           v-list-item-action
             v-btn(icon @click.stop="openInfoDialog(shot.title, shot.desc, category.name)")
               v-icon(color="grey lighten-1") mdi-information
@@ -38,6 +38,7 @@
 /* eslint-disable operator-linebreak */
 import Vue from 'vue';
 import Component from 'vue-class-component';
+import { resultsSummaryForShot } from '@/store/helpers/results';
 import { MISTAKES, SHOTS_CATEGORIES_WITH_SUMMARY } from '@/store/mistake-defs/getter-types';
 import { MistakeDef, ShotCategoryWithSummary } from '@/store/mistake-defs/types.d';
 import { namespace } from 'vuex-class';
@@ -96,9 +97,17 @@ export default class StatsSummary extends Vue {
     return `Shots: ${totalShots} \xa0\xa0 Mistakes: ${totalMistakes} \xa0\xa0 (${average}%)`;
   }
 
-  resultsSummaryString() {
-    const pct = '10%';
-    return `Long: ${pct} \xa0\xa0 Short: 10% \xa0\xa0 Right: 10%  ...`;
+  resultsSummaryString(shot: MistakeDef) {
+    const resultsSummary = resultsSummaryForShot(shot);
+
+    let summaryStr = '';
+
+    resultsSummary.forEach((value: number, key: string) => {
+      const capitalKey = key.charAt(0).toUpperCase() + key.slice(1);
+      summaryStr += `${capitalKey}: ${value}% \xa0\xa0`;
+    });
+
+    return summaryStr;
   }
   /* eslint-enable class-methods-use-this */
 

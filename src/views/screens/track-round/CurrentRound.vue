@@ -66,6 +66,12 @@
             span(class="gma-shot__content-inline") {{ shotInfo.mistake }}
             span(class="gma-shot__title-inline") Penalty:
             span(class="gma-shot__content-inline") {{ shotInfo.penalty }}
+          div(v-if="shotInfo.isMistake")
+            div(class="gma-shot__title") Result:
+            div(class="gma-shot__content")
+              ResultsChips(v-if="shotInfo.result !== null" :isCloseable="false"
+                  :results="shotInfo.result" :justify="'start'")
+              span(v-else) (no result recorded)
 
     ResultsDialog(v-if="showResultsDialog" :shotId="currentShot"
       :showResultsDialog="showResultsDialog" v-on:results-done="onResultsDone($event)")
@@ -114,11 +120,17 @@ import {
 } from '@/store/current-round/getter-types';
 import { CourseDetails, ShotInfo, ResultData } from '@/store/current-round/types.d';
 import { MISTAKES, CATEGORIES } from '@/store/mistake-defs/getter-types';
-import { MistakeDef, ShotCategory } from '@/store/mistake-defs/types.d';
+import { MistakeDef, ShotCategory, Results } from '@/store/mistake-defs/types.d';
 import { SAVE_ROUND } from '@/store/rounds/action-types';
 import { RoundHole, RoundShot, RoundData } from '@/store/rounds/types.d';
 import { UPDATE_STATS } from '@/store/mistake-defs/action-types';
+import { getKeysForResult } from '@/store/helpers/results';
 import ResultsDialog from '@/components/ResultsDialog.vue';
+import ResultsChips from '@/components/ResultsChips.vue';
+
+interface Indexable {
+  [key: string]: boolean;
+}
 
 const CurrentRoundModule = namespace('currentRound');
 const ShotTypesModule = namespace('mistakeDefs');
@@ -138,6 +150,7 @@ Component.registerHooks([
   components: {
     AddShot,
     ResultsDialog,
+    ResultsChips,
   },
 
   beforeRouteLeave(to, from, next) {
@@ -254,6 +267,8 @@ export default class CurrentRound extends Vue {
     category: '',
     mistake: '',
     penalty: '',
+    result: {},
+    isMistake: false,
   };
 
   get holeInfoString() {
@@ -288,6 +303,7 @@ export default class CurrentRound extends Vue {
         shotIndex,
         shotType,
         category: shotCategory.name,
+        result: shot.result,
       };
     });
   }
@@ -399,7 +415,20 @@ export default class CurrentRound extends Vue {
       category: shot.category,
       mistake: `\xa0${shot.mistake ? 'yes' : 'no'}`,
       penalty: `\xa0${shot.penalty ? 'yes' : 'no'}`,
+      isMistake: shot.mistake,
+      result: null,
     };
+
+    if (shot.mistake) {
+      const resultFields = getKeysForResult(shot.result);
+      if (resultFields.length) {
+        this.shotInfo.result = {} as Results;
+
+        resultFields.forEach((field) => {
+          (this.shotInfo.result as Indexable)[field] = true;
+        });
+      }
+    }
 
     this.showShotInfo = true;
   }

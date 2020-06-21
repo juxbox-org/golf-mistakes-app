@@ -1,4 +1,4 @@
-import getKeysForResult from '@/store/helpers/results';
+import { getKeysForResult } from '@/store/helpers/results';
 import {
   INSERT_MISTAKE,
   INSERT_CATEGORY,
