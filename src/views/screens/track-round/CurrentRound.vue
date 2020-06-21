@@ -9,7 +9,7 @@
       v-divider(v-show="!par || isEditing" v-bind:class="{'par-action--divider': shots.length}")
       v-list-item-group
         v-list-item(v-for="shot in shots" :key="shot.shotIndex"
-            v-bind:class="[ shot.mistake ? 'shot-mistake' : 'shot-success', 'shot-list-item' ]"
+            v-bind:class="[ shot.mistake ? 'gma-high-risk' : 'gma-low-risk', 'shot-list-item' ]"
             @contextmenu.prevent="onContextMenu" :ripple="false" inactive)
           v-list-item-content(v-touch:touchhold="onToggleMistake(shot.shotIndex)")
             v-list-item-title {{ shot.shotType.title }}

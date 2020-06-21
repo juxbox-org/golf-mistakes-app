@@ -19,6 +19,10 @@ function getKeysForResult(result: number) {
 }
 
 function resultsSummaryForShot(shotType: MistakeDef): Map<string, number> {
+  if (!shotType.results) {
+    return new Map<string, number>();
+  }
+
   const results = Object.entries(shotType.results);
 
   const summary = new Map<string, number>();

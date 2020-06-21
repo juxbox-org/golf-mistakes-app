@@ -9,6 +9,7 @@ const state = {
   id: 1,
   mistakeDefs: new Array(0),
   shotCategories: [puttCategory],
+  currentEditingTab: 'ShotTypes',
 };
 
 export default state;

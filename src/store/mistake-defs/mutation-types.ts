@@ -10,3 +10,4 @@ export const REMOVE_MISTAKE_FOR_SHOTTYPE = 'remove_mistake_for_shottype';
 export const REMOVE_SHOT_FOR_SHOTTYPE = 'remove_shot_for_shottype';
 export const UPDATE_RESULTS_FOR_SHOTTYPE = 'update_results_for_shottype';
 export const REMOVE_RESULT_FOR_SHOTTYPE = 'remove_result_for_shottype';
+export const UPDATE_EDITING_TAB = 'update_editing_tab';

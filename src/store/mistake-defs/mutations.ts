@@ -1,3 +1,4 @@
+import { RESULTS_MAP } from '@/store/consts';
 import { getKeysForResult } from '@/store/helpers/results';
 import {
   INSERT_MISTAKE,
@@ -12,6 +13,7 @@ import {
   REMOVE_SHOT_FOR_SHOTTYPE,
   UPDATE_RESULTS_FOR_SHOTTYPE,
   REMOVE_RESULT_FOR_SHOTTYPE,
+  UPDATE_EDITING_TAB,
 } from './mutation-types';
 import {
   MistakeDefsState,
@@ -144,6 +146,13 @@ const mutations = {
 
     const shot = state.mistakeDefs[index];
 
+    if (!shot.results) {
+      shot.results = {};
+      RESULTS_MAP.forEach((value, key) => {
+        (shot.results as IndexableResults)[key] = 0;
+      });
+    }
+
     const resultKeys = getKeysForResult(shotResult.result);
 
     resultKeys.forEach((key) => {
@@ -167,6 +176,9 @@ const mutations = {
         (shot.results as IndexableResults)[key] -= 1;
       }
     });
+  },
+  [UPDATE_EDITING_TAB](state: MistakeDefsState, newTab: string) {
+    state.currentEditingTab = newTab;
   },
 };
 

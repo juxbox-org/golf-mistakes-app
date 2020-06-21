@@ -9,6 +9,8 @@
       HoleNavigationBar
     template(v-else-if="isReviewing" v-slot:extension)
       ReviewNavigationBar
+    template(v-else-if="isSummary" v-slot:extension)
+      CreateEditNavigationBar
 </template>
 
 <script lang="ts">
@@ -21,6 +23,7 @@ import SaveRoundButtonGroup from '@/components/SaveRoundButtonGroup.vue';
 import EditShotsButtonGroup from '@/components/EditShotsButtonGroup.vue';
 import ReviewNavigationBar from '@/components/ReviewNavigationBar.vue';
 import EditRoundsButtonGroup from '@/components/EditRoundsButtonGroup.vue';
+import CreateEditNavigationBar from '@/components/CreateEditNavigationBar.vue';
 
 @Component({
   name: 'AppBar',
@@ -30,6 +33,7 @@ import EditRoundsButtonGroup from '@/components/EditRoundsButtonGroup.vue';
     EditShotsButtonGroup,
     ReviewNavigationBar,
     EditRoundsButtonGroup,
+    CreateEditNavigationBar,
   },
   computed: {
     ...mapState('route', {

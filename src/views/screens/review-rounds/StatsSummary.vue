@@ -17,7 +17,7 @@
             v-list-item-subtitle {{ resultsSummaryString(shot) }}
           v-list-item-action
             v-btn(icon)
-              v-icon(color="grey lighten-1") mdi-information
+              v-icon(color="grey") mdi-information
 
         v-list-item(v-if="!category.shots.length" :ripple="false")
           v-list-item-content
@@ -113,7 +113,7 @@ export default class StatsSummary extends Vue {
     const resultsSummary = resultsSummaryForShot(shot);
 
     if (!resultsSummary.size) {
-      return '( no mistakes )';
+      return '( no result data yet )';
     }
 
     let summaryStr = '';

@@ -1,4 +1,8 @@
-import { MISTAKES, CATEGORIES, SHOTS_CATEGORIES_WITH_SUMMARY } from './getter-types';
+import {
+  MISTAKES, CATEGORIES,
+  SHOTS_CATEGORIES_WITH_SUMMARY,
+  CURRENT_EDITING_TAB,
+} from './getter-types';
 import { MistakeDefsState } from './types.d';
 
 const getters = {
@@ -32,6 +36,9 @@ const getters = {
       };
     });
     /* eslint-enable operator-linebreak */
+  },
+  [CURRENT_EDITING_TAB](state: MistakeDefsState) {
+    return state.currentEditingTab;
   },
 };
 

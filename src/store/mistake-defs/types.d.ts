@@ -40,6 +40,7 @@ export interface ShotCategoryWithSummary {
 export interface MistakeDefsState {
   mistakeDefs: Array<MistakeDef>;
   shotCategories: Array<ShotCategory>;
+  currentEditingTab: string;
   id: number;
 }
 

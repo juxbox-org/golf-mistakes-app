@@ -10,7 +10,7 @@
         v-list-item(v-if="!roundInProgress && !pastRounds.length"
             class="gma-list-item__empty") (no rounds)
       v-list(class="gma-mistake-list")
-        v-list-item-group(v-for="round in pastRounds" :key="round.course")
+        v-list-item-group(v-for="round in pastRounds" :key="round.id")
           v-list-item(inactive :ripple="false")
             v-list-item-content
               v-list-item-title {{ round.course }}
