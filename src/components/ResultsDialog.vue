@@ -44,7 +44,7 @@
               v-icon(v-else class="offset-bottom-icon icon-x-flip") mdi-share-outline
 
           ResultsChips(:results="results" :isCloseable="true" :justify="'center'"
-              v-on:chip-closed="onChipClosed($event)" :hasData="false")
+              v-on:chip-closed="onChipClosed($event)")
 
         v-card-actions
           v-spacer

@@ -91,6 +91,10 @@ export default class Summary extends Vue {
   get activeCategoryId() {
     const index = this.categoriesWithShots.findIndex((category) => category.active);
 
+    if (index < 0) {
+      return null;
+    }
+
     return this.categoriesWithShots[index].id;
   }
 
