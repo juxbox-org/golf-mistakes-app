@@ -63,7 +63,7 @@ export default class AppBar extends Vue {
     }
 
     if (this.isSummary) {
-      return 'Edit Shot Types';
+      return 'Edit';
     }
 
     return '(Unknown)';

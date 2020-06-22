@@ -10,7 +10,7 @@
 
         v-list-item(v-for="shot in category.shots" :key="shot.title"
             :ripple="false" color="secondary" @click.stop="openInfoDialog(shot, category.name)"
-            v-bind:class="getRiskClass(shot)")
+            v-bind:class="getRiskClass(shot)" inactive)
           v-list-item-content
             v-list-item-title {{ shot.title }}
             v-list-item-subtitle {{ shotSummaryStr(shot) }}

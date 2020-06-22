@@ -1,22 +1,23 @@
 <template lang="pug">
-  v-flex
-    v-radio-group(v-show="!isExistingShot" row v-model="type")
-      v-radio(label="Shot" value="shot")
-      v-radio(label="Category" value="category")
+  v-row
+    v-col
+      v-radio-group(v-show="!isExistingShot" row v-model="type")
+        v-radio(label="Shot" value="shot")
+        v-radio(label="Category" value="category")
 
-    v-form(ref="shotsForm")
-      div(v-show="type === 'shot'")
-        v-text-field(label="Shot type" name="title" v-model="shotTitle") {{ shotTitle }}
-        v-select(:items="categoryNames" label="Shot category" v-model="shotCategory"
-            no-data-text="(no categories)")
-        v-textarea(filled label="Describe what a mistake is for this shot type" name="desc"
-          v-model="shotDesc") {{ shotDesc }}
-      div(v-show="type === 'category'")
-        v-text-field(label="Shot category" name="category"
-            v-model="categoryName") {{ categoryName }}
-      v-btn(class="ma-2" dark @click="onSave") Save
-      v-btn(v-show="isExistingShot" class="ma-2" outlined @click="onDelete") Delete
-      v-btn(class="ma-2" outlined @click="onCancel") Cancel
+      v-form(ref="shotsForm")
+        div(v-show="type === 'shot'")
+          v-text-field(label="Shot type" name="title" v-model="shotTitle") {{ shotTitle }}
+          v-select(:items="categoryNames" label="Shot category" v-model="shotCategory"
+              no-data-text="(no categories)")
+          v-textarea(filled label="Describe what a mistake is for this shot type" name="desc"
+            v-model="shotDesc") {{ shotDesc }}
+        div(v-show="type === 'category'")
+          v-text-field(label="Shot category" name="category"
+              v-model="categoryName") {{ categoryName }}
+        v-btn(class="ma-2" dark @click="onSave") Save
+        v-btn(v-show="isExistingShot" class="ma-2" outlined @click="onDelete") Delete
+        v-btn(class="ma-2" outlined @click="onCancel") Cancel
 </template>
 
 <script lang="ts">

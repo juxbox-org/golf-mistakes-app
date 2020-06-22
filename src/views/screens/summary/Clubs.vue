@@ -1,16 +1,61 @@
 <template lang="pug">
   v-tab-item(value="Clubs" class="gma-scrolling-layout" :transition="false"
       :reverse-transition="false")
+    div(v-show="!isAdding")
+      v-list
+        v-list-item(v-for="club in clubs" :key="club.id" :ripple="false")
+          v-list-item-content
+            v-list-item-title {{ club.type }}
+            v-list-item-subtitle {{ club.brand }}
+          v-list-item-action
+            v-btn(icon)
+              v-icon(color="grey lighten-1") mdi-pencil-circle
+        v-divider(v-show="clubs.length")
+        v-list-item(class='gma-list-item__link' @click="createClub()" :ripple="false" inactive)
+          v-btn(small rounded dark :ripple="false") + add a club
+
+    EditClub(v-if="isAdding" v-on:done-add="isAdding = false")
+
+    v-fab-transition
+      v-btn(dark fixed small bottom right fab v-show="!hideFab && !isAdding"
+          @click="createClub")
+        v-icon mdi-plus
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
+import EditClub from '@/views/screens/summary/EditClub.vue';
+import { namespace } from 'vuex-class';
+import { CLUBS } from '@/store/clubs/getter-types';
+import { Club } from '@/store/clubs/types.d';
+
+const ClubsModule = namespace('clubs');
 
 @Component({
   name: 'Clubs',
+
+  components: {
+    EditClub,
+  },
 })
 export default class Clubs extends Vue {
+  @ClubsModule.Getter(CLUBS)
+  clubs!: Array<Club>;
 
+  hideFab = true;
+
+  isAdding = false;
+
+  createClub() {
+    this.isAdding = true;
+  }
+
+  mounted() {
+    this.$nextTick(() => {
+      // trigger the fab transition animation
+      this.hideFab = false;
+    });
+  }
 }
 </script>

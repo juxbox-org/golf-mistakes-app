@@ -5,6 +5,7 @@ import VuexPersistence from 'vuex-persist';
 import mistakeDefs from './mistake-defs/mistake-defs';
 import rounds from './rounds/rounds';
 import currentRound from './current-round/current-round';
+import clubs from './clubs/clubs';
 import { RootState } from './rootTypes.d';
 
 Vue.use(Vuex);
@@ -24,6 +25,7 @@ export default new Vuex.Store({
     mistakeDefs,
     rounds,
     currentRound,
+    clubs,
   },
   plugins: [vuexLocal.plugin],
 });
