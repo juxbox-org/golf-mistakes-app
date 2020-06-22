@@ -22,3 +22,9 @@ export const RESULTS_MAP = new Map<string, number>([
   ['top', TOP],
   ['shank', SHANK],
 ]);
+
+// Swings types:
+export const FULL_SWING = 0;
+export const HALF_SWING = 1;
+export const PITCH_SWING = 2;
+export const PUNCH_SWING = 3;

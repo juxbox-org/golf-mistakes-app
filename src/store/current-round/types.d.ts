@@ -39,6 +39,9 @@ export interface ShotInfo {
   penalty: boolean;
   shotType: ShotType;
   result?: number;
+  club?: number;
+  distance?: number;
+  swing?: number;
 }
 
 export interface ShotType {

@@ -7,6 +7,8 @@
             v-list-item-title {{ courseDetails.course }}
             v-list-item-subtitle In progress (through {{ holesPlayed }} holes)
             v-list-item-subtitle {{ currSummaryString }}
+            v-list-item-subtitle {{ currSummaryString2 }}
+        v-divider(v-show="roundInProgress")
         v-list-item(v-if="!roundInProgress && !pastRounds.length"
             class="gma-list-item__empty") (no rounds)
       v-list(class="gma-mistake-list")
@@ -74,6 +76,10 @@ export default class RoundsSummary extends Vue {
   }
 
   /* eslint-disable class-methods-use-this */
+  get currSummaryString2() {
+    return 'GIR: 6 \xa0 Par: 8 \xa0 Brd: 2 \xa0 Bgy: 5 \xa0 Dbl-Bgy: 7 \xa0 Tpl+: 3 \xa0 Egl+: 2';
+  }
+
   roundInfoString(round: Round) {
     return `${round.date} \xa0\xa0 Par: ${round.par}`;
   }

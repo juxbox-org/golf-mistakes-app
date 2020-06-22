@@ -7,7 +7,14 @@ export interface Club {
   id?: number;
   type: string;
   brand?: string;
+  active: boolean;
+  swings?: Array<Swing>;
+}
+
+export interface Swing {
+  type: number;
   shortest?: number;
   longest?: number;
-  distance?: number;
+  average?: number;
+  shots?: number;
 }

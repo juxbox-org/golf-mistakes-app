@@ -36,6 +36,9 @@ export interface RoundShot {
   mistake: boolean;
   addPenalty: boolean;
   result?: number;
+  club?: number;
+  distance?: number;
+  swing?: number;
 }
 
 export interface RoundData {

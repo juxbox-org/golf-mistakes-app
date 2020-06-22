@@ -1,23 +1,24 @@
 <template lang="pug">
   v-tab-item(value="Clubs" class="gma-scrolling-layout" :transition="false"
       :reverse-transition="false")
-    div(v-show="!isAdding")
+    div(v-show="!isAdding && !isEditing")
       v-list
         v-list-item(v-for="club in clubs" :key="club.id" :ripple="false")
           v-list-item-content
             v-list-item-title {{ club.type }}
             v-list-item-subtitle {{ club.brand }}
           v-list-item-action
-            v-btn(icon)
+            v-btn(icon @click.stop="onEdit(club.id)")
               v-icon(color="grey lighten-1") mdi-pencil-circle
         v-divider(v-show="clubs.length")
         v-list-item(class='gma-list-item__link' @click="createClub()" :ripple="false" inactive)
           v-btn(small rounded dark :ripple="false") + add a club
 
-    EditClub(v-if="isAdding" v-on:done-add="isAdding = false")
+    EditClub(v-if="isAdding || isEditing" v-on:done-edit="onDoneEdit()"
+        :clubId="clubToEdit")
 
     v-fab-transition
-      v-btn(dark fixed small bottom right fab v-show="!hideFab && !isAdding"
+      v-btn(dark fixed small bottom right fab v-show="!hideFab && !isAdding && !isEditing"
           @click="createClub")
         v-icon mdi-plus
 </template>
@@ -47,8 +48,22 @@ export default class Clubs extends Vue {
 
   isAdding = false;
 
+  isEditing = false;
+
+  clubToEdit?: number = null;
+
   createClub() {
     this.isAdding = true;
+  }
+
+  onEdit(clubId: number) {
+    this.clubToEdit = clubId;
+    this.isEditing = true;
+  }
+
+  onDoneEdit() {
+    this.isAdding = false;
+    this.isEditing = false;
   }
 
   mounted() {
