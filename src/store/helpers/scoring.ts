@@ -2,6 +2,18 @@ import { RoundHole } from '@/store/rounds/types.d';
 
 const PUTT_CATEGORY_ID = 0;
 
+function numMistakes(hole: RoundHole) {
+  let mistakeCount = 0;
+
+  hole.shots.forEach((shot) => {
+    if (shot.addPenalty) {
+      mistakeCount += 1;
+    }
+  });
+
+  return mistakeCount;
+}
+
 function isGir(hole: RoundHole): boolean {
   if (hole.shots.length) {
     if (hole.shots.length === hole.par - 2) {
@@ -19,7 +31,7 @@ function isGir(hole: RoundHole): boolean {
 
 function isPar(hole: RoundHole) {
   if (hole.shots.length) {
-    return hole.shots.length === hole.par;
+    return hole.shots.length + numMistakes(hole) === hole.par;
   }
 
   return false;
@@ -27,7 +39,7 @@ function isPar(hole: RoundHole) {
 
 function isBirdie(hole: RoundHole) {
   if (hole.shots.length) {
-    return hole.shots.length === hole.par - 1;
+    return hole.shots.length + numMistakes(hole) === hole.par - 1;
   }
 
   return false;
@@ -35,7 +47,7 @@ function isBirdie(hole: RoundHole) {
 
 function isEagleOrBetter(hole: RoundHole) {
   if (hole.shots.length) {
-    return hole.shots.length <= hole.par - 2;
+    return hole.shots.length + numMistakes(hole) <= hole.par - 2;
   }
 
   return false;
@@ -43,7 +55,7 @@ function isEagleOrBetter(hole: RoundHole) {
 
 function isBogey(hole: RoundHole) {
   if (hole.shots.length) {
-    return hole.shots.length === hole.par + 1;
+    return hole.shots.length + numMistakes(hole) === hole.par + 1;
   }
 
   return false;
@@ -51,7 +63,7 @@ function isBogey(hole: RoundHole) {
 
 function isDoubleBogey(hole: RoundHole) {
   if (hole.shots.length) {
-    return hole.shots.length === hole.par + 2;
+    return hole.shots.length + numMistakes(hole) === hole.par + 2;
   }
 
   return false;
@@ -59,7 +71,7 @@ function isDoubleBogey(hole: RoundHole) {
 
 function isTripleBogeyOrWorse(hole: RoundHole) {
   if (hole.shots.length) {
-    return hole.shots.length >= hole.par + 3;
+    return hole.shots.length + numMistakes(hole) >= hole.par + 3;
   }
 
   return false;
