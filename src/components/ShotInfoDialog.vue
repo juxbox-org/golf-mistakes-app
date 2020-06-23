@@ -3,30 +3,39 @@
     v-card(@click.stop="onClose()")
       v-card-title(class="headline") Shot {{ shotInfo.shotNo }}
       div(class="gma-shot-details")
-        div(class="gma-shot__title") Type:
-        div(class="gma-shot__content") {{ shotInfo.type }}
-        div(class="gma-shot__title") Category:
-        div(class="gma-shot__content") {{ shotInfo.category }}
-        div(class="gma-shot__title") Description:
-        div(class="gma-shot__content") {{ shotInfo.desc }}
-        div(class="d-flex")
+        div(class="details-section")
+          div(class="gma-shot__title") Type:
+          div(class="gma-shot__content") {{ shotInfo.type }}
+          div(class="gma-shot__title") Category:
+          div(class="gma-shot__content") {{ shotInfo.category }}
+          div(class="gma-shot__title") Description:
+          div(class="gma-shot__content") {{ shotInfo.desc }}
+        div(class="d-flex details-section details-section-alt")
           span(class="gma-shot__title") Mistake:
           span(class="gma-shot__content-inline") {{ shotInfo.mistake }}
           span(class="gma-shot__title-inline") Penalty:
           span(class="gma-shot__content-inline") {{ shotInfo.penalty }}
-        div(v-if="shotInfo.isMistake")
+        div(v-if="shotInfo.isMistake" class="details-section")
           div(class="gma-shot__title") Result:
           div(class="gma-shot__content")
             ResultsChips(v-if="shotInfo.result !== null" :isCloseable="false"
                 :results="shotInfo.result" :justify="'start'")
             span(v-else) (no result recorded)
-        div(class="d-flex")
-          span(class="gma-shot__title") Club:
-          span(class="gma-shot__content-inline") {{ clubName }}
-
+        div(class="details-section details-section-alt")
+          div(class="d-flex")
+            div(v-if="clubName")
+              span(class="gma-shot__title") Club:
+              span(class="gma-shot__content-inline") {{ clubName }}
+            div(v-if="swingName")
+              span(class="gma-shot__title-inline") Swing:
+              span(class="gma-shot__content-inline") {{ swingName }}
+          div(v-if="shotInfo.distance")
+            span(class="gma-shot__title") Distance:
+            span(class="gma-shot__content-inline") {{ distance }}
 </template>
 
 <script lang="ts">
+import _ from 'lodash';
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import ResultsChips from '@/components/ResultsChips.vue';
@@ -69,6 +78,10 @@ export default class ShotInfoDialog extends Vue {
   }
 
   get clubName() {
+    if (_.isNil(this.shotInfo.club)) {
+      return null;
+    }
+
     const club = this.clubs.find((item) => item.id === this.shotInfo.club);
 
     if (!club) {
@@ -78,8 +91,37 @@ export default class ShotInfoDialog extends Vue {
     return `\xa0${club.type}`;
   }
 
+  get swingName() {
+    if (this.shotInfo.swing) {
+      return `\xa0${SWING_NAMES[this.shotInfo.swing]}`;
+    }
+
+    return null;
+  }
+
+  get distance() {
+    if (this.shotInfo.distance) {
+      return `\xa0${this.shotInfo.distance} yds`;
+    }
+
+    return null;
+  }
+
   onClose() {
-    this.$emit('close-info');
+    this.$emit('close');
   }
 }
-</script>>
+</script>
+
+<style lang="stylus" scoped>
+.details-section
+  margin-top: 5px;
+  margin-bottom: 5px;
+  padding-left: 5px;
+
+.details-section span
+  line-height: 21px;
+
+.details-section-alt
+  background-color: #70707020;
+</style>
