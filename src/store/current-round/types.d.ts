@@ -33,6 +33,7 @@ export interface RoundDetails {
 }
 
 export interface ShotInfo {
+  shotId: number;
   shotIndex: number;
   category: string;
   mistake: boolean;

@@ -29,6 +29,7 @@
 </template>
 
 <script lang="ts">
+import _ from 'lodash';
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import { namespace } from 'vuex-class';
@@ -54,9 +55,6 @@ const CurrentRoundModule = namespace('currentRound');
 export default class AddShotStatsDialog extends Vue {
   @ClubsModule.Getter(CLUBS)
   clubs!: Array<Club>
-
-  @CurrentRoundModule.Mutation(ADD_CLUB_DATA_TO_SHOT)
-  addClubDataToShot!: (arg0: ClubData) => void;
 
   shotId!: number;
 
@@ -91,11 +89,11 @@ export default class AddShotStatsDialog extends Vue {
       shotId: this.shotId,
     } as ClubData;
 
-    if (this.clubSelection) {
+    if (!_.isNil(this.clubSelection)) {
       clubData.club = this.clubs[this.clubSelection].id;
     }
 
-    if (this.swingSelection) {
+    if (!_.isNil(this.swingSelection)) {
       clubData = { ...clubData, swing: this.swingSelection };
     }
 
@@ -103,9 +101,7 @@ export default class AddShotStatsDialog extends Vue {
       clubData.distance = this.distance;
     }
 
-    this.addClubDataToShot(clubData);
-
-    this.$emit('stats-done');
+    this.$emit('stats-done', clubData);
   }
 }
 </script>

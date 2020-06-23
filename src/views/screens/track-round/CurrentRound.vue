@@ -51,33 +51,14 @@
           div(v-for="n in 3")
             v-btn(class="ma-2" dark elevation="0" small fab @click="par = n + 2") {{ n + 2 }}
 
-    v-dialog(v-model="showShotInfo" max-width="300")
-      v-card(@click.stop="showShotInfo = false")
-        v-card-title(class="headline") Shot {{ shotInfo.shotNo }}
-        div(class="gma-shot-details")
-          div(class="gma-shot__title") Type:
-          div(class="gma-shot__content") {{ shotInfo.type }}
-          div(class="gma-shot__title") Category:
-          div(class="gma-shot__content") {{ shotInfo.category }}
-          div(class="gma-shot__title") Description:
-          div(class="gma-shot__content") {{ shotInfo.desc }}
-          div(class="d-flex")
-            span(class="gma-shot__title") Mistake:
-            span(class="gma-shot__content-inline") {{ shotInfo.mistake }}
-            span(class="gma-shot__title-inline") Penalty:
-            span(class="gma-shot__content-inline") {{ shotInfo.penalty }}
-          div(v-if="shotInfo.isMistake")
-            div(class="gma-shot__title") Result:
-            div(class="gma-shot__content")
-              ResultsChips(v-if="shotInfo.result !== null" :isCloseable="false"
-                  :results="shotInfo.result" :justify="'start'")
-              span(v-else) (no result recorded)
+    ShotInfoDialog(v-if="showShotInfo" :visible="showShotInfo" :shotInfo="shotInfo"
+      @close="showShotInfo = false")
 
     ResultsDialog(v-if="showResultsDialog" :shotId="currentShot"
         :showResultsDialog="showResultsDialog" v-on:results-done="onResultsDone($event)")
 
     AddShotStatsDialog(v-if="showAddStatsDialog" :shotId="currentShot"
-        v-on:stats-done="showAddStatsDialog = false")
+        v-on:stats-done="onAddSwingDone($event)")
 
   // This isn't working on Android when installed as apk, but works when debugging
   // using local web server :( Needs further investigation.
@@ -109,6 +90,7 @@ import {
   TOGGLE_PENALTY_FOR_HOLE,
   UPDATE_CURRENT_HOLE,
   ADD_RESULT_TO_SHOT,
+  ADD_CLUB_DATA_TO_SHOT,
 } from '@/store/current-round/mutation-types';
 import {
   IS_ADDING_MISTAKE,
@@ -122,7 +104,12 @@ import {
   IS_EDITING_HOLE,
   SHOTS_WITH_CATEGORIES,
 } from '@/store/current-round/getter-types';
-import { CourseDetails, ShotInfo, ResultData } from '@/store/current-round/types.d';
+import {
+  CourseDetails,
+  ShotInfo,
+  ResultData,
+  ClubData,
+} from '@/store/current-round/types.d';
 import { MISTAKES } from '@/store/mistake-defs/getter-types';
 import { MistakeDef, Results } from '@/store/mistake-defs/types.d';
 import { SAVE_ROUND } from '@/store/rounds/action-types';
@@ -130,9 +117,9 @@ import { RoundHole, RoundData } from '@/store/rounds/types.d';
 import { UPDATE_STATS } from '@/store/mistake-defs/action-types';
 import { getKeysForResult } from '@/store/helpers/results';
 import ResultsDialog from '@/components/ResultsDialog.vue';
-import ResultsChips from '@/components/ResultsChips.vue';
 import AddShotStatsDialog from '@/components/AddShotStatsDialog.vue';
-import { UPDATE_CLUB_STATS } from '../../../store/clubs/action-types';
+import ShotInfoDialog from '@/components/ShotInfoDialog.vue';
+import { UPDATE_CLUB_STATS } from '@/store/clubs/action-types';
 
 interface Indexable {
   [key: string]: boolean;
@@ -158,7 +145,7 @@ Component.registerHooks([
     AddShot,
     ResultsDialog,
     AddShotStatsDialog,
-    ResultsChips,
+    ShotInfoDialog,
   },
 
   beforeRouteLeave(to, from, next) {
@@ -226,6 +213,9 @@ export default class CurrentRound extends Vue {
   @CurrentRoundModule.Mutation(ADD_RESULT_TO_SHOT)
   addResultToShot!: (arg0: ResultData) => void;
 
+  @CurrentRoundModule.Mutation(ADD_CLUB_DATA_TO_SHOT)
+  addClubDataToShot!: (arg0: ClubData) => void;
+
   @CurrentRoundModule.Getter(IS_ADDING_MISTAKE)
   isAddingShot!: boolean;
 
@@ -274,7 +264,11 @@ export default class CurrentRound extends Vue {
   currentShot?: number = null;
 
   shotInfo = {
+    shotId: 0,
     shotNo: 0,
+    club: 0,
+    swing: 0,
+    distance: 0,
     type: '',
     desc: '',
     category: '',
@@ -408,6 +402,7 @@ export default class CurrentRound extends Vue {
 
   openShotInfoDialog(shot: ShotInfo) {
     this.shotInfo = {
+      shotId: shot.shotIndex,
       shotNo: shot.shotIndex + 1,
       type: shot.shotType.title,
       desc: shot.shotType.desc,
@@ -416,6 +411,9 @@ export default class CurrentRound extends Vue {
       penalty: `\xa0${shot.penalty ? 'yes' : 'no'}`,
       isMistake: shot.mistake,
       result: null,
+      club: shot.club,
+      swing: shot.swing,
+      distance: shot.distance,
     };
 
     if (shot.mistake) {
@@ -441,12 +439,15 @@ export default class CurrentRound extends Vue {
 
     this.expandHoleInfo();
 
-    /*
-     * Toggle the mistake here, because toggling in onToggleMistake
-     * doesn't update the computed shot property when the new
-     * shot result is added from ResultsDialog (not sure why)
-     */
     this.toggleMistakeForHole(resultData.shotId);
+  }
+
+  onAddSwingDone(swingData: ClubData) {
+    this.showAddStatsDialog = false;
+
+    if (swingData) {
+      this.addClubDataToShot(swingData);
+    }
   }
 
   /* eslint-disable class-methods-use-this */

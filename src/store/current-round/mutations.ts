@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import Vue from 'vue';
 import { RoundHole } from '@/store/rounds/types.d';
 import { MistakeDef } from '@/store/mistake-defs/types.d';
 import {
@@ -127,6 +128,8 @@ const mutations = {
     }
 
     hole.shots[resultData.shotId].result = resultData.result;
+
+    Vue.set(state.holes, state.currentHole - 1, hole);
   },
   [ADD_CLUB_DATA_TO_SHOT](state: CurrentRoundState, clubData: ClubData) {
     const hole = state.holes[state.currentHole - 1];
@@ -148,6 +151,8 @@ const mutations = {
     if (clubData.distance) {
       shot.distance = clubData.distance;
     }
+
+    Vue.set(state.holes, state.currentHole - 1, hole);
   },
 };
 

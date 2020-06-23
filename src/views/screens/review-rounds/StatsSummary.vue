@@ -35,7 +35,7 @@
           div(class="gma-shot__content") {{ shotInfo.desc }}
           div(class="gma-shot__title") Result:
           div(class="gma-shot__content")
-            ResultsChips(v-if="shotInfo.result !== null" :isCloseable="false"
+            ResultsChips(v-if="shotInfo.result.length" :isCloseable="false"
                 :data="shotInfo.result" :justify="'start'" :hasData="true")
             span(v-else) (no result recorded)
 </template>

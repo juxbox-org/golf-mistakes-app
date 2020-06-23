@@ -132,6 +132,9 @@ const getters = {
         shotType,
         category: shotCategory.name,
         result: shot.result,
+        swing: shot.swing,
+        club: shot.club,
+        distance: shot.distance,
       };
     });
   },
