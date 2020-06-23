@@ -60,3 +60,13 @@ export interface ResultData {
   shotId: number;
   result: number;
 }
+
+export interface ScoringSummary {
+  gir: number;
+  par: number;
+  birdie: number;
+  eagle: number;
+  bogey: number;
+  double: number;
+  triple: number;
+}

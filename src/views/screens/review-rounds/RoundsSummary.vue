@@ -27,8 +27,17 @@ import Vue from 'vue';
 import bus from '@/event-bus';
 import Component from 'vue-class-component';
 import { namespace } from 'vuex-class';
-import { COURSE_DETAILS, IN_PROGRESS, ROUND_DETAILS } from '@/store/current-round/getter-types';
-import { CourseDetails, RoundDetails } from '@/store/current-round/types.d';
+import {
+  COURSE_DETAILS,
+  IN_PROGRESS,
+  ROUND_DETAILS,
+  SCORING_SUMMARY,
+} from '@/store/current-round/getter-types';
+import {
+  CourseDetails,
+  RoundDetails,
+  ScoringSummary,
+} from '@/store/current-round/types.d';
 import { GET_ALL_ROUNDS } from '@/store/rounds/getter-types';
 import { Round } from '@/store/rounds/types.d';
 import { DELETE_ROUND } from '@/store/current-round/mutation-types';
@@ -60,6 +69,9 @@ export default class RoundsSummary extends Vue {
   @RoundsModule.Getter(GET_ALL_ROUNDS)
   pastRounds!: Array<Round>
 
+  @CurrentRoundModule.Getter(SCORING_SUMMARY)
+  scoringSummary!: ScoringSummary;
+
   isEditingRounds = false;
 
   get holesPlayed() {
@@ -77,7 +89,17 @@ export default class RoundsSummary extends Vue {
 
   /* eslint-disable class-methods-use-this */
   get currSummaryString2() {
-    return 'GIR: 6 \xa0 Par: 8 \xa0 Brd: 2 \xa0 Bgy: 5 \xa0 Dbl: 7 \xa0 Tpl+: 3 \xa0 Egl+: 2';
+    const summary = this.scoringSummary;
+
+    let summaryStr = `GIR: ${summary.gir} \xa0 `;
+    summaryStr += summary.par ? `Par: ${summary.par} \xa0 ` : '';
+    summaryStr += summary.birdie ? `Brd: ${summary.birdie} \xa0 ` : '';
+    summaryStr += summary.eagle ? `Egl+: ${summary.eagle} \xa0 ` : '';
+    summaryStr += summary.bogey ? `Bgy: ${summary.bogey} \xa0 ` : '';
+    summaryStr += summary.double ? `Dbl: ${summary.double} \xa0 ` : '';
+    summaryStr += summary.triple ? `Tpl+: ${summary.triple} \xa0 ` : '';
+
+    return summaryStr;
   }
 
   roundInfoString(round: Round) {

@@ -2,7 +2,16 @@
 import { RootState } from '@/store/rootTypes.d';
 import { GetterTree } from 'vuex';
 import { getRoundDetails, isPutt } from '@/store/helpers/rounds';
-import { Round, RoundShot } from '@/store/rounds/types.d';
+import { Round, RoundShot, RoundHole } from '@/store/rounds/types.d';
+import {
+  isGir,
+  isPar,
+  isBirdie,
+  isEagleOrBetter,
+  isBogey,
+  isDoubleBogey,
+  isTripleBogeyOrWorse,
+} from '@/store/helpers/scoring';
 import { CurrentRoundState } from './types.d';
 import {
   IN_PROGRESS,
@@ -17,6 +26,7 @@ import {
   PENALTIES_FOR_HOLE,
   IS_EDITING_HOLE,
   SHOTS_WITH_CATEGORIES,
+  SCORING_SUMMARY,
 } from './getter-types';
 
 const getters = {
@@ -124,6 +134,39 @@ const getters = {
         result: shot.result,
       };
     });
+  },
+  [SCORING_SUMMARY](state: CurrentRoundState) {
+    const summary = {
+      gir: 0,
+      par: 0,
+      birdie: 0,
+      eagle: 0,
+      bogey: 0,
+      double: 0,
+      triple: 0,
+    };
+
+    state.holes.forEach((hole: RoundHole) => {
+      if (hole.par) {
+        if (isGir(hole)) summary.gir += 1;
+
+        if (isPar(hole)) {
+          summary.par += 1;
+        } else if (isBirdie(hole)) {
+          summary.birdie += 1;
+        } else if (isEagleOrBetter(hole)) {
+          summary.eagle += 1;
+        } else if (isBogey(hole)) {
+          summary.bogey += 1;
+        } else if (isDoubleBogey(hole)) {
+          summary.double += 1;
+        } else if (isTripleBogeyOrWorse(hole)) {
+          summary.triple += 1;
+        }
+      }
+    });
+
+    return summary;
   },
 };
 export default getters;
