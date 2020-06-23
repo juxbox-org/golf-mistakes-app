@@ -50,13 +50,19 @@ const CurrentRoundModule = namespace('currentRound');
 
   props: {
     shotId: Number,
+    isForExisting: Boolean,
+    swingData: Object,
   },
 })
 export default class AddShotStatsDialog extends Vue {
   @ClubsModule.Getter(CLUBS)
   clubs!: Array<Club>
 
+  isForExisting!: boolean;
+
   shotId!: number;
+
+  swingData!: ClubData;
 
   swings = SWING_NAMES;
 

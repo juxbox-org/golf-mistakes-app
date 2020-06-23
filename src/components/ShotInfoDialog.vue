@@ -21,13 +21,13 @@
             ResultsChips(v-if="shotInfo.result !== null" :isCloseable="false"
                 :results="shotInfo.result" :justify="'start'")
             span(v-else) (no result recorded)
-        div(class="details-section details-section-alt")
+        div(class="details-section details-section-alt" @click.stop="editShot")
           div(class="d-flex")
             div(v-if="clubName")
               span(class="gma-shot__title") Club:
               span(class="gma-shot__content-inline") {{ clubName }}
             div(v-if="swingName")
-              span(class="gma-shot__title-inline") Swing:
+              span(v-bind:class="clubName ? 'gma-shot__title-inline' : 'gma-shot__title'") Swing:
               span(class="gma-shot__content-inline") {{ swingName }}
           div(v-if="shotInfo.distance")
             span(class="gma-shot__title") Distance:
@@ -107,6 +107,10 @@ export default class ShotInfoDialog extends Vue {
     return null;
   }
 
+  editShot() {
+    this.$emit('edit-shot');
+  }
+
   onClose() {
     this.$emit('close');
   }
@@ -120,7 +124,7 @@ export default class ShotInfoDialog extends Vue {
   padding-left: 5px;
 
 .details-section span
-  line-height: 21px;
+  line-height: 25px;
 
 .details-section-alt
   background-color: #70707020;
