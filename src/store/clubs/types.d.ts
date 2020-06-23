@@ -18,3 +18,9 @@ export interface Swing {
   average?: number;
   shots?: number;
 }
+
+export interface SwingData<T> {
+  club: number;
+  swing?: number;
+  value?: T;
+}

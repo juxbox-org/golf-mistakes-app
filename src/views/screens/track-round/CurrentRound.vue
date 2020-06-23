@@ -132,6 +132,7 @@ import { getKeysForResult } from '@/store/helpers/results';
 import ResultsDialog from '@/components/ResultsDialog.vue';
 import ResultsChips from '@/components/ResultsChips.vue';
 import AddShotStatsDialog from '@/components/AddShotStatsDialog.vue';
+import { UPDATE_CLUB_STATS } from '../../../store/clubs/action-types';
 
 interface Indexable {
   [key: string]: boolean;
@@ -140,6 +141,7 @@ interface Indexable {
 const CurrentRoundModule = namespace('currentRound');
 const ShotTypesModule = namespace('mistakeDefs');
 const RoundsModule = namespace('rounds');
+const ClubsModule = namespace('clubs');
 
 const TRACK_BASE_PATH = '/track';
 const TRACK_HOLE_PATH = '/track/hole';
@@ -196,6 +198,9 @@ export default class CurrentRound extends Vue {
 
   @ShotTypesModule.Action(UPDATE_STATS)
   updateStats!: (arg0: RoundData) => Promise<void>;
+
+  @ClubsModule.Action(UPDATE_CLUB_STATS)
+  updateClubStats!: (arg0: RoundData) => Promise<void>;
 
   @CurrentRoundModule.Mutation(DELETE_ROUND)
   endRound!: () => Promise<void>;
@@ -314,6 +319,7 @@ export default class CurrentRound extends Vue {
   }
 
   onShotAdded() {
+    this.currentShot = this.shots.length - 1;
     this.scrollToBottom();
     this.showAddStatsDialog = true;
   }
@@ -382,6 +388,9 @@ export default class CurrentRound extends Vue {
     this.saveRound(roundDetails)
       .then(() => {
         this.updateStats(roundDetails);
+      })
+      .then(() => {
+        this.updateClubStats(roundDetails);
       })
       .then(() => {
         this.endRound();

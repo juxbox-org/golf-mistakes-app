@@ -9,18 +9,18 @@
               fieldset(class="chips--fieldset")
                 legend Which club did you use?
                 v-chip-group(v-model="clubSelection" column active-class="chip--active")
-                  v-chip(v-for="club in clubs" class="ma-1" filter) {{ club.type }}
+                  v-chip(v-for="club in clubs" :key="club.id" class="ma-1" filter) {{ club.type }}
           v-row
             v-col
               fieldset(class="chips--fieldset")
                 legend Which swing did you use?
                 v-chip-group(v-model="swingSelection" column active-class="chip--active")
-                  v-chip(v-for="swing in swings" class="ma-1" filter) {{ swing }}
+                  v-chip(v-for="swing in swings" :key="swing" class="ma-1" filter) {{ swing }}
           v-row
             v-col(class="slider--col")
               v-subheader(class="pl-0 slider--header") How far did your shot go?
-              v-slider(v-model="distance" thumb-label="always" min="0" max="350" step="5"
-                  :thumb-size="42" color="green darken-2" class="distance--slider"
+              v-slider(v-model="sliderDistance" thumb-label="always" min="0" max="350" step="5"
+                  :thumb-size="42" :color="sliderClass" class="distance--slider"
                   tick-size="5")
       v-card-actions
         v-spacer
@@ -34,9 +34,15 @@ import Component from 'vue-class-component';
 import { namespace } from 'vuex-class';
 import { CLUBS } from '@/store/clubs/getter-types';
 import { Club } from '@/store/clubs/types.d';
+import { ADD_CLUB_DATA_TO_SHOT } from '@/store/current-round/mutation-types';
 import { SWING_NAMES } from '@/store/consts';
+import { ClubData } from '@/store/current-round/types.d';
+
+const ACTIVE_SLIDER_CLASS = 'green darken-2';
+const INACTIVE_SLIDER_CLASS = 'grey lighten-1';
 
 const ClubsModule = namespace('clubs');
+const CurrentRoundModule = namespace('currentRound');
 
 @Component({
   name: 'AddShotStatsDialog',
@@ -49,6 +55,9 @@ export default class AddShotStatsDialog extends Vue {
   @ClubsModule.Getter(CLUBS)
   clubs!: Array<Club>
 
+  @CurrentRoundModule.Mutation(ADD_CLUB_DATA_TO_SHOT)
+  addClubDataToShot!: (arg0: ClubData) => void;
+
   shotId!: number;
 
   swings = SWING_NAMES;
@@ -57,15 +66,45 @@ export default class AddShotStatsDialog extends Vue {
 
   distance = 0;
 
-  clubSelection: Array<string> = [];
+  get sliderDistance() {
+    return this.distance;
+  }
 
-  swingSelection: Array<string> = [];
+  set sliderDistance(value) {
+    this.sliderClass = value ? ACTIVE_SLIDER_CLASS : INACTIVE_SLIDER_CLASS;
+
+    this.distance = value;
+  }
+
+  clubSelection?: number = null;
+
+  swingSelection?: number = null;
+
+  sliderClass = INACTIVE_SLIDER_CLASS;
 
   onSkip() {
     this.$emit('stats-done');
   }
 
   onDone() {
+    let clubData = {
+      shotId: this.shotId,
+    } as ClubData;
+
+    if (this.clubSelection) {
+      clubData.club = this.clubs[this.clubSelection].id;
+    }
+
+    if (this.swingSelection) {
+      clubData = { ...clubData, swing: this.swingSelection };
+    }
+
+    if (this.distance) {
+      clubData.distance = this.distance;
+    }
+
+    this.addClubDataToShot(clubData);
+
     this.$emit('stats-done');
   }
 }

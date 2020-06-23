@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { RoundHole } from '@/store/rounds/types.d';
 import { MistakeDef } from '@/store/mistake-defs/types.d';
 import {
@@ -13,11 +14,13 @@ import {
   TOGGLE_PENALTY_FOR_HOLE,
   EDIT_HOLE,
   ADD_RESULT_TO_SHOT,
+  ADD_CLUB_DATA_TO_SHOT,
 } from './mutation-types';
 import {
   CurrentRoundState,
   CurrentRoundRecord,
   ResultData,
+  ClubData,
 } from './types.d';
 
 function initHoles(holes: Array<RoundHole>) {
@@ -124,6 +127,27 @@ const mutations = {
     }
 
     hole.shots[resultData.shotId].result = resultData.result;
+  },
+  [ADD_CLUB_DATA_TO_SHOT](state: CurrentRoundState, clubData: ClubData) {
+    const hole = state.holes[state.currentHole - 1];
+
+    if (!hole) {
+      throw Error(`No hole exists for hole: ${state.currentHole}`);
+    }
+
+    const shot = hole.shots[clubData.shotId];
+
+    if (!_.isNil(clubData.club)) {
+      shot.club = clubData.club;
+    }
+
+    if (!_.isNil(clubData.swing)) {
+      shot.swing = clubData.swing;
+    }
+
+    if (clubData.distance) {
+      shot.distance = clubData.distance;
+    }
   },
 };
 

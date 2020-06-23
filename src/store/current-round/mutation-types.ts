@@ -12,3 +12,4 @@ export const SAVE_ROUND = 'save_round';
 export const TOGGLE_PENALTY_FOR_HOLE = 'toggle_penalty_for_hole';
 export const EDIT_HOLE = 'edit_hole';
 export const ADD_RESULT_TO_SHOT = 'add_result_to_shot';
+export const ADD_CLUB_DATA_TO_SHOT = 'add_club_data_to_shot';

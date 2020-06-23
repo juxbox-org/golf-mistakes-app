@@ -44,6 +44,13 @@ export interface ShotInfo {
   swing?: number;
 }
 
+export interface ClubData {
+  shotId: number;
+  club?: number;
+  distance?: number;
+  swing?: number;
+}
+
 export interface ShotType {
   title: string;
   desc: string;

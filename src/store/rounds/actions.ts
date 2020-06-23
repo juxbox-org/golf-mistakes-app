@@ -71,7 +71,10 @@ const actions = {
             category: category.name,
             mistake: shot.mistake,
             addPenalty: shot.addPenalty,
-            result: shot.result,
+            result: shot.result || null,
+            swing: shot.swing || null,
+            club: shot.club || null,
+            distance: shot.distance || null,
           });
 
           round.totalShots += 1;
