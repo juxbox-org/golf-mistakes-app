@@ -74,7 +74,10 @@
               span(v-else) (no result recorded)
 
     ResultsDialog(v-if="showResultsDialog" :shotId="currentShot"
-      :showResultsDialog="showResultsDialog" v-on:results-done="onResultsDone($event)")
+        :showResultsDialog="showResultsDialog" v-on:results-done="onResultsDone($event)")
+
+    AddShotStatsDialog(v-if="showAddStatsDialog" :shotId="currentShot"
+        v-on:stats-done="showAddStatsDialog = false")
 
   // This isn't working on Android when installed as apk, but works when debugging
   // using local web server :( Needs further investigation.
@@ -128,6 +131,7 @@ import { UPDATE_STATS } from '@/store/mistake-defs/action-types';
 import { getKeysForResult } from '@/store/helpers/results';
 import ResultsDialog from '@/components/ResultsDialog.vue';
 import ResultsChips from '@/components/ResultsChips.vue';
+import AddShotStatsDialog from '@/components/AddShotStatsDialog.vue';
 
 interface Indexable {
   [key: string]: boolean;
@@ -151,6 +155,7 @@ Component.registerHooks([
   components: {
     AddShot,
     ResultsDialog,
+    AddShotStatsDialog,
     ResultsChips,
   },
 
@@ -193,7 +198,7 @@ export default class CurrentRound extends Vue {
   updateStats!: (arg0: RoundData) => Promise<void>;
 
   @CurrentRoundModule.Mutation(DELETE_ROUND)
-  deleteRound!: () => Promise<void>;
+  endRound!: () => Promise<void>;
 
   @CurrentRoundModule.Mutation(START_ADDING_MISTAKE)
   startAddingShot!: () => void;
@@ -255,6 +260,8 @@ export default class CurrentRound extends Vue {
 
   showResultsDialog = false;
 
+  showAddStatsDialog = false;
+
   addPar = false;
 
   holeInfoTimeout?: number = null;
@@ -308,6 +315,7 @@ export default class CurrentRound extends Vue {
 
   onShotAdded() {
     this.scrollToBottom();
+    this.showAddStatsDialog = true;
   }
 
   onInfoButtonClicked() {
@@ -376,7 +384,7 @@ export default class CurrentRound extends Vue {
         this.updateStats(roundDetails);
       })
       .then(() => {
-        this.deleteRound();
+        this.endRound();
       })
       .then(() => {
         this.$router.push('/review');

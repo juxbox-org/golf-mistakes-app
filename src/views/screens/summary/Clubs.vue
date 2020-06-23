@@ -3,14 +3,14 @@
       :reverse-transition="false")
     div(v-show="!isAdding && !isEditing")
       v-list
-        v-list-item(v-for="club in clubs" :key="club.id" :ripple="false")
+        v-list-item(v-for="club in clubs" :key="club.id" :ripple="false"
+            @click.stop="onEdit(club.id)" class="club-list-item")
           v-list-item-content
             v-list-item-title {{ club.type }}
             v-list-item-subtitle {{ club.brand }}
           v-list-item-action
             v-btn(icon @click.stop="onEdit(club.id)")
               v-icon(color="grey lighten-1") mdi-pencil-circle
-        v-divider(v-show="clubs.length")
         v-list-item(class='gma-list-item__link' @click="createClub()" :ripple="false" inactive)
           v-btn(small rounded dark :ripple="false") + add a club
 
@@ -74,3 +74,10 @@ export default class Clubs extends Vue {
   }
 }
 </script>
+
+<style lang="stylus">
+.club-list-item
+  border: 1px solid #707070;
+  border-radius: 2px;
+  margin-bottom: 3px;
+</style>

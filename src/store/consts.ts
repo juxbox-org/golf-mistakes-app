@@ -9,7 +9,6 @@ export const FAT = 64;
 export const THIN = 128;
 export const TOP = 256;
 export const SHANK = 512;
-
 export const RESULTS_MAP = new Map<string, number>([
   ['long', LONG],
   ['short', SHORT],
@@ -28,3 +27,6 @@ export const FULL_SWING = 0;
 export const HALF_SWING = 1;
 export const PITCH_SWING = 2;
 export const PUNCH_SWING = 3;
+export const SWING_NAMES = [
+  'Full', 'Half', 'Pitch', 'Punch',
+];

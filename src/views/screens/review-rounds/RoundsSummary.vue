@@ -77,7 +77,7 @@ export default class RoundsSummary extends Vue {
 
   /* eslint-disable class-methods-use-this */
   get currSummaryString2() {
-    return 'GIR: 6 \xa0 Par: 8 \xa0 Brd: 2 \xa0 Bgy: 5 \xa0 Dbl-Bgy: 7 \xa0 Tpl+: 3 \xa0 Egl+: 2';
+    return 'GIR: 6 \xa0 Par: 8 \xa0 Brd: 2 \xa0 Bgy: 5 \xa0 Dbl: 7 \xa0 Tpl+: 3 \xa0 Egl+: 2';
   }
 
   roundInfoString(round: Round) {
