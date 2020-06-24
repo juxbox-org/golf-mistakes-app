@@ -59,11 +59,10 @@
   background-color: unset !important;
 
 .gma-shot-details
-  padding: 0 16px 24px 24px;
+  padding: 0 16px 24px 16px;
 
 .gma-shot__title
   font-size: 14px;
-  margin-top: 5px;
   font-weight: bold;
 
 .gma-shot__title-inline
@@ -74,6 +73,7 @@
 
 .gma-shot__content
   font-size: 14px;
+  flex-grow: 1;
 
 .gma-shot__content-inline
   font-size: 14px;
@@ -151,3 +151,7 @@
 
 .v-card--link:before
   background: none;
+
+.gma-shot__content .row
+  margin-left: 0;
+  margin-right: 0;
