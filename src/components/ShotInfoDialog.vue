@@ -1,39 +1,47 @@
 <template lang="pug">
   v-dialog(v-model="isVisible" max-width="300")
-    v-card(@click.stop="onClose()")
+    v-card(@click.stop="onClose()" :ripple="false")
       v-card-title(class="headline") Shot {{ shotInfo.shotNo }}
-      div(class="gma-shot-details")
-        div(class="details-section")
-          div(class="details-section__content")
+      v-card-text
+        div(class="gma-shot-details")
+          div(class="details-section")
             div(class="gma-shot__title") Type:
             div(class="gma-shot__content") {{ shotInfo.type }}
             div(class="gma-shot__title") Category:
             div(class="gma-shot__content") {{ shotInfo.category }}
             div(class="gma-shot__title") Description:
             div(class="gma-shot__content") {{ shotInfo.desc }}
-        div(class="d-flex details-section-inline details-section-alt")
-          div(class="details-section__content")
-            span(class="gma-shot__title") Mistake:
-            span(class="gma-shot__content") {{ shotInfo.mistake }}
-            span(class="gma-shot__title") Penalty:
-            span(class="gma-shot__content") {{ shotInfo.penalty }}
-        div(v-if="shotInfo.isMistake" class="details-section")
-          div(class="gma-shot__title") Result:
-          div(class="gma-shot__content")
-            ResultsChips(v-if="shotInfo.result !== null" :isCloseable="false"
-                :results="shotInfo.result" :justify="'start'")
-            span(v-else) (no result recorded)
-        div(v-if="hasSwingData" class="details-section-inline details-section-alt"
-            @click.stop="editShot")
-          div(v-if="clubName" class="details-line")
-            span(class="gma-shot__title") Club:
-            span(class="gma-shot__content") {{ clubName }}
-          div(v-if="swingName" class="details-line")
-            span(class="gma-shot__title") Swing:
-            span(class="gma-shot__content") {{ swingName }}
-          div(v-if="shotInfo.distance" class="details-line")
-            span(class="gma-shot__title") Distance:
-            span(class="gma-shot__content") {{ distance }}
+          div(class="d-flex details-section-inline details-section-alt")
+            div(class="details-section-inline__content")
+              span(class="gma-shot__title") Mistake:
+              span(class="gma-shot__content") {{ shotInfo.mistake }}
+              span(class="gma-shot__title") Penalty:
+              span(class="gma-shot__content") {{ shotInfo.penalty }}
+          div(v-if="shotInfo.isMistake" class="details-section")
+            div(class="gma-shot__title") Result:
+            div(class="details-section-inline__content")
+              div(class="gma-shot__content")
+                ResultsChips(v-if="shotInfo.result !== null" :isCloseable="false"
+                    :results="shotInfo.result" :justify="'start'")
+                span(v-else) (no result recorded)
+              div(class="details-section__action" @click.stop="editResult")
+                v-btn(icon small)
+                  v-icon(small) mdi-pencil
+
+          div(v-if="hasSwingData" class="details-section-inline details-section-alt")
+            div(class="details-section-inline__content")
+              div(v-if="clubName" class="details-line")
+                span(class="gma-shot__title") Club:
+                span(class="gma-shot__content") {{ clubName }}
+              div(v-if="swingName" class="details-line")
+                span(class="gma-shot__title") Swing:
+                span(class="gma-shot__content") {{ swingName }}
+              div(v-if="shotInfo.distance" class="details-line")
+                span(class="gma-shot__title") Distance:
+                span(class="gma-shot__content") {{ distance }}
+            div(class="details-section__action" @click.stop="editSwing")
+              v-btn(icon)
+                v-icon(small) mdi-pencil
 </template>
 
 <script lang="ts">
@@ -113,8 +121,12 @@ export default class ShotInfoDialog extends Vue {
     return null;
   }
 
-  editShot() {
-    this.$emit('edit-shot');
+  editSwing() {
+    this.$emit('edit-swing');
+  }
+
+  editResult() {
+    this.$emit('edit-result');
   }
 
   onClose() {
@@ -127,9 +139,7 @@ export default class ShotInfoDialog extends Vue {
 .details-section-inline
   margin-top: 5px;
   margin-bottom: 5px;
-  padding-left: 10px;
-  padding-top: 5px;
-  padding-bottom: 5px;
+  padding: 5px 10px;
   display: flex;
   flex-wrap: wrap;
 
@@ -140,12 +150,13 @@ export default class ShotInfoDialog extends Vue {
   padding-top: 5px;
   padding-bottom: 5px;
 
-.details-section__content
+.details-section-inline__content
   display: flex;
   flex-wrap: wrap;
   flex: 1 1;
   align-items: center;
   align-self: center;
+  padding-right: 10px;
 
 .details-section span
   line-height: 25px;
@@ -156,4 +167,9 @@ export default class ShotInfoDialog extends Vue {
 .details-line
   flex: 1 1 100%;
   display: flex;
+
+.details-section__action
+  display: inline-flex;
+  min-width: 24px;
+  align-items center;
 </style>
