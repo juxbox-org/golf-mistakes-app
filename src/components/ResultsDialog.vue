@@ -57,6 +57,12 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 import { RESULTS_MAP } from '@/store/consts';
 import ResultsChips from '@/components/ResultsChips.vue';
+import { namespace } from 'vuex-class';
+import { RoundShot } from '@/store/rounds/types.d';
+import { SHOT_BY_INDEX } from '@/store/current-round/getter-types';
+import { getKeysForResult } from '@/store/helpers/results';
+
+const CurrentRoundModule = namespace('currentRound');
 
 interface IndexableResults {
   [key: string]: boolean;
@@ -68,6 +74,7 @@ interface IndexableResults {
   props: {
     shotId: Number,
     showResultsDialog: Boolean,
+    existingShot: Boolean,
   },
 
   components: {
@@ -75,9 +82,14 @@ interface IndexableResults {
   },
 })
 export default class ResultsDialog extends Vue {
+  @CurrentRoundModule.Getter(SHOT_BY_INDEX)
+  getShotByIndex!: (arg0: number) => RoundShot;
+
   shotId!: number;
 
   showResultsDialog!: boolean;
+
+  existingShot!: boolean;
 
   results = {
     slice: false,
@@ -256,6 +268,19 @@ export default class ResultsDialog extends Vue {
 
       default:
         break;
+    }
+  }
+
+  mounted() {
+    if (this.existingShot) {
+      console.log(this.shotId);
+      const shot = this.getShotByIndex(this.shotId);
+
+      const results = getKeysForResult(shot.result);
+
+      results.forEach((result) => {
+        (this.results as IndexableResults)[result] = true;
+      });
     }
   }
 }

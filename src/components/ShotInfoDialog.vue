@@ -17,16 +17,18 @@
               span(class="gma-shot__content") {{ shotInfo.mistake }}
               span(class="gma-shot__title") Penalty:
               span(class="gma-shot__content") {{ shotInfo.penalty }}
-          div(v-if="shotInfo.isMistake" class="details-section")
-            div(class="gma-shot__title") Result:
+          div(v-if="shotInfo.isMistake" class="details-section-inline")
             div(class="details-section-inline__content")
-              div(class="gma-shot__content")
-                ResultsChips(v-if="shotInfo.result !== null" :isCloseable="false"
-                    :results="shotInfo.result" :justify="'start'")
-                span(v-else) (no result recorded)
-              div(class="details-section__action" @click.stop="editResult")
-                v-btn(icon small)
-                  v-icon(small) mdi-pencil
+              div(class="details-line")
+                div(class="gma-shot__title") Result:
+              div(class="details-line")
+                div(class="gma-shot__content")
+                  ResultsChips(v-if="shotInfo.result !== null" :isCloseable="false"
+                      :results="shotInfo.result" :justify="'start'")
+                  span(v-else) (no result recorded)
+            div(class="details-section__action" @click.stop="editResult")
+              v-btn(icon small)
+                v-icon(small) mdi-pencil
 
           div(v-if="hasSwingData" class="details-section-inline details-section-alt")
             div(class="details-section-inline__content")

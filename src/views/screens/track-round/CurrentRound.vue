@@ -52,13 +52,14 @@
             v-btn(class="ma-2" dark elevation="0" small fab @click="par = n + 2") {{ n + 2 }}
 
     ShotInfoDialog(v-if="showShotInfo" :visible="showShotInfo" :shotInfo="shotInfo"
-      @close="showShotInfo = false")
+        @close="showShotInfo = false" v-on:edit-swing="onEditSwing($event)"
+        v-on:edit-result="onEditResult")
 
-    ResultsDialog(v-if="showResultsDialog" :shotId="currentShot"
+    ResultsDialog(v-if="showResultsDialog" :shotId="currentShot" :existingShot="existingShot"
         :showResultsDialog="showResultsDialog" v-on:results-done="onResultsDone($event)")
 
     AddShotStatsDialog(v-if="showAddStatsDialog" :shotId="currentShot"
-        v-on:stats-done="onAddSwingDone($event)")
+        v-on:stats-done="onAddSwingDone" :existingShot="existingShot")
 
   // This isn't working on Android when installed as apk, but works when debugging
   // using local web server :( Needs further investigation.
@@ -263,6 +264,8 @@ export default class CurrentRound extends Vue {
 
   currentShot?: number = null;
 
+  existingShot = false;
+
   shotInfo = {
     shotId: 0,
     shotNo: 0,
@@ -350,11 +353,12 @@ export default class CurrentRound extends Vue {
         this.currentShot = shotIndex;
         this.showResultsDialog = true;
       } else {
-        this.toggleMistakeForHole(shotIndex);
         // Clear the mistake result(s) from the shot
         this.addResultToShot({ shotId: shotIndex, result: 0 });
         this.expandHoleInfo();
       }
+
+      this.toggleMistakeForHole(shotIndex);
 
       return true;
     };
@@ -432,22 +436,36 @@ export default class CurrentRound extends Vue {
 
   onResultsDone(resultData: ResultData) {
     this.showResultsDialog = false;
+    this.existingShot = false;
 
     if (resultData.result) {
       this.addResultToShot(resultData);
     }
 
     this.expandHoleInfo();
-
-    this.toggleMistakeForHole(resultData.shotId);
   }
 
   onAddSwingDone(swingData: ClubData) {
     this.showAddStatsDialog = false;
+    this.existingShot = false;
 
     if (swingData) {
       this.addClubDataToShot(swingData);
     }
+  }
+
+  onEditSwing() {
+    this.showShotInfo = false;
+    this.existingShot = true;
+    this.currentShot = this.shotInfo.shotId;
+    this.showAddStatsDialog = true;
+  }
+
+  onEditResult() {
+    this.showShotInfo = false;
+    this.existingShot = true;
+    this.currentShot = this.shotInfo.shotId;
+    this.showResultsDialog = true;
   }
 
   /* eslint-disable class-methods-use-this */

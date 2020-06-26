@@ -27,6 +27,7 @@ import {
   IS_EDITING_HOLE,
   SHOTS_WITH_CATEGORIES,
   SCORING_SUMMARY,
+  SHOT_BY_INDEX,
 } from './getter-types';
 
 const getters = {
@@ -170,6 +171,17 @@ const getters = {
     });
 
     return summary;
+  },
+  [SHOT_BY_INDEX]: (state: CurrentRoundState) => (shotIndex: number) => {
+    const currentHole = state.holes[state.currentHole - 1];
+
+    const shot = currentHole.shots[shotIndex];
+
+    if (!shot) {
+      throw Error(`SHOT_BY_ID: Unable to find shot at index: ${shotIndex}`);
+    }
+
+    return shot;
   },
 };
 export default getters;
