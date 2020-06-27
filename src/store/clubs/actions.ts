@@ -55,8 +55,6 @@ const actions = {
   [UPDATE_CLUB_STATS](context: ActionContext<ClubsState, RootState>, round: Round) {
     round.holes.forEach((hole: RoundHole) => {
       hole.shots.forEach((shot: RoundShot) => {
-        console.log(shot);
-
         if (!_.isNil(shot.club) && !_.isNil(shot.swing) && shot.distance) {
           const club = context.rootState.clubs.clubs.find((item) => item.id === shot.club);
 

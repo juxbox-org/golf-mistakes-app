@@ -5,10 +5,15 @@ const puttCategory: ShotCategory = {
   name: 'Putt',
 };
 
-const state = {
+const teeCategory: ShotCategory = {
   id: 1,
+  name: 'Tee',
+};
+
+const state = {
+  id: 2,
   mistakeDefs: new Array(0),
-  shotCategories: [puttCategory],
+  shotCategories: [puttCategory, teeCategory],
   currentEditingTab: 'ShotTypes',
 };
 

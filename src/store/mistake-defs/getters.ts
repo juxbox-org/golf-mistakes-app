@@ -2,6 +2,7 @@ import {
   MISTAKES, CATEGORIES,
   SHOTS_CATEGORIES_WITH_SUMMARY,
   CURRENT_EDITING_TAB,
+  CATEGORIES_WITH_SHOTS,
 } from './getter-types';
 import { MistakeDefsState } from './types.d';
 
@@ -39,6 +40,14 @@ const getters = {
   },
   [CURRENT_EDITING_TAB](state: MistakeDefsState) {
     return state.currentEditingTab;
+  },
+  [CATEGORIES_WITH_SHOTS](state: MistakeDefsState) {
+    return state.shotCategories.map((category) => {
+      const groupedShots =
+        state.mistakeDefs.filter((mistake) => mistake.categoryId === category.id);
+
+      return { ...category, shots: groupedShots, active: false };
+    });
   },
 };
 

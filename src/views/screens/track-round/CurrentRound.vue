@@ -42,7 +42,8 @@
       v-btn(fab fixed right bottom v-show="!isAddingShot" small dark @click="addShot")
         v-icon mdi-plus
 
-    AddShot(v-show="isAddingShot" v-on:done-add="onShotAdded($event)" :key="isAddingShot")
+    AddShot(v-if="isAddingShot" v-on:done-add="onShotAdded($event)" :key="currentShot"
+        :currentShotIndex="currentShot")
 
     v-dialog(v-model="addPar" max-width="300")
       v-card(class="pars-card")
@@ -262,7 +263,7 @@ export default class CurrentRound extends Vue {
 
   holeInfoTimeout?: number = null;
 
-  currentShot?: number = null;
+  currentShot = 0;
 
   existingShot = false;
 
@@ -302,6 +303,7 @@ export default class CurrentRound extends Vue {
   }
 
   addShot() {
+    this.currentShot = this.shots.length - 1;
     this.startAddingShot();
   }
 

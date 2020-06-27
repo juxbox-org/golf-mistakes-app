@@ -1,3 +1,7 @@
+// Shot categories:
+export const PUTT_CATEGORY_ID = 0;
+export const TEE_CATEGORY_ID = 1;
+
 // Mistake results:
 export const LONG = 1;
 export const SHORT = 2;
