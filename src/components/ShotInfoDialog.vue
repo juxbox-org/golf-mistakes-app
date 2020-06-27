@@ -30,8 +30,8 @@
               v-btn(icon small)
                 v-icon(small) mdi-pencil
 
-          div(v-if="hasSwingData" class="details-section-inline details-section-alt")
-            div(class="details-section-inline__content")
+          div(class="details-section-inline details-section-alt")
+            div(v-if="hasSwingData" class="details-section-inline__content")
               div(v-if="clubName" class="details-line")
                 span(class="gma-shot__title") Club:
                 span(class="gma-shot__content") {{ clubName }}
@@ -41,6 +41,8 @@
               div(v-if="shotInfo.distance" class="details-line")
                 span(class="gma-shot__title") Distance:
                 span(class="gma-shot__content") {{ distance }}
+            div(v-else class="details-section-inline__content")
+              span (no swing data recorded)
             div(class="details-section__action" @click.stop="editSwing")
               v-btn(icon)
                 v-icon(small) mdi-pencil
