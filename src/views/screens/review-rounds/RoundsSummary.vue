@@ -87,7 +87,6 @@ export default class RoundsSummary extends Vue {
       + ` \xa0\xa0 Score: ${this.roundDetails.score > 0 ? '+' : ''}${this.roundDetails.score}`;
   }
 
-  /* eslint-disable class-methods-use-this */
   get currSummaryString2() {
     const summary = this.scoringSummary;
 
@@ -115,7 +114,6 @@ export default class RoundsSummary extends Vue {
       + ` \xa0\xa0 Putts: ${round.totalPutts}`
       + ` \xa0\xa0 Score: ${score > 0 ? '+' : ''}${score}`;
   }
-  /* eslint-enable class-methods-use-this */
 
   onDeleteRound(round: Round) {
     this.deleteStatsForRound(round)

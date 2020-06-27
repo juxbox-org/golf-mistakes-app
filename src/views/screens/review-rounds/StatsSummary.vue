@@ -26,22 +26,22 @@
     v-dialog(v-model="showShotInfo")
       v-card(@click.stop="showShotInfo = false")
         v-card-title Details
-        div(class="gma-shot-details")
-          div(class="gma-shot__title") Shot Type:
-          div(class="gma-shot__content") {{ shotInfo.title }}
-          div(class="gma-shot__title") Shot Category:
-          div(class="gma-shot__content") {{ shotInfo.category }}
-          div(Class="gma-shot__title") Description:
-          div(class="gma-shot__content") {{ shotInfo.desc }}
-          div(class="gma-shot__title") Result:
-          div(class="gma-shot__content")
-            ResultsChips(v-if="shotInfo.result.length" :isCloseable="false"
-                :data="shotInfo.result" :justify="'start'" :hasData="true")
-            span(v-else) (no result recorded)
+        v-card-text
+          div(class="gma-shot-details")
+            div(class="gma-shot__title") Shot Type:
+            div(class="gma-shot__content") {{ shotInfo.title }}
+            div(class="gma-shot__title") Shot Category:
+            div(class="gma-shot__content") {{ shotInfo.category }}
+            div(Class="gma-shot__title") Description:
+            div(class="gma-shot__content") {{ shotInfo.desc }}
+            div(class="gma-shot__title") Result:
+            div(class="gma-shot__content")
+              ResultsChips(v-if="shotInfo.result.length" :isCloseable="false"
+                  :data="shotInfo.result" :justify="'start'" :hasData="true")
+              span(v-else) (no result recorded)
 </template>
 
 <script lang="ts">
-/* eslint-disable operator-linebreak */
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import { resultsSummaryForShot } from '@/store/helpers/results';
@@ -88,7 +88,6 @@ export default class StatsSummary extends Vue {
     result: {},
   };
 
-  /* eslint-disable class-methods-use-this */
   categorySummaryStr(category: ShotCategoryWithSummary) {
     if (!category.totalShots) {
       return '-';
@@ -145,7 +144,6 @@ export default class StatsSummary extends Vue {
 
     return 'gma-medium-risk';
   }
-  /* eslint-enable class-methods-use-this */
 
   openInfoDialog(shot: MistakeDef, category: string) {
     this.shotInfo = {
