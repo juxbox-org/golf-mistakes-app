@@ -16,7 +16,8 @@ function numMistakes(hole: RoundHole) {
 
 function isGir(hole: RoundHole): boolean {
   if (hole.shots.length) {
-    if (hole.shots.length === hole.par - 2) {
+    // Holed-out or on green in fewer shots than expected, so count as a GIR
+    if (hole.shots.length <= hole.par - 2) {
       return true;
     }
 
