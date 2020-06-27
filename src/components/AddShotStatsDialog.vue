@@ -35,9 +35,10 @@ import Component from 'vue-class-component';
 import { namespace } from 'vuex-class';
 import { CLUBS } from '@/store/clubs/getter-types';
 import { Club } from '@/store/clubs/types.d';
-import { ADD_CLUB_DATA_TO_SHOT } from '@/store/current-round/mutation-types';
 import { SWING_NAMES } from '@/store/consts';
 import { ClubData } from '@/store/current-round/types.d';
+import { SHOT_BY_INDEX } from '@/store/current-round/getter-types';
+import { RoundShot } from '@/store/rounds/types.d';
 
 const ACTIVE_SLIDER_CLASS = 'green darken-2';
 const INACTIVE_SLIDER_CLASS = 'grey lighten-1';
@@ -50,7 +51,7 @@ const CurrentRoundModule = namespace('currentRound');
 
   props: {
     shotId: Number,
-    isForExisting: Boolean,
+    existingShot: Boolean,
     swingData: Object,
   },
 })
@@ -58,7 +59,10 @@ export default class AddShotStatsDialog extends Vue {
   @ClubsModule.Getter(CLUBS)
   clubs!: Array<Club>
 
-  isForExisting!: boolean;
+  @CurrentRoundModule.Getter(SHOT_BY_INDEX)
+  getShotByIndex!: (arg0: number) => RoundShot;
+
+  existingShot!: boolean;
 
   shotId!: number;
 
@@ -76,7 +80,6 @@ export default class AddShotStatsDialog extends Vue {
 
   set sliderDistance(value) {
     this.sliderClass = value ? ACTIVE_SLIDER_CLASS : INACTIVE_SLIDER_CLASS;
-
     this.distance = value;
   }
 
@@ -108,6 +111,30 @@ export default class AddShotStatsDialog extends Vue {
     }
 
     this.$emit('stats-done', clubData);
+  }
+
+  mounted() {
+    if (this.existingShot) {
+      const shot = this.getShotByIndex(this.shotId);
+
+      if (!_.isNil(shot.swing)) {
+        this.swingSelection = shot.swing;
+      }
+
+      if (!_.isNil(shot.distance)) {
+        this.sliderDistance = shot.distance;
+      }
+
+      if (!_.isNil(shot.club)) {
+        const index = this.clubs.findIndex((club) => club.id === shot.club);
+
+        if (index < 0) {
+          throw Error(`AddShotStatsDialog: mounted: Can't find club with id: ${shot.club}`);
+        }
+
+        this.clubSelection = index;
+      }
+    }
   }
 }
 </script>
