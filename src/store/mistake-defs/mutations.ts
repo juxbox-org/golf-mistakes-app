@@ -41,6 +41,7 @@ const mutations = {
       title: mistakeDef.title,
       desc: mistakeDef.desc,
       categoryId: mistakeDef.categoryId,
+      recordSwing: mistakeDef.recordSwing,
     });
   },
   [REMOVE_MISTAKE](state: MistakeDefsState, id: number) {

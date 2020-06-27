@@ -136,6 +136,7 @@ const getters = {
         swing: shot.swing,
         club: shot.club,
         distance: shot.distance,
+        recordSwing: shot.recordSwing,
       };
     });
   },

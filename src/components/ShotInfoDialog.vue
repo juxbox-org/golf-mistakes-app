@@ -45,7 +45,8 @@
               span (no swing data recorded)
             div(class="details-section__action" @click.stop="editSwing")
               v-btn(icon)
-                v-icon(small) mdi-pencil
+                v-icon(v-if="hasSwingData" small) mdi-pencil
+                v-icon(v-else small) mdi-plus
 </template>
 
 <script lang="ts">
@@ -110,7 +111,7 @@ export default class ShotInfoDialog extends Vue {
   }
 
   get swingName() {
-    if (this.shotInfo.swing) {
+    if (!_.isNil(this.shotInfo.swing)) {
       return `\xa0${SWING_NAMES[this.shotInfo.swing]}`;
     }
 

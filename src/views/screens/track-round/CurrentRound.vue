@@ -42,7 +42,7 @@
       v-btn(fab fixed right bottom v-show="!isAddingShot" small dark @click="addShot")
         v-icon mdi-plus
 
-    AddShot(v-show="isAddingShot" v-on:done-add="onShotAdded" :key="isAddingShot")
+    AddShot(v-show="isAddingShot" v-on:done-add="onShotAdded($event)" :key="isAddingShot")
 
     v-dialog(v-model="addPar" max-width="300")
       v-card(class="pars-card")
@@ -279,6 +279,7 @@ export default class CurrentRound extends Vue {
     penalty: '',
     result: {},
     isMistake: false,
+    recordSwing: false,
   };
 
   get holeInfoString() {
@@ -315,10 +316,12 @@ export default class CurrentRound extends Vue {
     });
   }
 
-  onShotAdded() {
+  onShotAdded(recordSwing: boolean) {
     this.currentShot = this.shots.length - 1;
     this.scrollToBottom();
-    this.showAddStatsDialog = true;
+    if (recordSwing) {
+      this.showAddStatsDialog = true;
+    }
   }
 
   onInfoButtonClicked() {
@@ -418,6 +421,7 @@ export default class CurrentRound extends Vue {
       club: shot.club,
       swing: shot.swing,
       distance: shot.distance,
+      recordSwing: shot.recordSwing,
     };
 
     if (shot.mistake) {

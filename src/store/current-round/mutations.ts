@@ -66,6 +66,7 @@ const mutations = {
       categoryId: shot.categoryId,
       type: shot.title,
       desc: shot.desc,
+      recordSwing: shot.recordSwing,
     });
 
     state.isAddingShot = false;

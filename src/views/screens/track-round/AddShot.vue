@@ -86,7 +86,7 @@ export default class AddShot extends Vue {
 
   addShot(shot: MistakeDef) {
     this.addShotToHole(shot);
-    this.$emit('done-add');
+    this.$emit('done-add', shot.recordSwing);
   }
 
   openInfoDialog(title: string, desc: string, category: string) {

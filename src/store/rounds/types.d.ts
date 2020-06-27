@@ -39,6 +39,7 @@ export interface RoundShot {
   club?: number;
   distance?: number;
   swing?: number;
+  recordSwing?: boolean;
 }
 
 export interface RoundData {

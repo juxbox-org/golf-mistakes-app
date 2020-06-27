@@ -43,6 +43,7 @@ export interface ShotInfo {
   club?: number;
   distance?: number;
   swing?: number;
+  recordSwing?: boolean;
 }
 
 export interface ClubData {

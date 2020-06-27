@@ -9,6 +9,7 @@ export interface MistakeDef {
   totalShots?: number;
   totalMistakes?: number;
   results?: Results;
+  recordSwing?: boolean;
 }
 
 export interface Results {

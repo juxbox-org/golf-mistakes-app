@@ -12,6 +12,8 @@
               no-data-text="(no categories)")
           v-textarea(filled label="Describe what a mistake is for this shot type" name="desc"
             v-model="shotDesc") {{ shotDesc }}
+          v-switch(v-model="recordSwing" class="ma-2" label="record swing on each shot"
+            color="blue darken-2" :ripple="false")
         div(v-show="type === 'category'")
           v-text-field(label="Shot category" name="category"
               v-model="categoryName") {{ categoryName }}
@@ -83,6 +85,8 @@ export default class EditShot extends Vue {
 
   categoryName = '';
 
+  recordSwing = false;
+
   type = 'shot';
 
   get categoryNames() {
@@ -110,6 +114,8 @@ export default class EditShot extends Vue {
       }
 
       mistakeData.categoryId = categoryObj.id;
+
+      mistakeData.recordSwing = this.recordSwing;
 
       if (this.isExistingShot) {
         mistakeData.id = this.shotId;
@@ -159,6 +165,7 @@ export default class EditShot extends Vue {
       this.shotTitle = shot.title;
       this.shotDesc = shot.desc;
       this.shotCategory = category.name;
+      this.recordSwing = shot.recordSwing;
     } else if (this.hasExistingCategory) {
       const category = this.categories.find((item) => item.id === this.categoryId);
       if (!category) {

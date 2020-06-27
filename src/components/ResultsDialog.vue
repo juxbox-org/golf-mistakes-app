@@ -7,40 +7,45 @@
           v-row(justify="center" align="center")
             v-card(class="ma-3" elevation="0" @click.stop="onSelect('hook')" :ripple="false")
               v-icon(v-if="results.hook" class="offset-top-icon icon-y-flip"
-                  :ripple="false") mdi-share
+                  :ripple="false" color="red") mdi-share
               v-icon(v-else class="offset-top-icon icon-y-flip" :ripple="false") mdi-share-outline
             v-card(class="ma-3" elevation="0" @click.stop="onSelect('long')" :ripple="false")
-              v-icon(v-if="results.long" class="result-icon top-icon") mdi-arrow-up-bold
+              v-icon(v-if="results.long" class="result-icon top-icon"
+                  color="red") mdi-arrow-up-bold
               v-icon(v-else class="result-icon top-icon") mdi-arrow-up-bold-outline
             v-card(class="ma-3" elevation="0" @click.stop="onSelect('slice')" :ripple="false")
-              v-icon(v-if="results.slice" class="offset-top-icon") mdi-share
+              v-icon(v-if="results.slice" class="offset-top-icon" color="red") mdi-share
               v-icon(v-else class="offset-top-icon") mdi-share-outline
           v-row(justify="center" align="center")
             v-card(class="ma-3" elevation="0" @click.stop="onSelect('left')" :ripple="false")
-              v-icon(v-if="results.left" class="result-icon") mdi-arrow-left-bold
+              v-icon(v-if="results.left" class="result-icon" color="red") mdi-arrow-left-bold
               v-icon(v-else class="result-icon") mdi-arrow-left-bold-outline
             v-card(class="ma-3" elevation="0")
               div(@click.stop="onSelect('thin')")
                 v-btn(v-if="results.thin" class="result-btn result-btn--selected"
-                    elevation="0") thin
+                    elevation="0" color="red") thin
                 v-btn(v-else class="result-btn" outlined) thin
               div(style="margin-top: 5px;" @click.stop="onSelect('top')")
-                v-btn(v-if="results.top" class="result-btn result-btn--selected" elevation="0") top
+                v-btn(v-if="results.top" class="result-btn result-btn--selected"
+                    elevation="0" color="red") top
                 v-btn(v-else class="result-btn" outlined) top
               div(style="margin-top: 5px;" @click.stop="onSelect('fat')")
-                v-btn(v-if="results.fat" class="result-btn result-btn--selected" elevation="0") fat
+                v-btn(v-if="results.fat" class="result-btn result-btn--selected"
+                    elevation="0" color="red") fat
                 v-btn(v-else class="result-btn" outlined) fat
             v-card(class="ma-3" elevation="0" @click.stop="onSelect('right')" :ripple="false")
-              v-icon(v-if="results.right" class="result-icon") mdi-arrow-right-bold
+              v-icon(v-if="results.right" class="result-icon" color="red") mdi-arrow-right-bold
               v-icon(v-else class="result-icon") mdi-arrow-right-bold-outline
           v-row(justify="center" align="center")
             v-card(class="ma-3" elevation="0")
               div(class="icon-spacer")
             v-card(class="ma-3" elevation="0" @click.stop="onSelect('short')" :ripple="false")
-              v-icon(v-if="results.short" class="result-icon bottom-icon") mdi-arrow-down-bold
+              v-icon(v-if="results.short" class="result-icon bottom-icon"
+                  color="red") mdi-arrow-down-bold
               v-icon(v-else class="result-icon bottom-icon") mdi-arrow-down-bold-outline
             v-card(class="ma-3" elevation="0" @click.stop="onSelect('shank')" :ripple="false")
-              v-icon(v-if="results.shank" class="offset-bottom-icon icon-x-flip") mdi-share
+              v-icon(v-if="results.shank" class="offset-bottom-icon icon-x-flip"
+                  color="red") mdi-share
               v-icon(v-else class="offset-bottom-icon icon-x-flip") mdi-share-outline
 
           ResultsChips(:results="results" :isCloseable="true" :justify="'center'"
@@ -324,7 +329,6 @@ export default class ResultsDialog extends Vue {
   color: rgba(0, 0, 0, 0.54);
 
 .result-btn--selected
-  background-color: rgba(0, 0, 0, 0.54) !important;
   color: white;
 
 .chip-results

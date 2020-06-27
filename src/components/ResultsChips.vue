@@ -2,10 +2,11 @@
   v-row(:justify="justify" align="center" class="chip-results")
     div(v-if="hasData")
       v-chip(v-for="result in data" :key="result[0]"
-        class="ma-1") {{ getResultStr(result) }}
+        class="ma-1" color="red" dark) {{ getResultStr(result) }}
     div(v-else)
       v-chip(v-for="type in resultTypes" :key="type" v-show="results[type]"
-          :close="isCloseable" class="ma-1" @click:close="onClose(type)") {{ type }}
+          :close="isCloseable" class="ma-1" @click:close="onClose(type)"
+          color="red" dark) {{ type }}
 </template>
 
 <script lang="ts">
