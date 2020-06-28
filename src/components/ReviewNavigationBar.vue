@@ -1,7 +1,8 @@
 <template lang="pug">
   v-tabs(fixed-tabs v-model="currentOverViewTab")
     v-tab(href="#Rounds" :ripple="false") Rounds
-    v-tab(href="#Stats" :ripple="false") Stats
+    v-tab(href="#ShotStats" :ripple="false") Shot Stats
+    v-tab(href="#ClubStats" :ripple="false") Club Stats
 </template>
 
 <script lang="ts">

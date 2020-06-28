@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-tab-item(value="Stats" :transition="false" :reverse-transition="false")
+  v-tab-item(value="ShotStats" :transition="false" :reverse-transition="false")
     v-list(class="gma-mistake-list")
       v-list-group(v-for="category in categories" :key="category.name" :ripple="false")
         template(v-slot:activator)
@@ -57,7 +57,7 @@ const MistakeDefsModule = namespace('mistakeDefs');
 const RoundsModule = namespace('rounds');
 
 @Component({
-  name: 'StatsSummary',
+  name: 'ShotStatsSummary',
 
   components: {
     ResultsChips,

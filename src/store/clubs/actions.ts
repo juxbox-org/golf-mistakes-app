@@ -2,9 +2,8 @@
 import _ from 'lodash';
 import { ActionContext } from 'vuex';
 import { RootState } from '@/store/rootTypes.d';
-import { FULL_SWING } from '@/store/consts';
 import { Round, RoundHole, RoundShot } from '@/store/rounds/types.d';
-import { ClubsState, Club } from './types.d';
+import { ClubsState, Club, Swing } from './types.d';
 import {
   ADD_CLUB,
   SAVE_CLUB,
@@ -26,15 +25,7 @@ import {
 
 const actions = {
   [ADD_CLUB](context: ActionContext<ClubsState, RootState>, club: Club) {
-    const swings = [
-      {
-        type: FULL_SWING,
-        shortest: 0,
-        longest: 0,
-        average: 0,
-        shots: 0,
-      },
-    ];
+    const swings: Array<Swing> = [];
 
     context.commit(INSERT_CLUB, {
       type: club.type,
@@ -61,7 +52,7 @@ const actions = {
           if (club.swings) {
             const swing = club.swings.find((item) => item.type === shot.swing);
             if (swing) {
-              if (swing.shortest > shot.distance) {
+              if (!swing.shortest || swing.shortest > shot.distance) {
                 context.commit(UPDATE_SWING_SHORTEST, {
                   club: club.id,
                   swing: swing.type,

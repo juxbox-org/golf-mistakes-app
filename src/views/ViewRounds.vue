@@ -2,7 +2,8 @@
   #reviewtabs(class="gma-tabs-container" v-touch:swipe="onSwipe")
     v-tabs-items(v-model="currentTab")
       RoundsSummary
-      StatsSummary
+      ShotStatsSummary
+      ClubStatsSummary
 </template>
 
 <script lang="ts">
@@ -12,7 +13,8 @@ import { namespace } from 'vuex-class';
 import { GET_OVERVIEW_TAB } from '@/store/rounds/getter-types';
 import { UPDATE_OVERVIEW_TAB } from '@/store/rounds/mutation-types';
 import RoundsSummary from '@/views/screens/review-rounds/RoundsSummary.vue';
-import StatsSummary from '@/views/screens/review-rounds/StatsSummary.vue';
+import ShotStatsSummary from '@/views/screens/review-rounds/ShotStatsSummary.vue';
+import ClubStatsSummary from '@/views/screens/review-rounds/ClubStatsSummary.vue';
 
 const RoundsModule = namespace('rounds');
 
@@ -20,7 +22,8 @@ const RoundsModule = namespace('rounds');
   name: 'ViewRounds',
   components: {
     RoundsSummary,
-    StatsSummary,
+    ShotStatsSummary,
+    ClubStatsSummary,
   },
 })
 export default class ViewRounds extends Vue {
@@ -39,10 +42,18 @@ export default class ViewRounds extends Vue {
   }
 
   onSwipe(direction: string) {
-    if (direction === 'left' && this.currentTab === 'Rounds') {
-      this.currentTab = 'Stats';
-    } else if (direction === 'right' && this.currentTab === 'Stats') {
-      this.currentTab = 'Rounds';
+    if (direction === 'left') {
+      if (this.currentTab === 'Rounds') {
+        this.currentTab = 'ShotStats';
+      } else if (this.currentTab === 'ShotStats') {
+        this.currentTab = 'ClubStats';
+      }
+    } else if (direction === 'right') {
+      if (this.currentTab === 'ShotStats') {
+        this.currentTab = 'Rounds';
+      } else if (this.currentTab === 'ClubStats') {
+        this.currentTab = 'ShotStats';
+      }
     }
   }
 }

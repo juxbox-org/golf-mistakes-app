@@ -1,7 +1,7 @@
 <template lang="pug">
   v-tab-item(value="Clubs" class="gma-scrolling-layout" :transition="false"
       :reverse-transition="false")
-    div(v-show="!isAdding && !isEditing")
+    div(v-show="!isAdding && !isEditing" class="gma-mistake-list")
       v-list
         v-list-item(v-for="club in clubs" :key="club.id" :ripple="false"
             @click.stop="onEdit(club.id)" dark class="club-list-item")
