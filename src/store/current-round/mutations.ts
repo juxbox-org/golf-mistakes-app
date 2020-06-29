@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import Vue from 'vue';
 import { RoundHole } from '@/store/rounds/types.d';
-import { MistakeDef } from '@/store/mistake-defs/types.d';
+import { MistakeRecord } from '@/store/mistake-defs/types.d';
 import {
   BEGIN_TRACKING,
   UPDATE_CURRENT_HOLE,
@@ -52,7 +52,7 @@ const mutations = {
   [STOP_ADDING_MISTAKE](state: CurrentRoundState) {
     state.isAddingShot = false;
   },
-  [ADD_SHOT_TO_HOLE](state: CurrentRoundState, shot: MistakeDef) {
+  [ADD_SHOT_TO_HOLE](state: CurrentRoundState, shot: MistakeRecord) {
     const hole = state.holes[state.currentHole - 1];
 
     if (!hole) {
@@ -60,13 +60,13 @@ const mutations = {
     }
 
     hole.shots.push({
-      shotId: shot.id,
+      shotId: shot.mistakeDef.id,
       mistake: false,
       addPenalty: false,
-      categoryId: shot.categoryId,
-      type: shot.title,
-      desc: shot.desc,
-      recordSwing: shot.recordSwing,
+      categoryId: shot.mistakeDef.categoryId,
+      type: shot.mistakeDef.title,
+      desc: shot.mistakeDetails.desc,
+      recordSwing: shot.mistakeDef.recordSwing,
     });
 
     state.isAddingShot = false;

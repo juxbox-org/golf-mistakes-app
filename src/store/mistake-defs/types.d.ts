@@ -4,12 +4,22 @@
 export interface MistakeDef {
   id?: number;
   title: string;
-  desc: string;
+  desc?: string;
   categoryId?: number;
   totalShots?: number;
   totalMistakes?: number;
   results?: Results;
   recordSwing?: boolean;
+  archived?: boolean; // true if mistake definition should be archived
+}
+
+export interface MistakeDetails {
+  mistakeId?: number; // reference to MistakeDef
+  date?: Date; // newest date = current version of details for a mistake
+  desc: string;
+  totalShots?: number;
+  totalMistakes?: number;
+  results?: Results;
 }
 
 export interface Results {
@@ -40,14 +50,16 @@ export interface ShotCategoryWithSummary {
 
 export interface MistakeDefsState {
   mistakeDefs: Array<MistakeDef>;
+  mistakeDetails: Array<MistakeDetails>;
   shotCategories: Array<ShotCategory>;
   currentEditingTab: string;
   id: number;
 }
 
 export interface MistakeRecord {
-  id: number;
-  data: MistakeDef;
+  mistakeDef: MistakeDef;
+  mistakeDetails: MistakeDetails;
+  updateDetailsVersion: boolean;
 }
 
 export interface ShotResult {
@@ -57,7 +69,7 @@ export interface ShotResult {
 
 // Action function types
 export interface CreateMistakeAction {
-  (mistakeData: MistakeDef): Promise<void>;
+  (mistakeData: MistakeRecord): Promise<void>;
 }
 
 export interface CreateCategoryAction {

@@ -1,4 +1,8 @@
-import { ShotCategory } from './types.d';
+import {
+  ShotCategory,
+  MistakeDef,
+  MistakeDetails,
+} from './types.d';
 
 const puttCategory: ShotCategory = {
   id: 0,
@@ -12,7 +16,8 @@ const teeCategory: ShotCategory = {
 
 const state = {
   id: 2,
-  mistakeDefs: new Array(0),
+  mistakeDefs: [] as Array<MistakeDef>,
+  mistakeDetails: [] as Array<MistakeDetails>,
   shotCategories: [puttCategory, teeCategory],
   currentEditingTab: 'ShotTypes',
 };

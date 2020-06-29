@@ -1,4 +1,3 @@
-/* eslint-disable operator-linebreak */
 import _ from 'lodash';
 import { ActionContext } from 'vuex';
 import { RootState } from '@/store/rootTypes.d';

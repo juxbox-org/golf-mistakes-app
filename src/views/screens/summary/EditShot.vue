@@ -12,8 +12,11 @@
               no-data-text="(no categories)")
           v-textarea(filled label="Describe what a mistake is for this shot type" name="desc"
             v-model="shotDesc") {{ shotDesc }}
+          div(v-if="isExistingShot" class="textarea-select")
+            v-checkbox(v-model="updateDesc" label="save as a new description" color="blue darken-2"
+               :ripple="false")
           v-switch(v-model="recordSwing" class="ma-2" label="record swing on each shot"
-            color="blue darken-2" :ripple="false")
+              color="blue darken-2" :ripple="false")
         div(v-show="type === 'category'")
           v-text-field(label="Shot category" name="category"
               v-model="categoryName") {{ categoryName }}
@@ -23,7 +26,6 @@
 </template>
 
 <script lang="ts">
-/* eslint-disable operator-linebreak */
 import Vue from 'vue';
 import { namespace } from 'vuex-class';
 import Component from 'vue-class-component';
@@ -40,6 +42,8 @@ import {
   ShotCategory,
   MistakeDef,
   DeleteMistakeAction,
+  MistakeDetails,
+  MistakeRecord,
 } from '@/store/mistake-defs/types.d';
 
 const DONE_EVENT = 'done-edit';
@@ -71,7 +75,7 @@ export default class EditShot extends Vue {
   categories!: Array<ShotCategory>;
 
   @MistakeDefsModule.Getter(MISTAKES)
-  mistakes!: Array<MistakeDef>;
+  mistakes!: Array<MistakeRecord>;
 
   shotId!: number;
 
@@ -89,6 +93,10 @@ export default class EditShot extends Vue {
 
   type = 'shot';
 
+  date?: Date = null;
+
+  updateDesc = false;
+
   get categoryNames() {
     return this.categories.map((category) => category.name);
   }
@@ -104,7 +112,7 @@ export default class EditShot extends Vue {
   onSave() {
     if (this.type === 'shot' && this.shotTitle.length && this.shotDesc.length
        && this.shotCategory.length) {
-      const mistakeData: MistakeDef = { title: this.shotTitle, desc: this.shotDesc };
+      const mistakeDef: MistakeDef = { title: this.shotTitle };
 
       const categoryObj =
         this.categories.find((category) => category.name === this.shotCategory);
@@ -113,18 +121,30 @@ export default class EditShot extends Vue {
         throw Error(`Category for category name, ${this.shotCategory}, doesn't exist`);
       }
 
-      mistakeData.categoryId = categoryObj.id;
+      mistakeDef.categoryId = categoryObj.id;
 
-      mistakeData.recordSwing = this.recordSwing;
+      mistakeDef.recordSwing = this.recordSwing;
+
+      const mistakeDetails: MistakeDetails = {
+        desc: this.shotDesc,
+        date: this.date,
+      };
+
+      const mistakeRecord = {
+        mistakeDef,
+        mistakeDetails,
+        updateDetailsVersion: this.updateDesc,
+      };
 
       if (this.isExistingShot) {
-        mistakeData.id = this.shotId;
-        this.saveMistake(mistakeData)
+        mistakeRecord.mistakeDef.id = this.shotId;
+        mistakeRecord.mistakeDetails.mistakeId = this.shotId;
+        this.saveMistake(mistakeRecord)
           .then(() => {
             this.$emit(DONE_EVENT);
           });
       } else {
-        this.createMistake(mistakeData)
+        this.createMistake(mistakeRecord)
           .then(() => {
             this.$emit(DONE_EVENT, categoryObj.id);
           });
@@ -152,20 +172,21 @@ export default class EditShot extends Vue {
 
   mounted() {
     if (this.isExistingShot) {
-      const shot = this.mistakes.find((item) => item.id === this.shotId);
+      const shot = this.mistakes.find((item) => item.mistakeDef.id === this.shotId);
       if (!shot) {
         throw Error(`Shot for ID, ${this.shotId}, doesn't exist`);
       }
 
-      const category = this.categories.find((item) => item.id === shot.categoryId);
+      const category = this.categories.find((item) => item.id === shot.mistakeDef.categoryId);
       if (!category) {
         throw Error(`Category for categoryId, ${category.id}, doesn't exist`);
       }
 
-      this.shotTitle = shot.title;
-      this.shotDesc = shot.desc;
+      this.shotTitle = shot.mistakeDef.title;
+      this.shotDesc = shot.mistakeDetails.desc;
       this.shotCategory = category.name;
-      this.recordSwing = shot.recordSwing;
+      this.recordSwing = shot.mistakeDef.recordSwing;
+      this.date = shot.mistakeDetails.date;
     } else if (this.hasExistingCategory) {
       const category = this.categories.find((item) => item.id === this.categoryId);
       if (!category) {
@@ -179,7 +200,10 @@ export default class EditShot extends Vue {
 </script>
 
 <style lang="stylus" scoped>
-.form-content {
+.form-content
   width: 100%;
-}
+
+.textarea-select
+  margin-top: -40px;
+
 </style>

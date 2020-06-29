@@ -11,13 +11,13 @@
             v-list-item-action(v-show="isEditingShots" @click.stop="onDeleteCategory(category.id)")
               v-icon mdi-delete
 
-          v-list-item(v-for="shot in category.shots" :key="shot.title" @click="editShot(shot.id)"
-              :ripple="false")
+          v-list-item(v-for="shot in category.shots" :key="shot.mistakeDef.title"
+              @click="editShot(shot.mistakeDef.id)" :ripple="false")
             v-list-item-content
-              v-list-item-title {{ shot.title }}
-              v-list-item-subtitle {{ shot.desc }}
+              v-list-item-title {{ shot.mistakeDef.title }}
+              v-list-item-subtitle {{ shot.mistakeDetails.desc }}
             v-list-item-action
-              v-btn(icon @click="editShot(shot.id)")
+              v-btn(icon @click="editShot(shot.mistakeDef.id)")
                 v-icon(color="grey lighten-1") mdi-pencil-circle
           v-divider(v-show="category.shots.length")
           v-list-item(class='gma-list-item__link' @click="createShot()")
@@ -41,7 +41,7 @@ import Component from 'vue-class-component';
 import EditShot from '@/views/screens/summary/EditShot.vue';
 import { namespace } from 'vuex-class';
 import { MISTAKES, CATEGORIES } from '@/store/mistake-defs/getter-types';
-import { MistakeDef, ShotCategory } from '@/store/mistake-defs/types.d';
+import { MistakeDef, ShotCategory, MistakeRecord } from '@/store/mistake-defs/types.d';
 import { DELETE_CATEGORY } from '@/store/mistake-defs/action-types';
 
 const MistakeDefsModule = namespace('mistakeDefs');
@@ -52,7 +52,7 @@ Component.registerHooks([
 
 declare interface Categories extends ShotCategory {
   active: boolean;
-  shots: Array<MistakeDef>;
+  shots: Array<MistakeRecord>;
 }
 
 @Component({
@@ -65,7 +65,7 @@ declare interface Categories extends ShotCategory {
 })
 export default class ShotTypes extends Vue {
   @MistakeDefsModule.Getter(MISTAKES)
-  mistakes!: Array<MistakeDef>;
+  mistakes!: Array<MistakeRecord>;
 
   @MistakeDefsModule.Getter(CATEGORIES)
   categories!: Array<ShotCategory>;
@@ -146,7 +146,7 @@ export default class ShotTypes extends Vue {
   refreshCategories() {
     const update = this.categories.map((category) => {
       const groupedShots =
-        this.mistakes.filter((mistake) => mistake.categoryId === category.id);
+        this.mistakes.filter((mistake) => mistake.mistakeDef.categoryId === category.id);
 
       return { ...category, shots: groupedShots, active: false };
     });

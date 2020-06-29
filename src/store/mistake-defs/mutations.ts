@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import { RESULTS_MAP } from '@/store/consts';
 import { getKeysForResult } from '@/store/helpers/results';
 import {
@@ -14,13 +15,20 @@ import {
   UPDATE_RESULTS_FOR_SHOTTYPE,
   REMOVE_RESULT_FOR_SHOTTYPE,
   UPDATE_EDITING_TAB,
+  INSERT_MISTAKE_DETAILS,
+  UPDATE_MISTAKE_DETAILS,
 } from './mutation-types';
 import {
   MistakeDefsState,
   MistakeDef,
   ShotCategory,
   ShotResult,
+  MistakeDetails,
 } from './types.d';
+import {
+  getDetailsForShot,
+  getIndexForShotDetails,
+} from './getters';
 
 interface IndexableResults {
   [key: string]: number;
@@ -32,6 +40,9 @@ const mutations = {
   [INSERT_MISTAKE](state: MistakeDefsState, mistakeDef: MistakeDef) {
     state.mistakeDefs.push(mistakeDef);
   },
+  [INSERT_MISTAKE_DETAILS](state: MistakeDefsState, details: MistakeDetails) {
+    state.mistakeDetails.push(details);
+  },
   [INSERT_CATEGORY](state: MistakeDefsState, categoryRecord: ShotCategory) {
     state.shotCategories.push(categoryRecord);
   },
@@ -42,6 +53,24 @@ const mutations = {
       desc: mistakeDef.desc,
       categoryId: mistakeDef.categoryId,
       recordSwing: mistakeDef.recordSwing,
+    });
+  },
+  [UPDATE_MISTAKE_DETAILS](state: MistakeDefsState, details: MistakeDetails) {
+    const mistakeDetails = state.mistakeDetails.find((item) =>
+      item.mistakeId === details.mistakeId && item.date === details.date);
+
+    if (!mistakeDetails) {
+      throw Error('UPDATE_MISTAKE_DETAILS: Unable to find matching details for id: '
+        + `${details.mistakeId}, date: ${details.date}`);
+    }
+
+    Object.assign(mistakeDetails, {
+      date: details.date,
+      desc: details.desc,
+      mistakeId: details.mistakeId,
+      totalShots: details.totalShots,
+      totalMistakes: details.totalMistakes,
+      results: details.results,
     });
   },
   [REMOVE_MISTAKE](state: MistakeDefsState, id: number) {
@@ -84,14 +113,20 @@ const mutations = {
 
     const shot = state.mistakeDefs[index];
 
+    const shotDetails = getDetailsForShot(shot.id, state.mistakeDetails);
+
     /*
      * Guard against old versions not having totalMistakes initalized to zero
      */
-    if (Number.isNaN(shot.totalMistakes)) {
-      shot.totalMistakes = 0;
+    if (Number.isNaN(shotDetails.totalMistakes)) {
+      shotDetails.totalMistakes = 0;
     }
 
-    shot.totalMistakes += 1;
+    shotDetails.totalMistakes += 1;
+
+    const detailsIndex = getIndexForShotDetails(shotDetails, state.mistakeDetails);
+
+    Vue.set(state.mistakeDetails, detailsIndex, shotDetails);
   },
   [UPDATE_SHOTS_FOR_SHOTTYPE](state: MistakeDefsState, shotId: number) {
     const index = state.mistakeDefs.findIndex((item) => item.id === shotId);
@@ -102,14 +137,20 @@ const mutations = {
 
     const shot = state.mistakeDefs[index];
 
+    const shotDetails = getDetailsForShot(shot.id, state.mistakeDetails);
+
     /*
      * Guard against old versions not having totalShots initalized to zero
      */
-    if (Number.isNaN(shot.totalShots)) {
-      shot.totalShots = 0;
+    if (Number.isNaN(shotDetails.totalShots)) {
+      shotDetails.totalShots = 0;
     }
 
-    state.mistakeDefs[index].totalShots += 1;
+    shotDetails.totalShots += 1;
+
+    const detailsIndex = getIndexForShotDetails(shotDetails, state.mistakeDetails);
+
+    Vue.set(state.mistakeDetails, detailsIndex, shotDetails);
   },
   [REMOVE_MISTAKE_FOR_SHOTTYPE](state: MistakeDefsState, shotId: number) {
     const index = state.mistakeDefs.findIndex((item) => item.id === shotId);
@@ -120,9 +161,17 @@ const mutations = {
 
     const shot = state.mistakeDefs[index];
 
-    if (shot.totalMistakes > 0) {
-      shot.totalMistakes -= 1;
+    // TODO: If removing due to a deleted round, check round date to ensure
+    // removal of mistake from correct shot details version
+    const shotDetails = getDetailsForShot(shot.id, state.mistakeDetails);
+
+    if (shotDetails.totalMistakes > 0) {
+      shotDetails.totalMistakes -= 1;
     }
+
+    const detailsIndex = getIndexForShotDetails(shotDetails, state.mistakeDetails);
+
+    Vue.set(state.mistakeDetails, detailsIndex, shotDetails);
   },
   [REMOVE_SHOT_FOR_SHOTTYPE](state: MistakeDefsState, shotId: number) {
     const index = state.mistakeDefs.findIndex((item) => item.id === shotId);
@@ -133,8 +182,12 @@ const mutations = {
 
     const shot = state.mistakeDefs[index];
 
-    if (shot.totalShots > 0) {
-      state.mistakeDefs[index].totalShots -= 1;
+    // TODO: If removing due to a deleted round, check round date to ensure
+    // removal of mistake from correct shot details version
+    const shotDetails = getDetailsForShot(shot.id, state.mistakeDetails);
+
+    if (shotDetails.totalShots > 0) {
+      shotDetails.totalShots -= 1;
     }
   },
   [UPDATE_RESULTS_FOR_SHOTTYPE](state: MistakeDefsState, shotResult: ShotResult) {
@@ -147,8 +200,10 @@ const mutations = {
 
     const shot = state.mistakeDefs[index];
 
-    if (!shot.results) {
-      shot.results = {};
+    const shotDetails = getDetailsForShot(shot.id, state.mistakeDetails);
+
+    if (!shotDetails.results) {
+      shotDetails.results = {};
       RESULTS_MAP.forEach((value, key) => {
         (shot.results as IndexableResults)[key] = 0;
       });
@@ -157,8 +212,12 @@ const mutations = {
     const resultKeys = getKeysForResult(shotResult.result);
 
     resultKeys.forEach((key) => {
-      (shot.results as IndexableResults)[key] += 1;
+      (shotDetails.results as IndexableResults)[key] += 1;
     });
+
+    const detailsIndex = getIndexForShotDetails(shotDetails, state.mistakeDetails);
+
+    Vue.set(state.mistakeDetails, detailsIndex, shotDetails);
   },
   [REMOVE_RESULT_FOR_SHOTTYPE](state: MistakeDefsState, shotResult: ShotResult) {
     const index = state.mistakeDefs.findIndex((item) => item.id === shotResult.shotId);
@@ -170,13 +229,21 @@ const mutations = {
 
     const shot = state.mistakeDefs[index];
 
+    // TODO: If removing due to a deleted round, check round date to ensure
+    // removal of mistake from correct shot details version
+    const shotDetails = getDetailsForShot(shot.id, state.mistakeDetails);
+
     const resultKeys = getKeysForResult(shotResult.result);
 
     resultKeys.forEach((key) => {
-      if ((shot.results as IndexableResults)[key] > 0) {
-        (shot.results as IndexableResults)[key] -= 1;
+      if ((shotDetails.results as IndexableResults)[key] > 0) {
+        (shotDetails.results as IndexableResults)[key] -= 1;
       }
     });
+
+    const detailsIndex = getIndexForShotDetails(shotDetails, state.mistakeDetails);
+
+    Vue.set(state.mistakeDetails, detailsIndex, shotDetails);
   },
   [UPDATE_EDITING_TAB](state: MistakeDefsState, newTab: string) {
     state.currentEditingTab = newTab;

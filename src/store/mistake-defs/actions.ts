@@ -25,35 +25,66 @@ import {
   REMOVE_SHOT_FOR_SHOTTYPE,
   UPDATE_RESULTS_FOR_SHOTTYPE,
   REMOVE_RESULT_FOR_SHOTTYPE,
+  INSERT_MISTAKE_DETAILS,
+  UPDATE_MISTAKE_DETAILS,
 } from './mutation-types';
-import { MistakeDefsState, MistakeDef } from './types.d';
+import { MistakeDefsState, MistakeRecord } from './types.d';
 
 interface IndexableResults {
   [key: string]: number;
 }
 const actions = {
-  [CREATE_MISTAKE](context: ActionContext<MistakeDefsState, RootState>, mistakeData: MistakeDef) {
+  [CREATE_MISTAKE](context: ActionContext<MistakeDefsState, RootState>,
+    mistakeData: MistakeRecord) {
     const results = {};
 
     RESULTS_MAP.forEach((value, key) => {
       (results as IndexableResults)[key] = 0;
     });
 
+    const mistakeId = context.rootState.mistakeDefs.id;
+
     context.commit(INSERT_MISTAKE, {
-      ...mistakeData,
+      ...mistakeData.mistakeDef,
+      id: mistakeId,
+    });
+
+    context.commit(INSERT_MISTAKE_DETAILS, {
+      ...mistakeData.mistakeDetails,
+      date: new Date().toString(),
+      mistakeId,
       totalShots: 0,
       totalMistakes: 0,
-      id: context.rootState.mistakeDefs.id,
       results,
     });
+
     context.commit(INCREMENT_ID);
   },
   [CREATE_CATEGORY](context: ActionContext<MistakeDefsState, RootState>, name: string) {
     context.commit(INSERT_CATEGORY, { name, id: context.rootState.mistakeDefs.id });
     context.commit(INCREMENT_ID);
   },
-  [SAVE_MISTAKE](context: ActionContext<MistakeDefsState, RootState>, mistakeData: MistakeDef) {
-    context.commit(UPDATE_MISTAKE, mistakeData);
+  [SAVE_MISTAKE](context: ActionContext<MistakeDefsState, RootState>, mistakeData: MistakeRecord) {
+    context.commit(UPDATE_MISTAKE, { ...mistakeData.mistakeDef });
+
+    if (mistakeData.updateDetailsVersion) {
+      const results = {};
+
+      RESULTS_MAP.forEach((value, key) => {
+        (results as IndexableResults)[key] = 0;
+      });
+
+      context.commit(INSERT_MISTAKE_DETAILS, {
+        ...mistakeData.mistakeDetails,
+        date: new Date().toString(),
+        mistakeId: mistakeData.mistakeDef.id,
+        totalShots: 0,
+        totalMistakes: 0,
+        results,
+      });
+    } else {
+      context.commit(UPDATE_MISTAKE_DETAILS, mistakeData.mistakeDetails);
+    }
   },
   [DELETE_MISTAKE](context: ActionContext<MistakeDefsState, RootState>, id: number) {
     context.commit(REMOVE_MISTAKE, id);

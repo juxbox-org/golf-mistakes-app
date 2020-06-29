@@ -15,7 +15,7 @@ const vuexLocal = new VuexPersistence<RootState>();
 export default new Vuex.Store({
   state: {
     version: 1.0,
-    view: '',
+    migrations: [] as Array<string>,
   },
   mutations: {
   },

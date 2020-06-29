@@ -6,13 +6,13 @@
         v-list-item-content
           v-list-item-title {{ category.name }}
 
-      v-list-item(v-for="shot in category.shots" :key="shot.title"
+      v-list-item(v-for="shot in category.shots" :key="shot.mistakeDef.title"
         :ripple="false" color="secondary")
         v-list-item-content(@click="addShot(shot)")
-          v-list-item-title {{ shot.title }}
-          v-list-item-subtitle {{ shot.desc }}
+          v-list-item-title {{ shot.mistakeDef.title }}
+          v-list-item-subtitle {{ shot.mistakeDetails.desc }}
         v-list-item-action
-          v-btn(icon @click.stop="openInfoDialog(shot.title, shot.desc, category.name)")
+          v-btn(icon @click.stop="openInfoDialog(shot, category.name)")
             v-icon(color="grey lighten-1") mdi-information
 
       v-list-item(v-if="!category.shots.length" :ripple="false")
@@ -39,7 +39,7 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 import { namespace } from 'vuex-class';
 import { CATEGORIES_WITH_SHOTS } from '@/store/mistake-defs/getter-types';
-import { MistakeDef } from '@/store/mistake-defs/types.d';
+import { MistakeDef, MistakeRecord } from '@/store/mistake-defs/types.d';
 import { CURRENT_HOLE, SHOT_BY_INDEX } from '@/store/current-round/getter-types';
 import { ADD_SHOT_TO_HOLE, STOP_ADDING_MISTAKE } from '@/store/current-round/mutation-types';
 import { RoundShot } from '@/store/rounds/types.d';
@@ -68,7 +68,7 @@ export default class AddShot extends Vue {
   currentShot!: (arg0: number) => RoundShot;
 
   @CurrentRoundModule.Mutation(ADD_SHOT_TO_HOLE)
-  addShotToHole!: (arg0: MistakeDef) => void;
+  addShotToHole!: (arg0: MistakeRecord) => void;
 
   @CurrentRoundModule.Mutation(STOP_ADDING_MISTAKE)
   doneAddingMistake!: () => void;
@@ -109,15 +109,15 @@ export default class AddShot extends Vue {
     desc: '',
   };
 
-  addShot(shot: MistakeDef) {
+  addShot(shot: MistakeRecord) {
     this.addShotToHole(shot);
-    this.$emit('done-add', shot.recordSwing);
+    this.$emit('done-add', shot.mistakeDef.recordSwing);
   }
 
-  openInfoDialog(title: string, desc: string, category: string) {
+  openInfoDialog(shot: MistakeRecord, category: string) {
     this.shotInfo = {
-      title,
-      desc,
+      title: shot.mistakeDef.title,
+      desc: shot.mistakeDetails.desc,
       category,
     };
 

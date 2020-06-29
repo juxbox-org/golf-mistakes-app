@@ -16,7 +16,7 @@ export interface ScreenData {
 
 export interface RootState {
   version: number;
-  view: string;
+  migrations: Array<string>;
   currentRound?: CurrentRoundState;
   mistakeDefs?: MistakeDefsState;
   rounds?: RoundState;
