@@ -3,8 +3,8 @@
     v-toolbar-title {{ title }}
     v-spacer
     SaveRoundButtonGroup(v-show="isTrackingStarted")
-    EditShotsButtonGroup(v-show="isSummary")
-    EditRoundsButtonGroup(v-show="isReviewing")
+    EditShotsButtonGroup(v-show="showSummaryEditingBtn")
+    EditRoundsButtonGroup(v-show="showRoundsEditingBtn")
     template(v-if="isTrackingStarted" v-slot:extension)
       HoleNavigationBar
     template(v-else-if="isReviewing" v-slot:extension)
@@ -18,12 +18,18 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 import { mapState } from 'vuex';
 import { Route } from '@/store/route';
+import { namespace } from 'vuex-class';
 import HoleNavigationBar from '@/components/HoleNavigationBar.vue';
 import SaveRoundButtonGroup from '@/components/SaveRoundButtonGroup.vue';
 import EditShotsButtonGroup from '@/components/EditShotsButtonGroup.vue';
 import ReviewNavigationBar from '@/components/ReviewNavigationBar.vue';
 import EditRoundsButtonGroup from '@/components/EditRoundsButtonGroup.vue';
 import CreateEditNavigationBar from '@/components/CreateEditNavigationBar.vue';
+import { GET_OVERVIEW_TAB } from '@/store/rounds/getter-types';
+import { CURRENT_EDITING_TAB } from '../store/mistake-defs/getter-types';
+
+const RoundsModule = namespace('rounds');
+const MistakeDefsModule = namespace('mistakeDefs');
 
 @Component({
   name: 'AppBar',
@@ -45,6 +51,12 @@ import CreateEditNavigationBar from '@/components/CreateEditNavigationBar.vue';
   },
 })
 export default class AppBar extends Vue {
+  @RoundsModule.Getter(GET_OVERVIEW_TAB)
+  roundsOverviewTab!: string;
+
+  @MistakeDefsModule.Getter(CURRENT_EDITING_TAB)
+  currentEditingTab!: string;
+
   isTrackingStarted!: boolean;
 
   isTrackingNotStarted!: boolean;
@@ -52,6 +64,14 @@ export default class AppBar extends Vue {
   isReviewing!: boolean;
 
   isSummary!: boolean;
+
+  get showSummaryEditingBtn() {
+    return this.isSummary && this.currentEditingTab === 'ShotTypes';
+  }
+
+  get showRoundsEditingBtn() {
+    return this.isReviewing && this.roundsOverviewTab === 'Rounds';
+  }
 
   get title(): string {
     if (this.isTrackingStarted || this.isTrackingNotStarted) {
