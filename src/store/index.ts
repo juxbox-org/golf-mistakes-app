@@ -21,6 +21,11 @@ export default new Vuex.Store({
   },
   actions: {
   },
+  getters: {
+    migrations(state) {
+      return state.migrations;
+    },
+  },
   modules: {
     mistakeDefs,
     rounds,

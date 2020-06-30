@@ -15,7 +15,7 @@ export interface MistakeDef {
 
 export interface MistakeDetails {
   mistakeId?: number; // reference to MistakeDef
-  date?: Date; // newest date = current version of details for a mistake
+  date?: string; // newest date = current version of details for a mistake
   desc: string;
   totalShots?: number;
   totalMistakes?: number;

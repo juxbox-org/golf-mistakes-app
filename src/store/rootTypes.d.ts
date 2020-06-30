@@ -1,3 +1,4 @@
+import { GetterTree } from 'vuex';
 import { CurrentRoundState } from './current-round/types.d';
 import { MistakeDefsState } from './mistake-defs/types.d';
 import { RoundState } from './rounds/types.d';
@@ -21,4 +22,8 @@ export interface RootState {
   mistakeDefs?: MistakeDefsState;
   rounds?: RoundState;
   clubs?: ClubsState;
+}
+
+export interface Module<S, R> {
+  getters?: GetterTree<S, R>;
 }

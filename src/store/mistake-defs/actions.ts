@@ -51,7 +51,7 @@ const actions = {
 
     context.commit(INSERT_MISTAKE_DETAILS, {
       ...mistakeData.mistakeDetails,
-      date: new Date().toString(),
+      date: new Date().toISOString(),
       mistakeId,
       totalShots: 0,
       totalMistakes: 0,
@@ -76,7 +76,7 @@ const actions = {
 
       context.commit(INSERT_MISTAKE_DETAILS, {
         ...mistakeData.mistakeDetails,
-        date: new Date().toString(),
+        date: new Date().toISOString(),
         mistakeId: mistakeData.mistakeDef.id,
         totalShots: 0,
         totalMistakes: 0,

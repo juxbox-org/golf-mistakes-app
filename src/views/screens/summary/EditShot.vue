@@ -93,7 +93,7 @@ export default class EditShot extends Vue {
 
   type = 'shot';
 
-  date?: Date = null;
+  date?: string = null;
 
   updateDesc = false;
 

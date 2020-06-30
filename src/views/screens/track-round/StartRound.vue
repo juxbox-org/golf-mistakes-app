@@ -48,7 +48,8 @@ export default class StartRound extends Vue {
     if (this.course.length) {
       this.beginTracking({
         course: this.course,
-        date: this.date,
+        date: typeof this.date === 'string' ?
+          this.date : (this.date as Date).toISOString().substr(0, 10),
         slope: this.slope,
         rating: this.rating,
         tees: this.tees,

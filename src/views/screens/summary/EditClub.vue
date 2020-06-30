@@ -49,8 +49,9 @@ export default class EditClub extends Vue {
 
   onSave() {
     if (this.isExistingClub) {
+      const club = this.clubs.find((item) => item.id === this.clubId);
       this.saveClub({
-        id: this.clubId,
+        ...club,
         type: this.clubType,
         brand: this.brandName,
         active: true,
