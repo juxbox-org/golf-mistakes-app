@@ -1,17 +1,26 @@
 <template lang="pug">
-  v-row
-    v-col
-      v-form(ref="startRound")
+  v-form(ref="startRound")
+    v-row
+      v-col
         v-text-field(label="Course" name="course" v-model="course") {{ course }}
+    v-row
+      v-col
         v-menu(offset-y transition="scale-transition" min-width="290")
           template(v-slot:activator="{ on }")
             v-text-field(label="Date", name="date", v-model="date" v-on="on" readonly)
           v-date-picker(no-title v-model="date" :min="nowDate" scrollable)
-        v-text-field(label="Slope (optional)" name="slope" type="number" v-model.number="slope")
-        v-text-field(label="Rating (optional)" name="rating" type="number" v-model.number="rating")
+    v-row
+      v-col
         v-text-field(label="Tees (optional)" name="tees" v-model="tees")
-        v-btn(class="ma-2" dark @click="onCreate") Start
-        v-btn(class="ma-2" outlined @click="onCancel") Cancel
+    v-row
+      v-col(cols="6")
+        v-text-field(label="Slope (optional)" name="slope" type="number" class=""
+            v-model.number="slope")
+      v-col(cols="6")
+        v-text-field(label="Rating (optional)" name="rating" type="number"
+          v-model.number="rating")
+    v-btn(class="ma-2" dark @click="onCreate") Start
+    v-btn(class="ma-2" outlined @click="onCancel") Cancel
 </template>
 
 <script lang="ts">

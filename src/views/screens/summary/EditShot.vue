@@ -56,6 +56,7 @@ const MistakeDefsModule = namespace('mistakeDefs');
   props: {
     shotId: Number,
     categoryId: Number,
+    isForCategory: Boolean,
   },
 })
 export default class EditShot extends Vue {
@@ -76,6 +77,8 @@ export default class EditShot extends Vue {
 
   @MistakeDefsModule.Getter(MISTAKES)
   mistakes!: Array<MistakeRecord>;
+
+  isForCategory!: boolean;
 
   shotId!: number;
 
@@ -187,13 +190,15 @@ export default class EditShot extends Vue {
       this.shotCategory = category.name;
       this.recordSwing = shot.mistakeDef.recordSwing;
       this.date = shot.mistakeDetails.date;
-    } else if (this.hasExistingCategory) {
+    } else if (this.hasExistingCategory && !this.isForCategory) {
       const category = this.categories.find((item) => item.id === this.categoryId);
       if (!category) {
         throw Error(`Category for categoryId, ${category.id}, doesn't exist`);
       }
 
       this.shotCategory = category.name;
+    } else if (this.isForCategory) {
+      this.type = 'category';
     }
   }
 }

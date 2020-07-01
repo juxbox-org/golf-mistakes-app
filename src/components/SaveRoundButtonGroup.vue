@@ -40,7 +40,6 @@ export default class SaveRoundButtonGroup extends Vue {
     this.$router.push('/track');
   }
 
-  /* eslint-disable class-methods-use-this */
   onSaveRound() {
     bus.$emit('save-round');
   }
@@ -48,7 +47,6 @@ export default class SaveRoundButtonGroup extends Vue {
   onEditRound() {
     this.editHole(!this.isEditingHole);
   }
-  /* eslint-enable class-methods-use-this */
 }
 </script>
 

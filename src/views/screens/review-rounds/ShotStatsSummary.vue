@@ -1,7 +1,7 @@
 <template lang="pug">
   v-tab-item(value="ShotStats" :transition="false" :reverse-transition="false")
     v-list(class="gma-mistake-list")
-      v-list-group(v-for="category in categories" :key="category.name" :ripple="false")
+      v-list-group(v-for="category in sortedCategories" :key="category.name" :ripple="false")
         template(v-slot:activator)
           v-list-item-content
             v-list-item-title {{ category.name }}
@@ -39,11 +39,14 @@
               ResultsChips(v-if="shotInfo.result.length" :isCloseable="false"
                   :data="shotInfo.result" :justify="'start'" :hasData="true")
               span(v-else) (no result recorded)
+
+    ShotStatsSortDialog(v-if="showSortDialog" v-on:sort-stats-done="sortStats($event)")
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
+import bus from '@/event-bus';
 import { resultsSummaryForShot } from '@/store/helpers/results';
 import { MISTAKES, SHOTS_CATEGORIES_WITH_SUMMARY } from '@/store/mistake-defs/getter-types';
 import { MistakeRecord, ShotCategoryWithSummary } from '@/store/mistake-defs/types.d';
@@ -52,6 +55,8 @@ import { UPDATE_ALL_SHOTS } from '@/store/mistake-defs/action-types';
 import { HAS_UPDATED } from '@/store/rounds/getter-types';
 import { SET_HAS_UPDATED } from '@/store/rounds/mutation-types';
 import ResultsChips from '@/components/ResultsChips.vue';
+import ShotStatsSortDialog from '@/components/ShotStatsSortDialog.vue';
+import statsSorter from '@/store/helpers/stats-sorter';
 
 const MistakeDefsModule = namespace('mistakeDefs');
 const RoundsModule = namespace('rounds');
@@ -61,6 +66,7 @@ const RoundsModule = namespace('rounds');
 
   components: {
     ResultsChips,
+    ShotStatsSortDialog,
   },
 })
 export default class StatsSummary extends Vue {
@@ -79,7 +85,13 @@ export default class StatsSummary extends Vue {
   @RoundsModule.Mutation(SET_HAS_UPDATED)
   setHasUpdated!: () => void;
 
+  sortedCategories = [] as Array<ShotCategoryWithSummary>;
+
   showShotInfo = false;
+
+  showSortDialog = false;
+
+  sortCriteria = [] as Array<number>;
 
   shotInfo = {
     title: '',
@@ -87,6 +99,14 @@ export default class StatsSummary extends Vue {
     desc: '',
     result: {},
   };
+
+  get dataToDisplay() {
+    return this.sortedCategories;
+  }
+
+  set dataToDisplay(value) {
+    this.sortedCategories = value;
+  }
 
   categorySummaryStr(category: ShotCategoryWithSummary) {
     if (!category.totalShots) {
@@ -156,15 +176,33 @@ export default class StatsSummary extends Vue {
     this.showShotInfo = true;
   }
 
-  /*
+  onShowSortDialog() {
+    this.showSortDialog = true;
+  }
+
+  sortStats(sortCriteria?: Array<number>) {
+    this.showSortDialog = false;
+
+    if (!sortCriteria) {
+      return;
+    }
+
+    if (sortCriteria.length) {
+      this.sortCriteria = sortCriteria;
+      this.dataToDisplay = statsSorter([...this.categories], sortCriteria);
+    } else {
+      this.dataToDisplay = this.categories;
+    }
+  }
+
   mounted() {
-    if (!this.hasUpdated) {
-      this.updateAllShots().then(() => {
-        this.setHasUpdated();
-      });
-    }
-    }
-   */
+    bus.$on('sort-shot-stats', this.onShowSortDialog);
+    this.sortedCategories = this.categories;
+  }
+
+  destroyed() {
+    bus.$off('sort-shot-stats', this.onShowSortDialog);
+  }
 }
 </script>
 

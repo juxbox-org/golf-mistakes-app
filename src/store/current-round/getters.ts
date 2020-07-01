@@ -1,4 +1,3 @@
-/* eslint-disable operator-linebreak */
 import { RootState } from '@/store/rootTypes.d';
 import { GetterTree } from 'vuex';
 import { getRoundDetails, isPutt } from '@/store/helpers/rounds';

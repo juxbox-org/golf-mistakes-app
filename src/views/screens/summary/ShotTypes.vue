@@ -19,9 +19,12 @@
             v-list-item-action
               v-btn(icon @click="editShot(shot.mistakeDef.id)")
                 v-icon(color="grey lighten-1") mdi-pencil-circle
-          v-divider(v-show="category.shots.length")
+          v-divider(v-show="category.shots.length" class="gma-list-divider")
           v-list-item(class='gma-list-item__link' @click="createShot()")
             v-btn(small rounded outlined elevation="0") + create a shot for {{ category.name }}
+        v-divider(class="gma-list-divider")
+        v-list-item(class='gma-list-item__link' @click="createCategory")
+          v-btn(small rounded outlined elevation="0") + create a new category
 
     v-fab-transition
       v-btn(dark fixed small bottom right fab v-show="!hideFab && !isEditing && !isAdding"
@@ -29,11 +32,10 @@
         v-icon mdi-plus
 
     EditShot(v-if="isEditing || isAdding" v-on:done-edit="doneEditing" :shotId="shotToEdit"
-        :categoryId="activeCategoryId")
+        :categoryId="activeCategoryId" :isForCategory="isForCategory")
 </template>
 
 <script lang="ts">
-/* eslint-disable operator-linebreak */
 import _ from 'lodash';
 import Vue from 'vue';
 import bus from '@/event-bus';
@@ -41,7 +43,7 @@ import Component from 'vue-class-component';
 import EditShot from '@/views/screens/summary/EditShot.vue';
 import { namespace } from 'vuex-class';
 import { MISTAKES, CATEGORIES } from '@/store/mistake-defs/getter-types';
-import { MistakeDef, ShotCategory, MistakeRecord } from '@/store/mistake-defs/types.d';
+import { ShotCategory, MistakeRecord } from '@/store/mistake-defs/types.d';
 import { DELETE_CATEGORY } from '@/store/mistake-defs/action-types';
 
 const MistakeDefsModule = namespace('mistakeDefs');
@@ -78,6 +80,8 @@ export default class ShotTypes extends Vue {
   isEditing = false;
 
   isAdding = false;
+
+  isForCategory = false;
 
   active = true;
 
@@ -118,6 +122,12 @@ export default class ShotTypes extends Vue {
     this.isAdding = true;
   }
 
+  createCategory() {
+    this.shotToEdit = null;
+    this.isForCategory = true;
+    this.isAdding = true;
+  }
+
   doneEditing(categoryId?: number) {
     this.refreshCategories();
     if (this.isAdding) {
@@ -125,6 +135,7 @@ export default class ShotTypes extends Vue {
         this.openTabForCategory(categoryId);
       }
       this.isAdding = false;
+      this.isForCategory = false;
     } else {
       this.openTabForCategory(this.savedCategoryId);
       this.isEditing = false;

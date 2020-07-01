@@ -34,3 +34,11 @@ export const PUNCH_SWING = 3;
 export const SWING_NAMES = [
   'Full', 'Half', 'Pitch', 'Punch',
 ];
+
+// Shots stats:
+export const NUM_SHOTS = 0;
+export const NUM_MISTAKES = 1;
+export const AVG_MISTAKES = 2;
+export const SHOT_STATS_SORT_CRITERIA = [
+  '# shots', '# mistakes', '% mistakes',
+];
