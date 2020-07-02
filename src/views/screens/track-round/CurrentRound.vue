@@ -403,10 +403,8 @@ export default class CurrentRound extends Vue {
         this.endRound();
       })
       .then(() => {
-        setTimeout(() => {
-          this.isSaving = false;
-          this.$router.push('/review');
-        }, 5000);
+        this.isSaving = false;
+        this.$router.push('/review');
       });
   }
 

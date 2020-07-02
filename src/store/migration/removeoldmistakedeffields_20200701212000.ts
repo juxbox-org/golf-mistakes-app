@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import store from '@/store/index';
 import { RootState } from '@/store/rootTypes.d';
-import { Results, MistakeDef } from '@/store/mistake-defs/types.d';
+import { MistakeDef, Results } from '@/store/mistake-defs/types.d';
 
 interface OldMistakeFields extends MistakeDef {
   desc: string;

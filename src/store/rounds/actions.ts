@@ -10,6 +10,7 @@ import {
   RoundHole,
   Round,
 } from './types.d';
+import { getDetailsForShot } from '../mistake-defs/getters';
 
 const PUTT_CATEGORY_ID = 0;
 
@@ -62,11 +63,12 @@ const actions = {
             shotTypesState.mistakeDefs.find((item) => item.id === shot.shotId);
           const category =
             shotTypesState.shotCategories.find((item) => item.id === shotType.categoryId);
+          const shotDetails = getDetailsForShot(shot.shotId, shotTypesState.mistakeDetails);
 
           roundHole.shots.push({
             shotId: shot.shotId,
             type: shotType.title,
-            desc: shotType.desc,
+            desc: shotDetails.desc,
             categoryId: category.id,
             category: category.name,
             mistake: shot.mistake,

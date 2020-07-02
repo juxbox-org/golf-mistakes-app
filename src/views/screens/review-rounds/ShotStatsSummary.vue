@@ -8,7 +8,7 @@
           v-list-item-action
             div {{ categorySummaryStr(category) }}
 
-        v-list-item(v-for="shot in category.shots" :key="shot.mistakeDef.title"
+        v-list-item(v-for="shot in category.shots" :key="shot.id"
             :ripple="false" color="secondary" @click.stop="openInfoDialog(shot, category.name)"
             v-bind:class="getRiskClass(shot)" inactive)
           v-list-item-content

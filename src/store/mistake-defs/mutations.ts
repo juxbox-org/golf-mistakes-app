@@ -50,7 +50,6 @@ const mutations = {
     const shot = state.mistakeDefs.find((mistake) => mistake.id === mistakeDef.id);
     Object.assign(shot, {
       title: mistakeDef.title,
-      desc: mistakeDef.desc,
       categoryId: mistakeDef.categoryId,
       recordSwing: mistakeDef.recordSwing,
     });
@@ -205,7 +204,7 @@ const mutations = {
     if (!shotDetails.results) {
       shotDetails.results = {};
       RESULTS_MAP.forEach((value, key) => {
-        (shot.results as IndexableResults)[key] = 0;
+        (shotDetails.results as IndexableResults)[key] = 0;
       });
     }
 
