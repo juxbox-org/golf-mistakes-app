@@ -4,11 +4,7 @@
 export interface MistakeDef {
   id?: number;
   title: string;
-  desc?: string;
   categoryId?: number;
-  totalShots?: number;
-  totalMistakes?: number;
-  results?: Results;
   recordSwing?: boolean;
   archived?: boolean; // true if mistake definition should be archived
 }

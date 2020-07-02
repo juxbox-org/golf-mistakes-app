@@ -1,6 +1,6 @@
 <template lang="pug">
   v-tab-item(value="Rounds" :transition="false" :reverse-transition="false")
-    div(class="rounds-col")
+    div(v-if="!showRoundSummary" class="rounds-col")
       v-list(class="gma-mistake-list")
         v-list-item(v-if="roundInProgress" to="/track" :ripple="false")
           v-list-item-content
@@ -13,13 +13,16 @@
             class="gma-list-item__empty") (no rounds)
       v-list(class="gma-mistake-list")
         v-list-item-group(v-for="round in pastRounds" :key="round.id")
-          v-list-item(inactive :ripple="false")
+          v-list-item(inactive :ripple="false" @click="showRound(round.id)")
             v-list-item-content
               v-list-item-title {{ round.course }}
               v-list-item-subtitle {{ roundInfoString(round) }}
               v-list-item-subtitle {{ pastSummaryString(round) }}
             v-list-item-action(v-show="isEditingRounds" @click.stop="onDeleteRound(round)")
               v-icon mdi-delete
+
+    RoundStatsSummary(v-if="showRoundSummary" :roundId="roundId"
+        v-on:done-round-summary="showRoundSummary = false")
 </template>
 
 <script lang="ts">
@@ -42,6 +45,7 @@ import { GET_ALL_ROUNDS } from '@/store/rounds/getter-types';
 import { Round } from '@/store/rounds/types.d';
 import { DELETE_ROUND } from '@/store/current-round/mutation-types';
 import { DELETE_STATS } from '@/store/mistake-defs/action-types';
+import RoundStatsSummary from '@/views/screens/review-rounds/RoundStatsSummary.vue';
 
 const CurrentRoundModule = namespace('currentRound');
 const RoundsModule = namespace('rounds');
@@ -49,6 +53,10 @@ const ShotTypesModule = namespace('mistakeDefs');
 
 @Component({
   name: 'RoundsSummary',
+
+  components: {
+    RoundStatsSummary,
+  },
 })
 export default class RoundsSummary extends Vue {
   @RoundsModule.Action(DELETE_ROUND)
@@ -73,6 +81,10 @@ export default class RoundsSummary extends Vue {
   scoringSummary!: ScoringSummary;
 
   isEditingRounds = false;
+
+  showRoundSummary = false;
+
+  roundId?: number = null;
 
   get holesPlayed() {
     return this.roundDetails.holesPlayed;
@@ -124,6 +136,11 @@ export default class RoundsSummary extends Vue {
 
   toggleEditingRounds() {
     this.isEditingRounds = !this.isEditingRounds;
+  }
+
+  showRound(id: number) {
+    this.roundId = id;
+    this.showRoundSummary = true;
   }
 
   mounted() {

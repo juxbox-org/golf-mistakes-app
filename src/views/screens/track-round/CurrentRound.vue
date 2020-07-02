@@ -62,6 +62,8 @@
     AddShotStatsDialog(v-if="showAddStatsDialog" :shotId="currentShot"
         v-on:stats-done="onAddSwingDone" :existingShot="existingShot")
 
+    v-overlay(:value="isSaving" absolute)
+      v-progress-circular(indeterminate size="64")
   // This isn't working on Android when installed as apk, but works when debugging
   // using local web server :( Needs further investigation.
     v-speed-dial(fixed right bottom v-show="!isAddingShot" v-model="edit")
@@ -266,6 +268,8 @@ export default class CurrentRound extends Vue {
 
   existingShot = false;
 
+  isSaving = false;
+
   shotInfo = {
     shotId: 0,
     shotNo: 0,
@@ -369,6 +373,7 @@ export default class CurrentRound extends Vue {
   }
 
   onSaveRound() {
+    this.isSaving = true;
     const roundDetails = {
       course: this.courseDetails.course,
       date: this.courseDetails.date,
@@ -398,7 +403,10 @@ export default class CurrentRound extends Vue {
         this.endRound();
       })
       .then(() => {
-        this.$router.push('/review');
+        setTimeout(() => {
+          this.isSaving = false;
+          this.$router.push('/review');
+        }, 5000);
       });
   }
 

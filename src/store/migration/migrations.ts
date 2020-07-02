@@ -2,6 +2,7 @@ import store from '@/store/index';
 
 const migrationScripts = [
   'mistakedefversioning_20200629114500',
+  'removeoldmistakedeffields_20200701212000',
 ];
 
 async function runMigration(scriptName: string) {

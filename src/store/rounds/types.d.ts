@@ -51,6 +51,19 @@ export interface RoundData {
   tees?: string;
 }
 
+export interface CategoryStat {
+  categoryName: string;
+  totalShots: number;
+  totalMistakes: number;
+  averageMistakes?: number;
+}
+
+export interface CategorySummary {
+  course: string;
+  date: string;
+  stats: Array<CategoryStat>;
+}
+
 // Action function types
 export interface CreateRoundAction {
   (roundData: RoundData): Promise<void>;
