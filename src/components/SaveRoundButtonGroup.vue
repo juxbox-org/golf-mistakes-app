@@ -1,5 +1,5 @@
 <template lang="pug">
-  div(class="app-bar-btn-group")
+  div(v-if="!isSaving" class="app-bar-btn-group")
     v-btn(icon @click="onDeleteRound")
       v-icon mdi-delete
     v-btn(icon @click="onSaveRound")
@@ -15,7 +15,7 @@ import bus from '@/event-bus';
 import Component from 'vue-class-component';
 import { namespace } from 'vuex-class';
 import { DELETE_ROUND, EDIT_HOLE } from '@/store/current-round/mutation-types';
-import { IS_EDITING_HOLE, IS_ADDING_MISTAKE } from '@/store/current-round/getter-types';
+import { IS_EDITING_HOLE, IS_ADDING_MISTAKE, IS_SAVING } from '@/store/current-round/getter-types';
 
 const CurrentRoundModule = namespace('currentRound');
 
@@ -34,6 +34,9 @@ export default class SaveRoundButtonGroup extends Vue {
 
   @CurrentRoundModule.Getter(IS_ADDING_MISTAKE)
   isAddingMistake!: boolean;
+
+  @CurrentRoundModule.Getter(IS_SAVING)
+  isSaving!: boolean;
 
   onDeleteRound() {
     this.deleteRound();

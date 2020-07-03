@@ -1,5 +1,6 @@
 import { RootState } from '@/store/rootTypes.d';
 import { GetterTree } from 'vuex';
+import { getDetailsForShot } from '@/store/mistake-defs/getters';
 import { getRoundDetails, isPutt } from '@/store/helpers/rounds';
 import { Round, RoundShot, RoundHole } from '@/store/rounds/types.d';
 import {
@@ -27,6 +28,7 @@ import {
   SHOTS_WITH_CATEGORIES,
   SCORING_SUMMARY,
   SHOT_BY_INDEX,
+  IS_SAVING,
 } from './getter-types';
 
 const getters = {
@@ -122,9 +124,15 @@ const getters = {
     const index = state.currentHole - 1;
 
     return state.holes[index].shots.map((shot: RoundShot, shotIndex: number) => {
-      const shotType = mistakeDefsState.mistakeDefs.find((type) => type.id === shot.shotId);
+      const mistakeDef = mistakeDefsState.mistakeDefs.find((type) => type.id === shot.shotId);
       const shotCategory =
-        mistakeDefsState.shotCategories.find((category) => category.id === shotType.categoryId);
+        mistakeDefsState.shotCategories.find((category) => category.id === mistakeDef.categoryId);
+      const shotDetails = getDetailsForShot(mistakeDef.id, mistakeDefsState.mistakeDetails);
+      const shotType = {
+        title: mistakeDef.title,
+        desc: shotDetails.desc,
+      };
+      shotType.desc = shotDetails.desc;
       return {
         mistake: shot.mistake,
         penalty: shot.addPenalty,
@@ -182,6 +190,9 @@ const getters = {
     }
 
     return shot;
+  },
+  [IS_SAVING](state: CurrentRoundState) {
+    return state.isSaving;
   },
 };
 export default getters;

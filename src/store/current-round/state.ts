@@ -12,6 +12,7 @@ const state = {
   isAddingShot: false,
   isEditingHole: false,
   currentHole: 1,
+  isSaving: false,
 } as CurrentRoundState;
 
 export default state;

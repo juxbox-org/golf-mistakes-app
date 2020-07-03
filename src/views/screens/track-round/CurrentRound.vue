@@ -94,6 +94,7 @@ import {
   UPDATE_CURRENT_HOLE,
   ADD_RESULT_TO_SHOT,
   ADD_CLUB_DATA_TO_SHOT,
+  DONE_SAVING,
 } from '@/store/current-round/mutation-types';
 import {
   IS_ADDING_MISTAKE,
@@ -106,6 +107,7 @@ import {
   COURSE_DETAILS,
   IS_EDITING_HOLE,
   SHOTS_WITH_CATEGORIES,
+  IS_SAVING,
 } from '@/store/current-round/getter-types';
 import {
   CourseDetails,
@@ -113,8 +115,8 @@ import {
   ResultData,
   ClubData,
 } from '@/store/current-round/types.d';
-import { MISTAKES } from '@/store/mistake-defs/getter-types';
-import { MistakeDef, Results } from '@/store/mistake-defs/types.d';
+import { MISTAKES, DETAILS_FOR_SHOT } from '@/store/mistake-defs/getter-types';
+import { MistakeDef, Results, MistakeDetails } from '@/store/mistake-defs/types.d';
 import { SAVE_ROUND } from '@/store/rounds/action-types';
 import { RoundHole, RoundData } from '@/store/rounds/types.d';
 import { UPDATE_STATS } from '@/store/mistake-defs/action-types';
@@ -219,6 +221,12 @@ export default class CurrentRound extends Vue {
   @CurrentRoundModule.Mutation(ADD_CLUB_DATA_TO_SHOT)
   addClubDataToShot!: (arg0: ClubData) => void;
 
+  @CurrentRoundModule.Mutation(SAVE_ROUND)
+  saveCurrentRound!: () => void;
+
+  @CurrentRoundModule.Mutation(DONE_SAVING)
+  doneSaving!: () => void;
+
   @CurrentRoundModule.Getter(IS_ADDING_MISTAKE)
   isAddingShot!: boolean;
 
@@ -249,8 +257,14 @@ export default class CurrentRound extends Vue {
   @CurrentRoundModule.Getter(SHOTS_WITH_CATEGORIES)
   shots!: Array<ShotInfo>;
 
+  @CurrentRoundModule.Getter(IS_SAVING)
+  isSaving!: boolean;
+
   @ShotTypesModule.Getter(MISTAKES)
   shotTypes!: Array<MistakeDef>;
+
+  @ShotTypesModule.Getter(DETAILS_FOR_SHOT)
+  getDetailsForShot!: (arg0: number) => MistakeDetails;
 
   showHoleInfo = false;
 
@@ -267,8 +281,6 @@ export default class CurrentRound extends Vue {
   currentShot = 0;
 
   existingShot = false;
-
-  isSaving = false;
 
   shotInfo = {
     shotId: 0,
@@ -373,7 +385,7 @@ export default class CurrentRound extends Vue {
   }
 
   onSaveRound() {
-    this.isSaving = true;
+    this.saveCurrentRound();
     const roundDetails = {
       course: this.courseDetails.course,
       date: this.courseDetails.date,
@@ -403,8 +415,8 @@ export default class CurrentRound extends Vue {
         this.endRound();
       })
       .then(() => {
-        this.isSaving = false;
-        this.$router.push('/review');
+        this.doneSaving();
+        this.$router.push('/review').catch(() => null);
       });
   }
 

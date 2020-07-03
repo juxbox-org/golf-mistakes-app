@@ -12,3 +12,4 @@ export const IS_EDITING_HOLE = 'is_editing_hole';
 export const SHOTS_WITH_CATEGORIES = 'shots_with_categories';
 export const SCORING_SUMMARY = 'scoring_summary';
 export const SHOT_BY_INDEX = 'shot_by_index';
+export const IS_SAVING = 'is_saving';

@@ -16,6 +16,8 @@ import {
   EDIT_HOLE,
   ADD_RESULT_TO_SHOT,
   ADD_CLUB_DATA_TO_SHOT,
+  DONE_SAVING,
+  SAVE_ROUND,
 } from './mutation-types';
 import {
   CurrentRoundState,
@@ -154,6 +156,12 @@ const mutations = {
     }
 
     Vue.set(state.holes, state.currentHole - 1, hole);
+  },
+  [SAVE_ROUND](state: CurrentRoundState) {
+    state.isSaving = true;
+  },
+  [DONE_SAVING](state: CurrentRoundState) {
+    state.isSaving = false;
   },
 };
 

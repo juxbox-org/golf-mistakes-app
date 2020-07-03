@@ -3,6 +3,7 @@ import {
   SHOTS_CATEGORIES_WITH_SUMMARY,
   CURRENT_EDITING_TAB,
   CATEGORIES_WITH_SHOTS,
+  DETAILS_FOR_SHOT,
 } from './getter-types';
 import { MistakeDefsState, MistakeDetails } from './types.d';
 
@@ -79,6 +80,9 @@ const getters = {
 
       return { ...category, shots: groupedShots, active: false };
     });
+  },
+  [DETAILS_FOR_SHOT]: (state: MistakeDefsState) => (shotId: number) => {
+    getDetailsForShot(shotId, state.mistakeDetails);
   },
 };
 

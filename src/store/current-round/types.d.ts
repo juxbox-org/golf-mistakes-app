@@ -5,6 +5,7 @@ export interface CurrentRoundState extends Round {
   inProgress: boolean;
   isAddingShot: boolean;
   isEditingHole: boolean;
+  isSaving: boolean;
 }
 
 export interface CurrentRoundRecord {

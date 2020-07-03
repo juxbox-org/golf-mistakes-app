@@ -25,9 +25,11 @@ import EditShotsButtonGroup from '@/components/EditShotsButtonGroup.vue';
 import ReviewNavigationBar from '@/components/ReviewNavigationBar.vue';
 import ReviewButtonGroup from '@/components/ReviewButtonGroup.vue';
 import CreateEditNavigationBar from '@/components/CreateEditNavigationBar.vue';
-import { CURRENT_EDITING_TAB } from '../store/mistake-defs/getter-types';
+import { CURRENT_EDITING_TAB } from '@/store/mistake-defs/getter-types';
+import { IS_SAVING } from '@/store/current-round/getter-types';
 
 const MistakeDefsModule = namespace('mistakeDefs');
+const CurrentRoundModule = namespace('currentRound');
 
 @Component({
   name: 'AppBar',
@@ -52,6 +54,9 @@ export default class AppBar extends Vue {
   @MistakeDefsModule.Getter(CURRENT_EDITING_TAB)
   currentEditingTab!: string;
 
+  @CurrentRoundModule.Getter(IS_SAVING)
+  isSaving!: boolean;
+
   isTrackingStarted!: boolean;
 
   isTrackingNotStarted!: boolean;
@@ -66,7 +71,7 @@ export default class AppBar extends Vue {
 
   get title(): string {
     if (this.isTrackingStarted || this.isTrackingNotStarted) {
-      return 'Current Round';
+      return `Current Round${this.isSaving ? ' ( saving... )' : ''}`;
     }
 
     if (this.isReviewing) {
