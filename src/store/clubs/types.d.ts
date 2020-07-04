@@ -9,6 +9,7 @@ export interface Club {
   brand?: string;
   active: boolean;
   swings?: Array<Swing>;
+  archived?: boolean;
 }
 
 export interface Swing {

@@ -27,7 +27,7 @@
           v-btn(small rounded outlined elevation="0") + create a new category
 
     v-fab-transition
-      v-btn(dark fixed small bottom right fab v-show="!hideFab && !isEditing && !isAdding"
+      v-btn(dark fixed bottom right fab v-show="!hideFab && !isEditing && !isAdding"
           @click="createShot")
         v-icon mdi-plus
 

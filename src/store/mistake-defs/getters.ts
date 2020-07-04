@@ -24,24 +24,25 @@ export function getIndexForShotDetails(details: MistakeDetails,
 
 const getters = {
   [MISTAKES](state: MistakeDefsState) {
-    return state.mistakeDefs.map((mistake) => {
-      const mistakeDetails = getDetailsForShot(mistake.id, state.mistakeDetails);
+    return state.mistakeDefs.filter((item) => !item.archived).map((item) => {
+      const mistakeDetails = getDetailsForShot(item.id, state.mistakeDetails);
 
       return {
-        mistakeDef: mistake,
+        mistakeDef: item,
         mistakeDetails,
       };
     });
   },
   [CATEGORIES](state: MistakeDefsState) {
-    return state.shotCategories;
+    return state.shotCategories.filter((item) => !item.archived);
   },
   [SHOTS_CATEGORIES_WITH_SUMMARY](state: MistakeDefsState) {
-    return state.shotCategories.map((category) => {
+    return state.shotCategories.filter((item) => !item.archived).map((item) => {
       let totalShots = 0;
       let totalMistakes = 0;
       const shots =
-        state.mistakeDefs.filter((mistake) => mistake.categoryId === category.id);
+        state.mistakeDefs.filter((mistake) =>
+          mistake.categoryId === mistake.id && !mistake.archived);
       const groupedShots = shots.map((shot) => {
         const details = getDetailsForShot(shot.id, state.mistakeDetails);
         totalShots += details.totalShots || 0;
@@ -56,7 +57,7 @@ const getters = {
       const average = totalShots ? Math.round((totalMistakes / totalShots) * 100) : 0;
 
       return {
-        ...category,
+        ...item,
         shots: groupedShots,
         totalShots,
         totalMistakes,
@@ -69,9 +70,10 @@ const getters = {
     return state.currentEditingTab;
   },
   [CATEGORIES_WITH_SHOTS](state: MistakeDefsState) {
-    return state.shotCategories.map((category) => {
+    return state.shotCategories.filter((category) => !category.archived).map((category) => {
       const shots =
-        state.mistakeDefs.filter((mistake) => mistake.categoryId === category.id);
+        state.mistakeDefs.filter((mistake) =>
+          mistake.categoryId === category.id && !mistake.archived);
 
       const groupedShots = shots.map((shot) => ({
         mistakeDef: shot,

@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import {
   INSERT_CLUB,
   INCREMENT_ID,
@@ -28,7 +29,7 @@ const mutations = {
       throw Error(`UPDATE_CLUB: Unable to find club with id: ${club.id}`);
     }
 
-    state.clubs[index] = club;
+    Vue.set(state.clubs, index, club);
   },
   [REMOVE_CLUB](state: ClubsState, id: number) {
     const index = state.clubs.findIndex((item) => item.id === id);
@@ -37,7 +38,10 @@ const mutations = {
       throw Error(`REMOVE_CLUB: Unable to find club with id: ${id}`);
     }
 
-    state.clubs.splice(index, 1);
+    const club = state.clubs[index];
+    club.archived = true;
+
+    Vue.set(state.clubs, index, club);
   },
   [INCREMENT_ID](state: ClubsState) {
     state.id += 1;

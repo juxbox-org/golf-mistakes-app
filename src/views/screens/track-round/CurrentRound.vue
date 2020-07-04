@@ -278,7 +278,7 @@ export default class CurrentRound extends Vue {
 
   holeInfoTimeout?: number = null;
 
-  currentShot = 0;
+  currentShot = -1;
 
   existingShot = false;
 
@@ -463,9 +463,8 @@ export default class CurrentRound extends Vue {
 
     if (resultData.result) {
       this.addResultToShot(resultData);
+      this.expandHoleInfo();
     }
-
-    this.expandHoleInfo();
   }
 
   onAddSwingDone(swingData: ClubData) {

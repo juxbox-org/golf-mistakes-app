@@ -18,7 +18,7 @@
         :clubId="clubToEdit")
 
     v-fab-transition
-      v-btn(dark fixed small bottom right fab v-show="!hideFab && !isAdding && !isEditing"
+      v-btn(dark fixed bottom right fab v-show="!hideFab && !isAdding && !isEditing"
           @click="createClub")
         v-icon mdi-plus
 </template>

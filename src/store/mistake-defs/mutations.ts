@@ -73,11 +73,17 @@ const mutations = {
     });
   },
   [REMOVE_MISTAKE](state: MistakeDefsState, id: number) {
-    const index = state.mistakeDefs.findIndex((mistake) => mistake.id === id);
+    const index = state.mistakeDefs.findIndex((item) => item.id === id);
 
-    if (index >= 0) {
-      state.mistakeDefs.splice(index, 1);
+    if (index < 0) {
+      throw Error(`REMOVE_MISTAKE: Unable to find mistake with ID: ${id}`);
     }
+
+    const mistake = state.mistakeDefs[index];
+
+    mistake.archived = true;
+
+    Vue.set(state.mistakeDefs, index, mistake);
   },
   [REMOVE_CATEGORY](state: MistakeDefsState, id: number) {
     // Don't delete Putt category, since we require it to track putts
@@ -85,20 +91,33 @@ const mutations = {
       return;
     }
 
-    const shotsToDelete: Array<number> = [];
+    const mistakeToDelete = [] as Array<number>;
 
-    state.mistakeDefs.forEach((shotType, index) => {
-      if (shotType.categoryId === id) {
-        shotsToDelete.push(index);
+    state.mistakeDefs.forEach((item, index) => {
+      if (item.categoryId === id) {
+        mistakeToDelete.push(index);
       }
     });
 
-    shotsToDelete.forEach((shotIndex) => {
-      state.mistakeDefs.splice(shotIndex, 1);
+    /* eslint-disable no-param-reassign */
+    mistakeToDelete.forEach((itemIndex) => {
+      const mistake = state.mistakeDefs[itemIndex];
+      mistake.archived = true;
+      Vue.set(state.mistakeDefs, itemIndex, mistake);
     });
+    /* eslint-enable no-param-reassign */
 
-    const index = state.shotCategories.findIndex((category) => category.id === id);
-    state.shotCategories.splice(index, 1);
+    const index = state.shotCategories.findIndex((item) => item.id === id);
+
+    if (index < 0) {
+      throw Error(`REMOVE_CATEGORY: Unable to find category with ID: ${id}`);
+    }
+
+    const category = state.shotCategories[index];
+
+    category.archived = true;
+
+    Vue.set(state.shotCategories, index, category);
   },
   [INCREMENT_ID](state: MistakeDefsState) {
     state.id += 1;

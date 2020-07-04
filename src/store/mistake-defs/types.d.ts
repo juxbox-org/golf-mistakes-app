@@ -34,6 +34,7 @@ export interface Results {
 export interface ShotCategory {
   id?: number;
   name: string;
+  archived?: boolean;
 }
 
 export interface ShotCategoryWithSummary {

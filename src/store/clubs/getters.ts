@@ -3,7 +3,7 @@ import { ClubsState } from './types.d';
 
 const getters = {
   [CLUBS](state: ClubsState) {
-    return state.clubs;
+    return state.clubs.filter((club) => !club.archived);
   },
 };
 
