@@ -57,7 +57,9 @@ const actions = {
                   swing: swing.type,
                   value: shot.distance,
                 });
-              } else if (swing.longest < shot.distance) {
+              }
+
+              if (!swing.longest || swing.longest < shot.distance) {
                 context.commit(UPDATE_SWING_LONGEST, {
                   club: club.id,
                   swing: swing.type,

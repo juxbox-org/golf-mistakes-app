@@ -64,6 +64,7 @@ export default class Clubs extends Vue {
   onDoneEdit() {
     this.isAdding = false;
     this.isEditing = false;
+    this.clubToEdit = null;
   }
 
   mounted() {
