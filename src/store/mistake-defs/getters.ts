@@ -56,8 +56,6 @@ const getters = {
 
       const average = totalShots ? Math.round((totalMistakes / totalShots) * 100) : 0;
 
-      console.log(shots);
-
       return {
         ...item,
         shots: groupedShots,

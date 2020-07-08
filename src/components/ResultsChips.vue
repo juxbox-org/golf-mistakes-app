@@ -2,7 +2,7 @@
   v-row(:justify="justify" align="center" class="chip-results")
     div(v-if="hasData")
       v-chip(v-for="result in data" :key="result[0]"
-        class="ma-1" color="red" dark) {{ getResultStr(result) }}
+        class="ma-1" color="red" dark :small="smallChips") {{ getResultStr(result) }}
     div(v-else)
       v-chip(v-for="type in resultTypes" :key="type" v-show="results[type]"
           :close="isCloseable" class="ma-1" @click:close="onClose(type)"
@@ -23,6 +23,7 @@ import { RESULTS_MAP } from '@/store/consts';
     data: Array,
     justify: String,
     hasData: Boolean,
+    smallChips: Boolean,
   },
 })
 export default class ResultsChips extends Vue {
@@ -36,6 +37,8 @@ export default class ResultsChips extends Vue {
 
   justify!: string;
 
+  smallChips!: boolean;
+
   resultTypes = [...RESULTS_MAP.keys()];
 
   /* eslint-disable class-methods-use-this */
@@ -46,10 +49,6 @@ export default class ResultsChips extends Vue {
 
   onClose(type: string) {
     this.$emit('chip-closed', type);
-  }
-
-  mounted() {
-    console.log(this.data);
   }
 }
 </script>

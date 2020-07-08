@@ -5,11 +5,11 @@
       v-col
         span(class="ma-2") {{ categorySummary.course }} on {{ categorySummary.date }}
     v-data-table(:headers="categoryHeaders" :items="categoryStats" mobile-breakpoint="400"
-        show-expand)
+        show-expand :single-expand="true" item-key="categoryName")
       template(v-slot:expanded-item="{ headers, item }")
         td(:colspan="headers.length")
-          ResultsChips(v-if="item.results.length" :data="Array.from(item.results)"
-              :hasData="true" :justify="'start'")
+          ResultsChips(v-if="item.results.size" :data="Array.from(item.results)"
+              :hasData="true" :justify="'start'" :smallChips="true")
           div(v-else class="empty-results") ( no mistakes )
 </template>
 

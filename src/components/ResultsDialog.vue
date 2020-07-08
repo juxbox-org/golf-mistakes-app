@@ -278,7 +278,6 @@ export default class ResultsDialog extends Vue {
 
   mounted() {
     if (this.existingShot) {
-      console.log(this.shotId);
       const shot = this.getShotByIndex(this.shotId);
 
       const results = getKeysForResult(shot.result);
