@@ -4,7 +4,13 @@
     v-row
       v-col
         span(class="ma-2") {{ categorySummary.course }} on {{ categorySummary.date }}
-    v-data-table(:headers="categoryHeaders" :items="categoryStats" mobile-breakpoint="400")
+    v-data-table(:headers="categoryHeaders" :items="categoryStats" mobile-breakpoint="400"
+        show-expand)
+      template(v-slot:expanded-item="{ headers, item }")
+        td(:colspan="headers.length")
+          ResultsChips(v-if="item.results.length" :data="Array.from(item.results)"
+              :hasData="true" :justify="'start'")
+          div(v-else class="empty-results") ( no mistakes )
 </template>
 
 <script lang="ts">
@@ -13,6 +19,7 @@ import Component from 'vue-class-component';
 import { namespace } from 'vuex-class';
 import { GET_CATEGORY_STATS_FOR_ROUND } from '@/store/rounds/getter-types';
 import { CategorySummary } from '@/store/rounds/types.d';
+import ResultsChips from '@/components/ResultsChips.vue';
 
 const RoundsModule = namespace('rounds');
 
@@ -21,6 +28,10 @@ const RoundsModule = namespace('rounds');
 
   props: {
     roundId: Number,
+  },
+
+  components: {
+    ResultsChips,
   },
 })
 export default class RoundStatsSummary extends Vue {
@@ -36,9 +47,10 @@ export default class RoundStatsSummary extends Vue {
       sortable: false,
       value: 'categoryName',
     },
-    { text: 'Total Shots', value: 'totalShots' },
-    { text: 'Total Mistakes', value: 'totalMistakes' },
+    { text: 'Shots', value: 'totalShots' },
+    { text: 'Mistakes', value: 'totalMistakes' },
     { text: 'Mistakes (%)', value: 'averageMistakes' },
+    { text: '', value: 'data-table-expand' },
   ];
 
   get categorySummary() {
@@ -54,3 +66,10 @@ export default class RoundStatsSummary extends Vue {
   }
 }
 </script>
+
+<style lang="stylus" scoped>
+.empty-results
+  display: flex;
+  align-items: center;
+  justify-content: center;
+</style>

@@ -28,9 +28,11 @@ import { RESULTS_MAP } from '@/store/consts';
 export default class ResultsChips extends Vue {
   hasData!: boolean;
 
-  results!: Map<string, boolean>;
+  results!: Map<string, boolean | number>;
 
   isCloseable!: boolean;
+
+  data!: Array<Iterator<number>>;
 
   justify!: string;
 
@@ -44,6 +46,10 @@ export default class ResultsChips extends Vue {
 
   onClose(type: string) {
     this.$emit('chip-closed', type);
+  }
+
+  mounted() {
+    console.log(this.data);
   }
 }
 </script>

@@ -1,3 +1,5 @@
+import { Results } from '@/store/mistake-defs/types.d';
+
 export interface RoundState {
   rounds: Array<Round>;
   currentOverviewTab: string;
@@ -56,6 +58,7 @@ export interface CategoryStat {
   totalShots: number;
   totalMistakes: number;
   averageMistakes?: number;
+  results?: Map<string, number>;
 }
 
 export interface CategorySummary {

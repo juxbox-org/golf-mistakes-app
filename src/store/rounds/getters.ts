@@ -1,3 +1,4 @@
+import { getKeysForResult } from '@/store/helpers/results';
 import {
   GET_ALL_ROUNDS,
   GET_OVERVIEW_TAB,
@@ -40,6 +41,7 @@ const getters = {
             categoryName: shot.category,
             totalShots: 0,
             totalMistakes: 0,
+            results: new Map<string, number>(),
           });
         }
 
@@ -50,13 +52,29 @@ const getters = {
         }
 
         item.totalShots += 1;
+
+        const resultKeys = getKeysForResult(shot.result);
+
+        resultKeys.forEach((result) => {
+          if (!item.results.has(result)) {
+            item.results.set(result, 1);
+          } else {
+            const numResults = item.results.get(result);
+            item.results.set(result, numResults + 1);
+          }
+        });
       });
     });
 
-    categoryMap.forEach((value) => {
+    categoryMap.forEach((category) => {
+      // Do an in-place replacement of total shots for each result with the results average
+      category.results.forEach((value, key) => {
+        category.results.set(key, Math.round((value / category.totalMistakes) * 100));
+      });
+
       data.stats.push({
-        ...value,
-        averageMistakes: Math.round((value.totalMistakes / value.totalShots) * 100),
+        ...category,
+        averageMistakes: Math.round((category.totalMistakes / category.totalShots) * 100),
       });
     });
 

@@ -42,7 +42,7 @@ const getters = {
       let totalMistakes = 0;
       const shots =
         state.mistakeDefs.filter((mistake) =>
-          mistake.categoryId === mistake.id && !mistake.archived);
+          mistake.categoryId === item.id && !mistake.archived);
       const groupedShots = shots.map((shot) => {
         const details = getDetailsForShot(shot.id, state.mistakeDetails);
         totalShots += details.totalShots || 0;
@@ -55,6 +55,8 @@ const getters = {
       });
 
       const average = totalShots ? Math.round((totalMistakes / totalShots) * 100) : 0;
+
+      console.log(shots);
 
       return {
         ...item,
