@@ -41,11 +41,9 @@ export default class ResultsChips extends Vue {
 
   resultTypes = [...RESULTS_MAP.keys()];
 
-  /* eslint-disable class-methods-use-this */
   getResultStr(result: Array<Iterator<number>>) {
     return `${result[0]} \xa0\xa0${result[1]}%`;
   }
-  /* eslint-enable class-methods-use-this */
 
   onClose(type: string) {
     this.$emit('chip-closed', type);

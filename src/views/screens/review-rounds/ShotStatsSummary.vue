@@ -1,27 +1,21 @@
 <template lang="pug">
   v-tab-item(value="ShotStats" :transition="false" :reverse-transition="false")
+    v-switch(v-model="showByCategory" label="view by category" class="ma-1" color="blue darken-2"
+        :ripple="false")
     v-list(class="gma-mistake-list")
-      v-list-group(v-for="category in sortedCategories" :key="category.name" :ripple="false")
+      v-list-group(v-if="showByCategory" v-for="category in sortedCategories" :key="category.name"
+          :ripple="false")
         template(v-slot:activator)
           v-list-item-content
             v-list-item-title {{ category.name }}
           v-list-item-action
             div {{ categorySummaryStr(category) }}
 
-        v-list-item(v-for="shot in category.shots" :key="shot.id"
-            :ripple="false" color="secondary" @click.stop="openInfoDialog(shot, category.name)"
-            v-bind:class="getRiskClass(shot)" inactive)
-          v-list-item-content
-            v-list-item-title {{ shot.mistakeDef.title }}
-            v-list-item-subtitle {{ shotSummaryStr(shot) }}
-            v-list-item-subtitle {{ resultsSummaryString(shot) }}
-          v-list-item-action
-            v-btn(icon)
-              v-icon(color="grey") mdi-information
+        ShotSummaryList(:data="category.shots" v-on:click="openInfoDialog($event)"
+            :categoryName="category.name")
 
-        v-list-item(v-if="!category.shots.length" :ripple="false")
-          v-list-item-content
-            v-list-item-title(class="gma-list-item__empty") ( no shots )
+      ShotSummaryList(v-if="!showByCategory" :data="sortedShots"
+          v-on:click="openInfoDialog($event)")
 
     v-dialog(v-model="showShotInfo")
       v-card(@click.stop="showShotInfo = false")
@@ -56,10 +50,16 @@ import { HAS_UPDATED } from '@/store/rounds/getter-types';
 import { SET_HAS_UPDATED } from '@/store/rounds/mutation-types';
 import ResultsChips from '@/components/ResultsChips.vue';
 import ShotStatsSortDialog from '@/components/ShotStatsSortDialog.vue';
-import statsSorter from '@/store/helpers/stats-sorter';
+import { sortByCategory, sortByShot } from '@/store/helpers/stats-sorter';
+import ShotSummaryList from '@/components/ShotSummaryList.vue';
 
 const MistakeDefsModule = namespace('mistakeDefs');
 const RoundsModule = namespace('rounds');
+
+interface ShotData {
+  shot: MistakeRecord;
+  categoryName: string;
+}
 
 @Component({
   name: 'ShotStatsSummary',
@@ -67,6 +67,7 @@ const RoundsModule = namespace('rounds');
   components: {
     ResultsChips,
     ShotStatsSortDialog,
+    ShotSummaryList,
   },
 })
 export default class StatsSummary extends Vue {
@@ -87,11 +88,15 @@ export default class StatsSummary extends Vue {
 
   sortedCategories = [] as Array<ShotCategoryWithSummary>;
 
+  sortedShots = [] as Array<MistakeRecord>;
+
   showShotInfo = false;
 
   showSortDialog = false;
 
   sortCriteria = [] as Array<number>;
+
+  showByCategory = true;
 
   shotInfo = {
     title: '',
@@ -100,12 +105,32 @@ export default class StatsSummary extends Vue {
     result: {},
   };
 
-  get dataToDisplay() {
-    return this.sortedCategories;
+  get shots() {
+    const shots = [] as Array<MistakeRecord>;
+
+    this.categories.forEach((category) => {
+      category.shots.forEach((shot) => {
+        const shotData = { ...shot, categoryName: category.name };
+        shots.push(shotData);
+      });
+    });
+
+    return shots;
   }
 
-  set dataToDisplay(value) {
-    this.sortedCategories = value;
+  openInfoDialog(shotData: ShotData) {
+    this.shotInfo = {
+      title: shotData.shot.mistakeDef.title,
+      desc: shotData.shot.mistakeDetails.desc,
+      category: shotData.categoryName,
+      result: [...resultsSummaryForShot(shotData.shot).entries()].sort((a, b) => b[1] - a[1]),
+    };
+
+    this.showShotInfo = true;
+  }
+
+  onShowSortDialog() {
+    this.showSortDialog = true;
   }
 
   categorySummaryStr(category: ShotCategoryWithSummary) {
@@ -116,69 +141,6 @@ export default class StatsSummary extends Vue {
     return `${category.totalMistakes} / ${category.totalShots} \xa0 (${category.average}%)`;
   }
 
-  shotSummaryStr(shot: MistakeRecord) {
-    const totalShots = shot.mistakeDetails.totalShots || 0;
-    const totalMistakes = shot.mistakeDetails.totalMistakes || 0;
-    const average = totalShots ? Math.round((totalMistakes / totalShots) * 100) : 0;
-
-    if (!totalShots) {
-      return '( no data yet )';
-    }
-
-    return `Shots: ${totalShots} \xa0\xa0 Mistakes: ${totalMistakes} \xa0\xa0 (${average}%)`;
-  }
-
-  resultsSummaryString(shot: MistakeRecord) {
-    const resultsSummary = resultsSummaryForShot(shot);
-
-    if (!resultsSummary.size) {
-      return '( no result data yet )';
-    }
-
-    let summaryStr = '';
-
-    resultsSummary.forEach((value: number, key: string) => {
-      const capitalKey = key.charAt(0).toUpperCase() + key.slice(1);
-      summaryStr += `${capitalKey}: ${value}% \xa0\xa0`;
-    });
-
-    return summaryStr;
-  }
-
-  getRiskClass(shot: MistakeRecord) {
-    const totalShots = shot.mistakeDetails.totalShots || 0;
-    const totalMistakes = shot.mistakeDetails.totalMistakes || 0;
-    const average = totalShots ? Math.round((totalMistakes / totalShots) * 100) : 0;
-
-    if (totalShots < 10) {
-      return 'gma-no-risk';
-    }
-
-    if (average >= 60) {
-      return 'gma-high-risk';
-    }
-
-    if (average <= 20) {
-      return 'gma-low-risk';
-    }
-
-    return 'gma-medium-risk';
-  }
-
-  openInfoDialog(shot: MistakeRecord, category: string) {
-    this.shotInfo = {
-      title: shot.mistakeDef.title,
-      desc: shot.mistakeDetails.desc,
-      category,
-      result: [...resultsSummaryForShot(shot).entries()].sort((a, b) => b[1] - a[1]),
-    };
-
-    this.showShotInfo = true;
-  }
-
-  onShowSortDialog() {
-    this.showSortDialog = true;
-  }
 
   sortStats(sortCriteria?: Array<number>) {
     this.showSortDialog = false;
@@ -189,15 +151,18 @@ export default class StatsSummary extends Vue {
 
     if (sortCriteria.length) {
       this.sortCriteria = sortCriteria;
-      this.dataToDisplay = statsSorter([...this.categories], sortCriteria);
-    } else {
-      this.dataToDisplay = this.categories;
+      if (this.showByCategory) {
+        this.sortedCategories = sortByCategory([...this.categories], sortCriteria);
+      } else {
+        this.sortedShots = sortByShot(this.shots, sortCriteria);
+      }
     }
   }
 
   mounted() {
     bus.$on('sort-shot-stats', this.onShowSortDialog);
     this.sortedCategories = this.categories;
+    this.sortedShots = this.shots;
   }
 
   destroyed() {

@@ -15,6 +15,7 @@ export interface MistakeDetails {
   desc: string;
   totalShots?: number;
   totalMistakes?: number;
+  average?: number;
   results?: Results;
 }
 
@@ -43,6 +44,7 @@ export interface ShotCategoryWithSummary {
   totalShots?: number;
   totalMistakes?: number;
   average?: number;
+  shots: Array<MistakeRecord>;
 }
 
 export interface MistakeDefsState {
@@ -56,7 +58,8 @@ export interface MistakeDefsState {
 export interface MistakeRecord {
   mistakeDef: MistakeDef;
   mistakeDetails: MistakeDetails;
-  updateDetailsVersion: boolean;
+  categoryName?: string;
+  updateDetailsVersion?: boolean;
 }
 
 export interface ShotResult {
